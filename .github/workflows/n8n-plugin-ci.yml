@@ -35,7 +35,6 @@ jobs:
 
          - name: Lint
            run: npm run lint
-           continue-on-error: true
 
          - name: Build (tsc)
            run: npm run build

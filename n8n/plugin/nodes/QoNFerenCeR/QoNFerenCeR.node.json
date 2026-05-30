@@ -1,0 +1,9 @@
+{
+	"node": "n8n-nodes-qonferencer.qoNFerenCeR",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Communication", "Productivity"],
+	"resources": {
+		"primaryDocumentation": [{ "url": "https://github.com/RomanPruzinsky/QoNFerenCeR" }]
+	}
+}
