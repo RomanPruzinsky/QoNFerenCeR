@@ -42,7 +42,7 @@ export class QoNFerenCeRApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{$credentials.baseUrl}}',
-			url: '/api/v1/internal/n8n/health',
+			url: '/actuator/health',
 			method: 'GET',
 		},
 	};

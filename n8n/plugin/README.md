@@ -6,8 +6,7 @@ Custom n8n nodes for the QoNFerenCeR conference platform.
 
 | Node | Type | Purpose |
 |------|------|---------|
-| **QoNFerenCeR** | action | Decide scan / lookup user / send notification / broadcast / role mgmt |
-| **QoNFerenCeR Trigger** | trigger | Listen on backend event stream (WebSocket) for meal scans, attendance, ... |
+| **QoNFerenCeR** | action | Health check (stub). Future: scan decisions, user lookup, notifications. |
 
 ## Credential
 
