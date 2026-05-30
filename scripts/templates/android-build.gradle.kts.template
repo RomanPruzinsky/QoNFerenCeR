@@ -1,0 +1,53 @@
+// android/build.gradle.kts — ROOT project file (NIE app modul!)
+//
+// Template pre integráciu ktlint do Android projektu. Použi takto:
+//   1. Vytvoriť Android Studio New Project → vyber android/ priečinok
+//      (AS vygeneruje vlastný build.gradle.kts pre root + app modul)
+//   2. Manuálne mergni nasledovné do android/build.gradle.kts (root):
+//      - plugins { ... } blok pridať `id("org.jlleitschuh.gradle.ktlint")`
+//      - subprojects { ... } blok pridať ktlint config
+//   3. Skontroluj že `./gradlew ktlintCheck` v android/ beží
+//   4. V .github/workflows/android-ci.yml vyhoď `continue-on-error: true` zo ktlint kroku
+//
+// Po dokončení tento template súbor môžeš zmazať (alebo nechať v scripts/templates/ pre referenciu).
+
+plugins {
+    // ... AS-generated plugins (com.android.application, kotlin.android, ...)
+
+    // Pridať toto:
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1" apply false
+}
+
+// Aplikovať ktlint na všetky subprojects (app modul + akýkoľvek future :feature modul)
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set("1.8.0")                  // ZHODA s AS ktlint pluginom 2026-05-30
+        android.set(true)
+        ignoreFailures.set(false)
+        verbose.set(true)
+        outputToConsole.set(true)
+        reporters {
+            reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+            reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+        }
+        filter {
+            exclude("**/generated/**")
+            exclude("**/build/**")
+        }
+    }
+}
+
+// Voliteľne: tasks `ktlintCheckAll` / `ktlintFormatAll` na root level
+tasks.register("ktlintCheckAll") {
+    group = "verification"
+    description = "Run ktlintCheck on all subprojects"
+    dependsOn(subprojects.map { "${it.path}:ktlintCheck" })
+}
+
+tasks.register("ktlintFormatAll") {
+    group = "formatting"
+    description = "Run ktlintFormat on all subprojects"
+    dependsOn(subprojects.map { "${it.path}:ktlintFormat" })
+}

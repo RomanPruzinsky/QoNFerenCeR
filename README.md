@@ -1,0 +1,3 @@
+# QoNFerenCeR
+
+Selfhosted conferention platform

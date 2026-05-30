@@ -1,0 +1,23 @@
+root = true
+
+# Defaults for all files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 3
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+max_line_length = 120
+ktlint_code_style = intellij_idea
+ij_kotlin_indent_style = tab
+ktlint_function_naming_ignore_when_annotated_with = Composable
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ktlint_standard_blank-line-between-when-conditions = disabled
+
+# Markdown
+[*.md]
+trim_trailing_whitespace = false # 2 spaces == ENDL

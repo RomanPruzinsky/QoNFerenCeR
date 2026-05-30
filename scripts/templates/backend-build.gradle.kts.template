@@ -1,0 +1,43 @@
+// backend/build.gradle.kts — Spring Boot Gradle project
+//
+// Template pre integráciu ktlint do Spring projektu. Použi takto:
+//   1. Vytvoriť projekt cez Spring Initializr (https://start.spring.io)
+//      - Project: Gradle - Kotlin
+//      - Language: Kotlin
+//      - Spring Boot: 3.4.x
+//      - Java: 21
+//      - Dependencies: Spring Web, Spring Security, Spring Data JPA, Flyway, PostgreSQL,
+//                      OAuth2 Resource Server, Validation, Actuator
+//      - Stiahnuť → rozbaliť do backend/
+//   2. Manuálne mergni `id("org.jlleitschuh.gradle.ktlint")` do plugins { } bloku
+//   3. Pridať ktlint { } konfig blok (snippet nižšie)
+//   4. Skontroluj `./gradlew ktlintCheck`
+//   5. V .github/workflows/backend-ci.yml vyhoď `continue-on-error: true` zo ktlint kroku
+
+plugins {
+    // ... Spring Initializr generated plugins
+    // id("org.springframework.boot") version "3.4.x"
+    // id("io.spring.dependency-management") version "1.1.x"
+    // kotlin("jvm") version "2.1.x" (alebo neskôr)
+    // kotlin("plugin.spring") version "2.1.x"
+
+    // Pridať toto:
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+}
+
+// ... ostatok Spring Initializr generated ...
+
+ktlint {
+    version.set("1.8.0")                  // ZHODA s AS ktlint pluginom 2026-05-30
+    ignoreFailures.set(false)
+    verbose.set(true)
+    outputToConsole.set(true)
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+    }
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
+}

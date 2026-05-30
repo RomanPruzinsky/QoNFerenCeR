@@ -1,0 +1,51 @@
+version: 2
+
+updates:
+   - package-ecosystem: github-actions
+     directory: /
+     schedule:
+        interval: weekly
+        day: monday
+     open-pull-requests-limit: 5
+     commit-message:
+        prefix: chore(ci)
+        include: scope
+
+   - package-ecosystem: gradle
+     directory: /android
+     schedule:
+        interval: weekly
+        day: monday
+     open-pull-requests-limit: 5
+     commit-message:
+        prefix: chore(android)
+        include: scope
+
+   - package-ecosystem: gradle
+     directory: /backend
+     schedule:
+        interval: weekly
+        day: monday
+     open-pull-requests-limit: 5
+     commit-message:
+        prefix: chore(backend)
+        include: scope
+
+   - package-ecosystem: npm
+     directory: /n8n/plugin
+     schedule:
+        interval: weekly
+        day: monday
+     open-pull-requests-limit: 5
+     commit-message:
+        prefix: chore(n8n)
+        include: scope
+
+   - package-ecosystem: docker
+     directory: /backend
+     schedule:
+        interval: weekly
+        day: monday
+     open-pull-requests-limit: 3
+     commit-message:
+        prefix: chore(docker)
