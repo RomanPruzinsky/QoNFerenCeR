@@ -48,7 +48,6 @@ jobs:
 
          - name: ktlint check
            run: ./gradlew ktlintCheck
-           continue-on-error: true
 
          - name: Unit + integration tests
            run: ./gradlew test
