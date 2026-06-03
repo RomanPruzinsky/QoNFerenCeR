@@ -31,6 +31,16 @@ updates:
         prefix: chore(backend)
         include: scope
 
+   - package-ecosystem: gradle
+     directory: /shared
+     schedule:
+        interval: weekly
+        day: monday
+     open-pull-requests-limit: 5
+     commit-message:
+        prefix: chore(shared)
+        include: scope
+
    - package-ecosystem: npm
      directory: /n8n/plugin
      schedule:

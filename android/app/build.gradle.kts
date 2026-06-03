@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+	// Shared DTO / API / constants — substituted from the /shared composite build.
+	implementation("tr.qonferencer:shared")
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.lifecycle.runtime.ktx)
 	implementation(libs.androidx.activity.compose)

@@ -12,6 +12,7 @@ fi
 
 ANDROID_STAGED=$(echo "$STAGED_FILES" | grep '^android/' || true)
 BACKEND_STAGED=$(echo "$STAGED_FILES" | grep '^backend/' || true)
+SHARED_STAGED=$(echo "$STAGED_FILES" | grep '^shared/' || true)
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
@@ -40,6 +41,10 @@ fi
 
 if [ -n "$BACKEND_STAGED" ]; then
     run_ktlint "backend" "backend" || EXIT_CODE=1
+fi
+
+if [ -n "$SHARED_STAGED" ]; then
+    run_ktlint "shared" "shared" || EXIT_CODE=1
 fi
 
 if [ $EXIT_CODE -ne 0 ]; then
