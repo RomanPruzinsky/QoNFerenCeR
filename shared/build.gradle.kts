@@ -1,7 +1,9 @@
 plugins {
-	// Kotlin 2.3.21 (same as android) — must support BOTH the android build's
-	// Gradle 9.2.1 and the backend build's Gradle 8.14.5, since a composite
-	// build compiles this module with each consumer's own Gradle.
+	// Kotlin 2.3.21 — kept in lockstep with android AND backend so the class
+	// metadata this module emits is readable by both consumers. Must support
+	// BOTH the android build's Gradle 9.2.1 and the backend build's Gradle
+	// 8.14.5, since a composite build compiles this module with each consumer's
+	// own Gradle.
 	kotlin("jvm") version "2.3.21"
 	id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
