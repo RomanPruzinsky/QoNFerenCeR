@@ -12,3 +12,6 @@ Brief log of AI-assisted changes: what was asked · what was done · date.
 - Wired as a composite build via `includeBuild("../shared")` in android + backend settings, consumed as `implementation("tr.qonferencer:shared")`. Repo root left untouched.
 - CI: added `shared-ci.yml`, a dependabot `/shared` gradle entry, a pre-commit ktlint branch, and `shared/**` to the android + backend CI path filters.
 - Verified: `shared` standalone build + backend & android composite compile (Gradle 8.14.5 and 9.2.1).
+
+## End of 2026-05
+using it for materials, dependabot, CI

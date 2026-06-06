@@ -10,6 +10,10 @@ updates:
      commit-message:
         prefix: chore(ci)
         include: scope
+     groups:
+        github-actions:
+           patterns:
+              - "*"
 
    - package-ecosystem: gradle
      directory: /android
@@ -20,6 +24,10 @@ updates:
      commit-message:
         prefix: chore(android)
         include: scope
+     groups:
+        android-dependencies:
+           patterns:
+              - "*"
 
    - package-ecosystem: gradle
      directory: /backend
@@ -30,6 +38,10 @@ updates:
      commit-message:
         prefix: chore(backend)
         include: scope
+     groups:
+        backend-dependencies:
+           patterns:
+              - "*"
 
    - package-ecosystem: gradle
      directory: /shared
@@ -40,6 +52,10 @@ updates:
      commit-message:
         prefix: chore(shared)
         include: scope
+     groups:
+        shared-dependencies:
+           patterns:
+              - "*"
 
    - package-ecosystem: npm
      directory: /n8n/plugin
@@ -50,12 +66,24 @@ updates:
      commit-message:
         prefix: chore(n8n)
         include: scope
+     groups:
+        n8n-dependencies:
+           patterns:
+              - "*"
 
-   - package-ecosystem: docker
-     directory: /backend
-     schedule:
-        interval: weekly
-        day: monday
-     open-pull-requests-limit: 3
-     commit-message:
-        prefix: chore(docker)
+   # Enable once deploy/Dockerfile exists (see deploy/AI_suggested.md).
+   # directory must point at the Dockerfile's folder (/deploy, not /backend),
+   # since the backend image build needs both backend/ and shared/ in context.
+   # - package-ecosystem: docker
+   #   directory: /deploy
+   #   schedule:
+   #      interval: weekly
+   #      day: monday
+   #   open-pull-requests-limit: 3
+   #   commit-message:
+   #      prefix: chore(docker)
+   #      include: scope
+   #   groups:
+   #      docker-dependencies:
+   #         patterns:
+   #            - "*"
