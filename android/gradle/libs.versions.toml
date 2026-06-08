@@ -9,7 +9,7 @@ activityCompose = "1.13.0"
 kotlin = "2.3.21"
 composeBom = "2026.05.01"
 ktlintGradle = "14.2.0"
-composeRulesKtlint = "0.5.9"
+composeRulesKtlint = "0.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
