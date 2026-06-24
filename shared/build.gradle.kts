@@ -4,7 +4,7 @@ plugins {
 	// BOTH the android build's Gradle 9.2.1 and the backend build's Gradle
 	// 8.14.5, since a composite build compiles this module with each consumer's
 	// own Gradle.
-	kotlin("jvm") version "2.3.21"
+	kotlin("jvm") version "2.4.0"
 	id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
