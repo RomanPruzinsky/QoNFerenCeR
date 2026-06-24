@@ -1,17 +1,15 @@
-name: Android CI
+name: Shared CI
 
 on:
    push:
       branches: [main]
       paths:
-         - "android/**"
          - "shared/**"
-         - ".github/workflows/android-ci.yml"
+         - ".github/workflows/shared-ci.yml"
    pull_request:
       paths:
-         - "android/**"
          - "shared/**"
-         - ".github/workflows/android-ci.yml"
+         - ".github/workflows/shared-ci.yml"
    workflow_dispatch:
 
 jobs:
@@ -19,7 +17,7 @@ jobs:
       runs-on: ubuntu-latest
       defaults:
          run:
-            working-directory: android
+            working-directory: shared
 
       steps:
          - name: Checkout
@@ -38,14 +36,7 @@ jobs:
            run: ./gradlew ktlintCheck
 
          - name: Unit tests
-           run: ./gradlew testDebugUnitTest
+           run: ./gradlew test
 
-         - name: Build debug APK
-           run: ./gradlew assembleDebug
-
-         - name: Upload debug APK
-           uses: actions/upload-artifact@v4
-           with:
-              name: app-debug-apk
-              path: android/app/build/outputs/apk/debug/*.apk
-              retention-days: 7
+         - name: Build
+           run: ./gradlew build
