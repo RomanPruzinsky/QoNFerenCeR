@@ -14,4 +14,5 @@ Brief log of AI-assisted changes: what was asked · what was done · date.
 - Verified: `shared` standalone build + backend & android composite compile (Gradle 8.14.5 and 9.2.1).
 
 ## End of 2026-05
+
 using it for materials, dependabot, CI
