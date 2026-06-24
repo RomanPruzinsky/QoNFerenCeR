@@ -4,13 +4,14 @@ Custom n8n nodes for the QoNFerenCeR conference platform.
 
 ## Nodes provided
 
-| Node | Type | Purpose |
-|------|------|---------|
+| Node            | Type   | Purpose                                                                  |
+|-----------------|--------|--------------------------------------------------------------------------|
 | **QoNFerenCeR** | action | Health check (stub). Future: scan decisions, user lookup, notifications. |
 
 ## Credential
 
-**QoNFerenCeR API** — `baseUrl` + `apiToken`. The token is the internal service token issued by QoNFerenCeR admin (`/admin/n8n/tokens`).
+**QoNFerenCeR API** — `baseUrl` + `apiToken`. The token is the internal service token issued by
+QoNFerenCeR admin (`/admin/n8n/tokens`).
 
 ## Build
 
