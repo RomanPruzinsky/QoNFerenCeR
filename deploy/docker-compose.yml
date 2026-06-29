@@ -17,7 +17,7 @@ services:
          retries: 5
 
    keycloak:
-      # sslRequired="external"  # TODO: "none" for localhost only; switch for prod, also in realm-exporto (~line 4)
+      # sslRequired="external"  # TODO: "none" for localhost only; switch for prod, also in realm-export (~line 4)
       image: quay.io/keycloak/keycloak:24.0
       environment:
          KC_DB: postgres
