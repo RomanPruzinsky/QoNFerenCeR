@@ -38,7 +38,6 @@ n8n import:workflow --input=./n8nTemplates/login-tracking.workflow.json
 
 ## Note on auto-import
 
-n8n is **not yet** a service in `deploy/docker-compose.yml`, so import is manual for now.
-Once an n8n container is added to the compose, these templates can be auto-loaded on
-startup via an init step that runs `n8n import:workflow --separate --input=/templates`
-(mount this folder into the container). Tracked here so it stays out of scope until then.
+n8n is a service in `deploy/docker-compose.yml`, but these templates are not auto-imported yet.
+If desired, they can be loaded on startup via an init step that runs
+`n8n import:workflow --separate --input=/templates` (mount this folder into the container).
