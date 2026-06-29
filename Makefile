@@ -1,37 +1,35 @@
-.PHONY: LOC
+.PHONY: inf-pause inf-start inf-reset inf-logs be-pause be-start be-logs
 
 
 ##################### ______ #####################
 ##################################################
 ##################### DEPLOY #####################
 
-infra-up:
-	docker compose -f deploy/docker-compose.yml up -d
+inf-pause:
+	docker compose -f deploy/docker-compose.yml stop
 
-infra-down:
-	docker compose -f deploy/docker-compose.yml down
+inf-start:
+	docker compose -f deploy/docker-compose.yml up -d --build
 
-infra-logs:
+inf-reset:
+	docker compose -f deploy/docker-compose.yml down -v
+
+inf-logs:
 	docker compose -f deploy/docker-compose.yml logs -f
-
-infra-status:
-	docker compose -f deploy/docker-compose.yml ps
 
 ##################### DEPLOY #####################
 ##################################################
 ##################### BACKEND ####################
+# TODO: delete for prod, only for development
 
-backend-up:
-	docker compose -f deploy/docker-compose.yml up -d backend
-
-backend-down:
+be-pause:
 	docker compose -f deploy/docker-compose.yml stop backend
 
-backend-logs:
-	docker compose -f deploy/docker-compose.yml logs -f backend
+be-start:
+	docker compose -f deploy/docker-compose.yml up -d --build backend
 
-backend-build:
-	docker compose -f deploy/docker-compose.yml build backend
+be-logs:
+	docker compose -f deploy/docker-compose.yml logs -f backend
 
 ##################### BACKEND ####################
 ##################################################

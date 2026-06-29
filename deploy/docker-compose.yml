@@ -55,5 +55,33 @@ services:
          keycloak:
             condition: service_started
 
+   n8n:
+      image: n8nio/n8n:1.70.4
+      ports:
+         - "5678:5678"
+      environment:
+         N8N_HOST: localhost
+         N8N_PORT: "5678"
+         N8N_PROTOCOL: http
+         N8N_SECURE_COOKIE: "false"
+         NODE_ENV: production
+         WEBHOOK_URL: http://localhost:5678/
+         GENERIC_TIMEZONE: Europe/Bratislava
+         DB_TYPE: postgresdb
+         DB_POSTGRESDB_HOST: postgres
+         DB_POSTGRESDB_PORT: "5432"
+         DB_POSTGRESDB_DATABASE: n8n
+         DB_POSTGRESDB_USER: app
+         DB_POSTGRESDB_PASSWORD: secret
+         N8N_ENCRYPTION_KEY: 19c98f21389de8883fae9c7170e37c6becd5235fbd9b72099934ef8db9c0e039  # TODO: rotate + move to .env for prod
+         N8N_DIAGNOSTICS_ENABLED: "false"
+         N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+      depends_on:
+         postgres:
+            condition: service_healthy
+      volumes:
+         - n8n_data:/home/node/.n8n
+
 volumes:
    postgres_data:
+   n8n_data:
