@@ -39,6 +39,11 @@ updates:
          backend-dependencies:
             patterns:
                - "*"
+      ignore:
+         # Spring Boot 4.x is a major migration (Spring Framework 7 / Security 7);
+         # stay on 3.5.x until done deliberately. Remove this to allow the 4.x bump.
+         - dependency-name: "org.springframework.boot"
+           update-types: ["version-update:semver-major"]
 
    -  package-ecosystem: gradle
       directory: /shared
