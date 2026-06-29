@@ -22,8 +22,7 @@ After cloning, enable the git hooks **once**:
 git config core.hooksPath scripts/git-hooks
 ```
 
-Points to the `scripts/git-hooks/` folder, enabling a **pre-commit** hook that auto-formats  *
-*kotlin** files
+Points to the `scripts/git-hooks/` folder, enabling a **pre-commit** hook that auto-formats **Kotlin** files
 
 ## Setup checklist
 
