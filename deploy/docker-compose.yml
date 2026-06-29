@@ -1,0 +1,59 @@
+services:
+
+   postgres:
+      image: postgres:16
+      environment:
+         POSTGRES_DB: qonferencer
+         POSTGRES_USER: app
+         POSTGRES_PASSWORD: secret
+      ports:
+         - "5432:5432"
+      volumes:
+         - postgres_data:/var/lib/postgresql/data
+         - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
+      healthcheck:
+         test: [ "CMD-SHELL", "pg_isready -U app -d qonferencer" ]
+         interval: 5s
+         retries: 5
+
+   keycloak:
+      # sslRequired="external"  # TODO: "none" for localhost only; switch for prod, also in realm-exporto (~line 4)
+      image: quay.io/keycloak/keycloak:24.0
+      environment:
+         KC_DB: postgres
+         KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+         KC_DB_USERNAME: app
+         KC_DB_PASSWORD: secret
+         KEYCLOAK_ADMIN: admin
+         KEYCLOAK_ADMIN_PASSWORD: admin
+      command: start-dev --import-realm
+      volumes:
+         - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      ports:
+         - "8080:8080"
+      depends_on:
+         postgres:
+            condition: service_healthy
+
+   backend:
+      build:
+         context: ..
+         dockerfile: deploy/Dockerfile
+      ports:
+         - "8081:8080"
+      environment:
+         SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/qonferencer
+         SPRING_DATASOURCE_USERNAME: app
+         SPRING_DATASOURCE_PASSWORD: secret
+         # TODO: jwt
+         # KEYCLOAK_URL: http://keycloak:8080
+         # When wiring the OAuth2 resource server, use jwt.jwk-set-uri (lazy fetch on first request),
+         # NOT issuer-uri (eager fetch at startup → fails, since depends_on only waits for service_started, not ready).
+      depends_on:
+         postgres:
+            condition: service_healthy
+         keycloak:
+            condition: service_started
+
+volumes:
+   postgres_data:

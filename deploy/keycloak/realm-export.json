@@ -1,0 +1,97 @@
+{
+	"realm": "qonferencer",
+	"enabled": true,
+	"sslRequired": "none",
+	"accessTokenLifespan": 120,
+	"ssoSessionIdleTimeout": 432000,
+	"ssoSessionMaxLifespan": 432000,
+	"registrationAllowed": false,
+	"resetPasswordAllowed": false,
+	"editUsernameAllowed": false,
+	"bruteForceProtected": true,
+	"roles": {
+		"realm": [
+			{
+				"name": "GUEST",
+				"description": "Not logged in / public content"
+			},
+			{
+				"name": "VISITOR",
+				"description": "Attendee"
+			},
+			{
+				"name": "VOLUNTEER",
+				"description": "VISITOR who sometimes helps"
+			},
+			{
+				"name": "ORGANISER",
+				"description": "Staff"
+			},
+			{
+				"name": "LEADER",
+				"description": "Teamleader"
+			},
+			{
+				"name": "ADMIN",
+				"description": "System administrator, developer"
+			}
+		]
+	},
+	"clients": [
+		{
+			"clientId": "qonferencer-android",
+			"name": "QoNFerenCeR Android client",
+			"enabled": true,
+			"publicClient": true,
+			"standardFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"redirectUris": [],
+			"webOrigins": [],
+			"attributes": {
+				"post.logout.redirect.uris": "+"
+			},
+			"protocolMappers": [
+				{
+					"name": "isSpeaker",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-usermodel-attribute-mapper",
+					"consentRequired": false,
+					"config": {
+						"user.attribute": "isSpeaker",
+						"claim.name": "isSpeaker",
+						"jsonType.label": "boolean",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
+				}
+			]
+		}
+	],
+	"users": [
+		{
+			"username": "admin",
+			"enabled": true,
+			"emailVerified": true,
+			"email": "admin@qonferencer.local",
+			"firstName": "System",
+			"lastName": "Administrator",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "changeme",
+					"temporary": false
+				}
+			],
+			"realmRoles": [
+				"ADMIN"
+			],
+			"attributes": {
+				"isSpeaker": [
+					"false"
+				]
+			}
+		}
+	]
+}

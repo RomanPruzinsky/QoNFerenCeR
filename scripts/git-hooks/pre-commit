@@ -17,17 +17,16 @@ SHARED_STAGED=$(echo "$STAGED_FILES" | grep '^shared/' || true)
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 run_ktlint() {
-    local subdir="$1"
-    local label="$2"
+    local targetdir="$1"
 
-    if [ ! -f "$REPO_ROOT/$subdir/gradlew" ]; then
-        echo "⏭  $label: gradlew not yet — skipping (pre-setup phase)"
+    if [ ! -f "$REPO_ROOT/$targetdir/gradlew" ]; then
+        echo "⏭  $targetdir: gradlew not yet — skipping (pre-setup phase)"
         return 0
     fi
 
-    echo "→ $label: running ktlintFormat..."
-    (cd "$REPO_ROOT/$subdir" && ./gradlew ktlintFormat -q) || {
-        echo "❌ $label: ktlintFormat failed — fix violations manually + retry commit"
+    echo "→ $targetdir: running ktlintFormat..."
+    (cd "$REPO_ROOT/$targetdir" && ./gradlew ktlintFormat -q) || {
+        echo "❌ $targetdir: ktlintFormat failed — fix violations manually + retry commit"
         return 1
     }
     return 0
@@ -36,15 +35,15 @@ run_ktlint() {
 EXIT_CODE=0
 
 if [ -n "$ANDROID_STAGED" ]; then
-    run_ktlint "android" "android" || EXIT_CODE=1
+    run_ktlint "android" || EXIT_CODE=1
 fi
 
 if [ -n "$BACKEND_STAGED" ]; then
-    run_ktlint "backend" "backend" || EXIT_CODE=1
+    run_ktlint "backend" || EXIT_CODE=1
 fi
 
 if [ -n "$SHARED_STAGED" ]; then
-    run_ktlint "shared" "shared" || EXIT_CODE=1
+    run_ktlint "shared" || EXIT_CODE=1
 fi
 
 if [ $EXIT_CODE -ne 0 ]; then

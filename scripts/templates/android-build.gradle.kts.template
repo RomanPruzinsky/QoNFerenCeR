@@ -1,29 +1,29 @@
-// android/build.gradle.kts — ROOT project file (NIE app modul!)
+// android/build.gradle.kts — ROOT project file (NOT the app module!)
 //
-// Template pre integráciu ktlint do Android projektu. Použi takto:
-//   1. Vytvoriť Android Studio New Project → vyber android/ priečinok
-//      (AS vygeneruje vlastný build.gradle.kts pre root + app modul)
-//   2. Manuálne mergni nasledovné do android/build.gradle.kts (root):
-//      - plugins { ... } blok pridať `id("org.jlleitschuh.gradle.ktlint")`
-//      - subprojects { ... } blok pridať ktlint config
-//   3. Skontroluj že `./gradlew ktlintCheck` v android/ beží
-//   4. V .github/workflows/android-ci.yml vyhoď `continue-on-error: true` zo ktlint kroku
+// Template for integrating ktlint into the Android project. How to use:
+//   1. Create an Android Studio New Project → pick the android/ folder
+//      (AS generates its own build.gradle.kts for the root + app module)
+//   2. Manually merge the following into android/build.gradle.kts (root):
+//      - in the plugins { ... } block add `id("org.jlleitschuh.gradle.ktlint")`
+//      - in the subprojects { ... } block add the ktlint config
+//   3. Verify `./gradlew ktlintCheck` runs in android/
+//   4. In .github/workflows/android-ci.yml drop `continue-on-error: true` from the ktlint step
 //
-// Po dokončení tento template súbor môžeš zmazať (alebo nechať v scripts/templates/ pre referenciu).
+// Once done you may delete this template (or keep it in scripts/templates/ for reference).
 
 plugins {
     // ... AS-generated plugins (com.android.application, kotlin.android, ...)
 
-    // Pridať toto:
+    // Add this:
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1" apply false
 }
 
-// Aplikovať ktlint na všetky subprojects (app modul + akýkoľvek future :feature modul)
+// Apply ktlint to all subprojects (app module + any future :feature module)
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        version.set("1.8.0")                  // ZHODA s AS ktlint pluginom 2026-05-30
+        version.set("1.8.0")                  // MATCHES the Android Studio ktlint plugin (2026-05-30)
         android.set(true)
         ignoreFailures.set(false)
         verbose.set(true)
@@ -39,7 +39,7 @@ subprojects {
     }
 }
 
-// Voliteľne: tasks `ktlintCheckAll` / `ktlintFormatAll` na root level
+// Optional: root-level `ktlintCheckAll` / `ktlintFormatAll` tasks
 tasks.register("ktlintCheckAll") {
     group = "verification"
     description = "Run ktlintCheck on all subprojects"

@@ -1,2 +1,5 @@
 # JetBrains IDE (root project)
 /.idea/
+
+# Local AI context (not part of the repo)
+/CLAUDE.md
