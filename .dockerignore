@@ -1,0 +1,7 @@
+**/build
+**/.gradle
+**/.idea
+**/bin
+**/.kotlin
+.git
+local.properties
