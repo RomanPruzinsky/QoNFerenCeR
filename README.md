@@ -28,7 +28,7 @@ Points to the `scripts/git-hooks/` folder, enabling a **pre-commit** hook that a
 
 Manual steps before running / deploying:
 
-- Git hooks (once) - see [Getting started](#getting-started)).
+- Git hooks (once) - see [Getting started](#getting-started).
 - **n8n encryption key** — dev key is in `deploy/docker-compose.yml` (`N8N_ENCRYPTION_KEY`).
   For prod, change it and move it into a `.env` file.
 - **`config/`** — single place for all per-event custom files (icon, …). The organizer puts
