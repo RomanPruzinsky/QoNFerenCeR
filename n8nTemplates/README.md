@@ -14,7 +14,7 @@ events and `/internal/*` endpoints.
 
 Drop exported workflows here, one JSON per file:
 
-```
+```text
 n8nTemplates/
   login-tracking.workflow.json
   meal-approved-discord.workflow.json
