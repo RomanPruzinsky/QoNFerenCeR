@@ -22,14 +22,14 @@ After cloning, enable the git hooks **once**:
 git config core.hooksPath scripts/git-hooks
 ```
 
-Points to the `scripts/git-hooks/` folder, enabling a **pre-commit** hook that auto-formats **Kotlin** files
+Points to the `scripts/git-hooks/` folder, enabling a **pre-commit** hook that auto-formats
+**Kotlin** files
 
 ## Setup checklist
 
 Manual steps before running / deploying:
 
 - Git hooks (once) - see [Getting started](#getting-started).
-- **n8n encryption key** — dev key is in `deploy/docker-compose.yml` (`N8N_ENCRYPTION_KEY`).
-  For prod, change it and move it into a `.env` file.
+- **Secrets (`config/env.env`)** — copy the template and fill real values.
 - **`config/`** — single place for all per-event custom files (icon, …). The organizer puts
   everything here; the build/deploy reads only from `config/`.

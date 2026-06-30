@@ -1,21 +1,24 @@
 .PHONY: inf-pause inf-start inf-reset inf-logs be-pause be-start be-logs
 
+ENV_FILE := config/example.env # TODO: config/env.env for prod
+COMPOSE  := docker compose -f deploy/docker-compose.yml --env-file $(ENV_FILE)
+
 
 ##################### ______ #####################
 ##################################################
 ##################### DEPLOY #####################
 
 inf-pause:
-	docker compose -f deploy/docker-compose.yml stop
+	$(COMPOSE) stop
 
 inf-start:
-	docker compose -f deploy/docker-compose.yml up -d --build
+	$(COMPOSE) up -d --build
 
 inf-reset:
-	docker compose -f deploy/docker-compose.yml down -v
+	$(COMPOSE) down -v
 
 inf-logs:
-	docker compose -f deploy/docker-compose.yml logs -f
+	$(COMPOSE) logs -f
 
 ##################### DEPLOY #####################
 ##################################################
@@ -23,13 +26,13 @@ inf-logs:
 # TODO: delete for prod, only for development
 
 be-pause:
-	docker compose -f deploy/docker-compose.yml stop backend
+	$(COMPOSE) stop backend
 
 be-start:
-	docker compose -f deploy/docker-compose.yml up -d --build backend
+	$(COMPOSE) up -d --build backend
 
 be-logs:
-	docker compose -f deploy/docker-compose.yml logs -f backend
+	$(COMPOSE) logs -f backend
 
 ##################### BACKEND ####################
 ##################################################
