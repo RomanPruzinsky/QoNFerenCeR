@@ -25,6 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "QoNFerenCeR"
 include(":app")
 
-// Shared DTO / API / constants module — composite build, lives in /shared.
-// Kept as a separate Gradle build so nothing lands in the repo root.
 includeBuild("../shared")

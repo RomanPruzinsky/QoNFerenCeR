@@ -4,5 +4,4 @@ plugins {
 
 rootProject.name = "backend"
 
-// Shared DTO / API / constants module — composite build, lives in /shared.
 includeBuild("../shared")

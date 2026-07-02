@@ -30,8 +30,8 @@ android {
 		}
 	}
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_11
-		targetCompatibility = JavaVersion.VERSION_11
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
 	}
 	buildFeatures {
 		compose = true
@@ -39,7 +39,6 @@ android {
 }
 
 dependencies {
-	// Shared DTO / API / constants — substituted from the /shared composite build.
 	implementation("tr.qonferencer:shared")
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -55,10 +54,6 @@ dependencies {
 	androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 	debugImplementation(libs.androidx.compose.ui.tooling)
 	debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-	// Compose-aware ktlint rules — fix-uje `function-naming` konflikt
-	// medzi Kotlin core (camelCase) a Compose (PascalCase pre Unit-returning).
-	// + ~30 dalsich Compose best-practice rules.
 	ktlintRuleset(libs.compose.rules.ktlint)
 }
 

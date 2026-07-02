@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-	// Shared DTO / API / constants — substituted from the /shared composite build.
 	implementation("tr.qonferencer:shared")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
