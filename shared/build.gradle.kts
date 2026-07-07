@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+	compileOnly("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
 	testImplementation(kotlin("test"))
 }
 

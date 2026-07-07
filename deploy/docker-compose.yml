@@ -45,10 +45,8 @@ services:
          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/qonferencer
          SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
          SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-         # TODO: jwt
-         # KEYCLOAK_URL: http://keycloak:8080
-         # When wiring the OAuth2 resource server, use jwt.jwk-set-uri (lazy fetch on first request),
-         # NOT issuer-uri (eager fetch at startup → fails, since depends_on only waits for service_started, not ready).
+         KC_ISSUER: http://localhost:8080/realms/qonferencer
+         KC_JWK_SET_URI: http://keycloak:8080/realms/qonferencer/protocol/openid-connect/certs
       depends_on:
          postgres:
             condition: service_healthy
