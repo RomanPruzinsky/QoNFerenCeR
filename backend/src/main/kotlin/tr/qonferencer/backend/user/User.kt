@@ -8,7 +8,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
-import tr.qonferencer.shared.dtos.CustomElementDef
 import java.time.Instant
 import java.util.UUID
 
@@ -18,7 +17,7 @@ import java.util.UUID
  * @property qrSecret HMAC secret for **QR/NFC** tokens
  * @property qrSecretV Version of used [qrSecret]
  * @property consented Whether user accepted GDPR
- * @property customJson Custom data, keys in [CustomElementDef]
+ * @property customData Custom data
  * @property createdAt When was user created (first login time)
  */
 @Entity
@@ -27,7 +26,7 @@ class User(
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	var id: Long = 0,
+	var id: Long,
 
 	@Column(name = "kc_sub", nullable = false, unique = true)
 	var kcSub: UUID,
@@ -42,8 +41,8 @@ class User(
 	var consented: Boolean = false,
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(name = "custom_json", nullable = false, columnDefinition = "jsonb")
-	var customJson: String = "{}",
+	@Column(name = "custom_data", nullable = false, columnDefinition = "jsonb")
+	var customData: String = "{}",
 
 	@Column(name = "created_at", nullable = false)
 	var createdAt: Instant = Instant.now(),

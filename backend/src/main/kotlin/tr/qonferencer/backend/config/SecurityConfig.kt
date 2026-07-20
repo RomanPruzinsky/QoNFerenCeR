@@ -38,8 +38,7 @@ class SecurityConfig(
 			.authorizeHttpRequests { reg ->
 				reg.requestMatchers(
 					"/api/v1/splash",
-					"/api/v1/translations",
-					"/api/v1/custom-element-defs",
+					"/api/v1/custom-screens/**",
 				).permitAll() // Public endpoints
 					.requestMatchers("/actuator/health/**").permitAll()
 					.anyRequest().authenticated()

@@ -2,10 +2,13 @@
 
 Brief log of AI-assisted changes: what was asked · what was done · date.
 
+## 20.7.26 - Keycloak setup
+Implemented with help of Claude Sonnet 4.7
+
 ## 07.7.26 - be/config/Security
 implemented using Claude Sonnet 4.7
 
-## 2026-06-03 — Shared module
+## 03.6.26 — Shared module
 
 **Asked:** Add a `shared` module (DTO / API / constants) consumed by android + backend, with CI matching the existing setup, and without dropping Gradle files into the repo root.
 

@@ -26,7 +26,7 @@ class MeService(
 			isSpeaker = caller.isSpeaker(),
 			consented = user.consented,
 			qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
-			customJson = readMap(user.customJson),
+			customData = readMap(user.customData),
 		)
 	}
 

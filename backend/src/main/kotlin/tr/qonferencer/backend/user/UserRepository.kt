@@ -14,7 +14,7 @@ interface UserRepository : JpaRepository<User, Long> {
 	@Modifying
 	@Query(
 		value = """
-			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, consented, custom_json, created_at)
+			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, consented, custom_data, created_at)
 			VALUES (:kcSub, :qrSecret, 0, false, '{}'::jsonb, now())
 			ON CONFLICT (kc_sub) DO NOTHING
 		""",

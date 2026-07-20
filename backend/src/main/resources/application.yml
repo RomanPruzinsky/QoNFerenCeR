@@ -41,6 +41,11 @@ qonferencer:
    keycloak:
       issuer: ${KC_ISSUER:http://localhost:8080/realms/qonferencer}
       jwk-set-uri: ${KC_JWK_SET_URI:http://localhost:8080/realms/qonferencer/protocol/openid-connect/certs}
+      admin:
+         server-url: ${KC_ADMIN_URL:http://localhost:8080}
+         realm: ${KC_REALM:qonferencer}
+         client-id: ${KC_ADMIN_CLIENT_ID:qonferencer-backend-admin}
+         client-secret: ${KC_ADMIN_CLIENT_SECRET:backend-admin-secret} # TODO: real secret prod
 
 logging:
    level:

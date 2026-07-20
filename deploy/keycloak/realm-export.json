@@ -67,6 +67,18 @@
 					}
 				}
 			]
+		},
+		{
+			"clientId": "qonferencer-backend-admin",
+			"name": "QoNFerenCeR backend admin (service account)",
+			"enabled": true,
+			"publicClient": false,
+			"secret": "backend-admin-secret",
+			"standardFlowEnabled": false,
+			"directAccessGrantsEnabled": false,
+			"serviceAccountsEnabled": true,
+			"redirectUris": [],
+			"webOrigins": []
 		}
 	],
 	"users": [
@@ -90,6 +102,18 @@
 			"attributes": {
 				"isSpeaker": [
 					"false"
+				]
+			}
+		},
+		{
+			"username": "service-account-qonferencer-backend-admin",
+			"enabled": true,
+			"serviceAccountClientId": "qonferencer-backend-admin",
+			"clientRoles": {
+				"realm-management": [
+					"manage-users",
+					"view-users",
+					"view-realm"
 				]
 			}
 		}

@@ -9,7 +9,7 @@ import tr.qonferencer.shared.enums.Role
  * @property isSpeaker Whether is speaker
  * @property consented Whether approved GDPR things
  * @property qrSecret HMAC secret for generating QRcode every N seconds
- * @property customJson Custom data, keys in [CustomElementDef]
+ * @property customData Custom data
  */
 data class MeDto(
 	val userId: Long,
@@ -17,5 +17,5 @@ data class MeDto(
 	val isSpeaker: Boolean,
 	val consented: Boolean,
 	val qrSecret: String,
-	val customJson: Map<String, Any?> = emptyMap(),
+	val customData: Map<String, Any?> = emptyMap(),
 )

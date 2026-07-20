@@ -2,13 +2,20 @@ package tr.qonferencer.shared.dtos
 
 import tr.qonferencer.shared.enums.Role
 
-/** Create [count] slots for users with specific [role] */
-data class CreateSlotsDto(
-	val count: Int,
+/** Data for slot */
+data class CreateSlotDto(
 	val role: Role = Role.VISITOR,
+	val customData: Map<String, Any?> = emptyMap(),
 )
 
-/** Obtain credentials for slot */
+/** Provisioned slot (Keycloak user + app anchor) */
+data class SlotDto(
+	val userId: Long,
+	val username: String? = null,
+	val customData: Map<String, Any?> = emptyMap(),
+)
+
+/** Login credentials for slot */
 data class SlotCredentialsDto(
 	val username: String,
 	val password: String,

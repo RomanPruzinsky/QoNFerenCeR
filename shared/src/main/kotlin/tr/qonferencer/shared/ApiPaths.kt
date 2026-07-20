@@ -9,11 +9,17 @@ object ApiPaths {
 		const val CONSENT = "$ROOT/consent"
 	}
 
+	object CustomScreens {
+		const val ROOT = "$BASE/custom-screens"
+		const val BY_ID = "$ROOT/{id}"
+	}
+
+	object Admin {
+		const val SLOTS = "$BASE/admin/slots"
+		const val SLOT_LOGIN = "$SLOTS/{userId}/login"
+	}
+
 	const val SPLASH = "$BASE/splash"
-
-	const val TRANSLATIONS = "$BASE/translations"
-
-	const val CUSTOM_ELEMENT_DEFS = "$BASE/custom-element-defs"
 
 	const val MEAL_SCAN = "$BASE/meal-scan"
 }
