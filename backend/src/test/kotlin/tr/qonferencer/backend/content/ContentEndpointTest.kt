@@ -26,6 +26,7 @@ class ContentEndpointTest {
 			jsonPath("$.languages[0].code") { value("en") }
 			jsonPath("$.customScreens.length()") { value(1) }
 			jsonPath("$.customScreens[0].id") { value("home") }
+			jsonPath("$.mealWindows[0].nameKey") { value("meal.lunch1.name") }
 		}
 	}
 

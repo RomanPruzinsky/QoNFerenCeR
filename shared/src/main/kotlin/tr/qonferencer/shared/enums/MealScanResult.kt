@@ -7,11 +7,8 @@ enum class MealScanResult {
 	/** All good */
 	APPROVED,
 
-	/** Cannot get more portions */
-	QUOTA_EXCEEDED,
-
-	/** Scanned outside the meal's serving window (`startsAt`..`endsAt`) */
-	OUT_OF_WINDOW,
+	/** Already ate in this window */
+	ALREADY_CONSUMED,
 
 	/** Didn't find user for this secret */
 	NO_USER_FOUND,

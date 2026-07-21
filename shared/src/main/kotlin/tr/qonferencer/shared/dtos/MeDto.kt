@@ -10,6 +10,7 @@ import tr.qonferencer.shared.enums.Role
  * @property consented Whether approved GDPR things
  * @property qrSecret HMAC secret for generating QRcode every N seconds
  * @property customData Custom data
+ * @property meals Meals the user is registered for
  */
 data class MeDto(
 	val userId: Long,
@@ -18,4 +19,5 @@ data class MeDto(
 	val consented: Boolean,
 	val qrSecret: String,
 	val customData: Map<String, Any?> = emptyMap(),
+	val meals: List<UserMealEntryDto> = emptyList(),
 )

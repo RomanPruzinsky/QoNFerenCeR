@@ -3,6 +3,8 @@ package tr.qonferencer.backend.user
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tr.qonferencer.backend.meal.MealReservationRepository
+import tr.qonferencer.backend.meal.toUserMealEntry
 import tr.qonferencer.shared.dtos.MeDto
 import java.security.SecureRandom
 import java.util.Base64
@@ -11,6 +13,7 @@ import java.util.Base64
 class MeService(
 	private val users: UserRepository,
 	private val caller: CallerService,
+	private val reservations: MealReservationRepository,
 	private val objectMapper: ObjectMapper,
 ) {
 	private val random = SecureRandom()
@@ -27,6 +30,7 @@ class MeService(
 			consented = user.consented,
 			qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
 			customData = readMap(user.customData),
+			meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 		)
 	}
 

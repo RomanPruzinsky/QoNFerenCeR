@@ -1,6 +1,6 @@
 -- Conference attendee, holds what Keycloak can't
 CREATE TABLE app_user (
-	id          BIGSERIAL PRIMARY KEY,
+	id          BIGINT      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	kc_sub      UUID        NOT NULL UNIQUE,			-- User's Keycloak identity
 	qr_secret   BYTEA       NOT NULL,					-- HMAC secret for QR/NFC tokens
 	qr_secret_v SMALLINT    NOT NULL DEFAULT 0,		-- Version of used qr_secret
@@ -34,3 +34,31 @@ CREATE TABLE custom_screen (
 	min_role  VARCHAR(16)  NOT NULL DEFAULT 'VISITOR',	-- min role to see
 	body      JSONB        NOT NULL DEFAULT '[]'			-- elements, render order = array order
 );
+
+-- Meal serving window (organizer-defined)
+CREATE TABLE meal_window (
+	id        BIGINT       GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	name_key  VARCHAR(128) NOT NULL,	-- translation key of the window name
+	starts_at TIMESTAMPTZ  NOT NULL,
+	ends_at   TIMESTAMPTZ  NOT NULL
+);
+
+-- Per-person meal reservation, one meal per window
+CREATE TABLE meal_reservation (
+	user_id     BIGINT       NOT NULL REFERENCES app_user(id),
+	window_id   BIGINT       NOT NULL REFERENCES meal_window(id),
+	variant_key VARCHAR(128) NOT NULL,	-- translation key of the meal variant
+	PRIMARY KEY (user_id, window_id)
+);
+
+-- Meal consumption record (scan); presence = consumed, insert-once
+CREATE TABLE meal_consumption (
+	user_id    BIGINT      NOT NULL REFERENCES app_user(id),
+	window_id  BIGINT      NOT NULL REFERENCES meal_window(id),
+	scanned_by BIGINT      REFERENCES app_user(id),	-- volunteer who scanned
+	scanned_at TIMESTAMPTZ NOT NULL,
+	PRIMARY KEY (user_id, window_id)
+);
+
+-- Per-window stats ("how many ate in window X"); PK leads with user_id, so it can't serve those
+CREATE INDEX index_meal_consumption_window_id ON meal_consumption (window_id);
