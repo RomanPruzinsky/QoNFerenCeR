@@ -53,10 +53,11 @@ CREATE TABLE meal_reservation (
 
 -- Meal consumption record (scan); presence = consumed, insert-once
 CREATE TABLE meal_consumption (
-	user_id    BIGINT      NOT NULL REFERENCES app_user(id),
-	window_id  BIGINT      NOT NULL REFERENCES meal_window(id),
-	scanned_by BIGINT      REFERENCES app_user(id),	-- volunteer who scanned
-	scanned_at TIMESTAMPTZ NOT NULL,
+	user_id         BIGINT      NOT NULL REFERENCES app_user(id),
+	window_id       BIGINT      NOT NULL REFERENCES meal_window(id),
+	scanned_by      BIGINT      REFERENCES app_user(id),
+	scanned_at      TIMESTAMPTZ NOT NULL,
+	idempotency_key UUID        NOT NULL,
 	PRIMARY KEY (user_id, window_id)
 );
 

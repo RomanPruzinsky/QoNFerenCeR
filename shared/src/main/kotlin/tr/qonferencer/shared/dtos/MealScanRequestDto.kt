@@ -1,5 +1,7 @@
 package tr.qonferencer.shared.dtos
 
+import java.util.UUID
+
 /**
  * Meal scan request data
  * @property token user's HMAC token
@@ -10,6 +12,6 @@ package tr.qonferencer.shared.dtos
 data class MealScanRequestDto(
 	val token: String,
 	val mealWindowId: Long,
-	val idempotencyKey: String,
+	val idempotencyKey: UUID,
 	val customData: Map<String, Any?>? = null,
 )
