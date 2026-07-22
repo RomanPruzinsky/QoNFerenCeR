@@ -1,35 +1,29 @@
 package tr.qonferencer.backend.user
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.toUserMealEntry
 import tr.qonferencer.shared.dtos.MeDto
-import java.security.SecureRandom
 import java.util.Base64
 
 @Service
 class MeService(
 	private val users: UserRepository,
 	private val caller: CallerService,
+	private val anchors: UserAnchorService,
 	private val reservations: MealReservationRepository,
-	private val objectMapper: ObjectMapper,
 ) {
-	private val random = SecureRandom()
-
 	@Transactional
 	fun me(): MeDto {
-		val sub = caller.kcSub()
-		users.insertIfAbsent(sub, newSecret())
-		val user = users.findByKcSub(sub) ?: error("upsert failed")
+		val user = caller.requireAppUser()
 		return MeDto(
 			userId = user.id,
 			role = caller.role(),
 			isSpeaker = caller.isSpeaker(),
 			consented = user.consented,
 			qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
-			customData = readMap(user.customData),
+			customData = anchors.customData(user),
 			meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 		)
 	}
@@ -40,11 +34,4 @@ class MeService(
 		user.consented = true
 		users.save(user)
 	}
-
-	private fun newSecret(): ByteArray = ByteArray(32).also { random.nextBytes(it) }
-
-	@Suppress("UNCHECKED_CAST")
-	private fun readMap(json: String): Map<String, Any?> =
-		runCatching { objectMapper.readValue(json, Map::class.java) as Map<String, Any?> }
-			.getOrDefault(emptyMap())
 }

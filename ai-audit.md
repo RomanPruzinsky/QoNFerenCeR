@@ -2,6 +2,9 @@
 
 Brief log of AI-assisted changes: what was asked · what was done · date.
 
+## always
+commit messages using claude opus 4.8
+
 ## 20.7.26 - Keycloak setup
 Implemented with help of Claude Sonnet 4.7
 

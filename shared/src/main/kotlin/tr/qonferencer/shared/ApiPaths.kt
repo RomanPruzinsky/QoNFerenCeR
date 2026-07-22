@@ -15,7 +15,8 @@ object ApiPaths {
 	}
 
 	object Admin {
-		const val SLOTS = "$BASE/admin/slots"
+		const val ROOT = "$BASE/admin"
+		const val SLOTS = "$ROOT/slots"
 		const val SLOT_LOGIN = "$SLOTS/{userId}/login"
 	}
 

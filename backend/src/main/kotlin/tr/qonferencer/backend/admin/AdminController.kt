@@ -1,7 +1,6 @@
 package tr.qonferencer.backend.admin
 
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -13,9 +12,8 @@ import tr.qonferencer.shared.dtos.CreateSlotDto
 import tr.qonferencer.shared.dtos.SlotCredentialsDto
 import tr.qonferencer.shared.dtos.SlotDto
 
-/** Admin-only slot provisioning + login re-issue */
+/** Admin-only slot provisioning + login re-issue; [SlotService] gates every method */
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
 class AdminController(
 	private val slotService: SlotService,
 ) {

@@ -1,10 +1,10 @@
 package tr.qonferencer.backend.admin
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.common.notFound
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.dtos.CreateSlotDto
 import tr.qonferencer.shared.dtos.SlotCredentialsDto
@@ -21,8 +21,8 @@ import java.security.SecureRandom
 class SlotService(
 	private val kc: KeycloakAdminService,
 	private val users: UserRepository,
+	private val anchors: UserAnchorService,
 	private val entityManager: EntityManager,
-	private val objectMapper: ObjectMapper,
 ) {
 	private val random = SecureRandom()
 
@@ -31,15 +31,13 @@ class SlotService(
 	fun createSlot(req: CreateSlotDto): SlotDto {
 		val username = "slot_%03d".format(nextSlotNumber())
 		val sub = kc.createUser(username, req.role)
-		users.insertIfAbsent(sub, newSecret())
-		val user = users.findByKcSub(sub) ?: error("anchor upsert failed")
-		user.customData = objectMapper.writeValueAsString(req.customData)
-		users.save(user)
+		val user = anchors.ensure(sub)
+		anchors.storeCustomData(user, req.customData)
 		return SlotDto(user.id, username, req.customData)
 	}
 
 	/** All app anchors, for organizer name lookup (customData holds imported data) */
-	fun listSlots(): List<SlotDto> = users.findAll().map { SlotDto(it.id, customData = readMap(it.customData)) }
+	fun listSlots(): List<SlotDto> = users.findAll().map { SlotDto(it.id, customData = anchors.customData(it)) }
 
 	/** Re-issue a fresh password for the slot and return its login credentials */
 	fun issueLogin(userId: Long): SlotCredentialsDto {
@@ -51,10 +49,4 @@ class SlotService(
 
 	private fun nextSlotNumber(): Long =
 		(entityManager.createNativeQuery("SELECT nextval('slot_seq')").singleResult as Number).toLong()
-
-	private fun newSecret(): ByteArray = ByteArray(32).also { random.nextBytes(it) }
-
-	@Suppress("UNCHECKED_CAST")
-	private fun readMap(json: String): Map<String, Any?> =
-		runCatching { objectMapper.readValue(json, Map::class.java) as Map<String, Any?> }.getOrDefault(emptyMap())
 }
