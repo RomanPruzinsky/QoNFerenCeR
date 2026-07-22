@@ -65,6 +65,20 @@
 						"access.token.claim": "true",
 						"userinfo.token.claim": "true"
 					}
+				},
+				{
+					"name": "canCheckByName",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-usermodel-attribute-mapper",
+					"consentRequired": false,
+					"config": {
+						"user.attribute": "canCheckByName",
+						"claim.name": "canCheckByName",
+						"jsonType.label": "boolean",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
 				}
 			]
 		},
@@ -102,6 +116,9 @@
 			"attributes": {
 				"isSpeaker": [
 					"false"
+				],
+				"canCheckByName": [
+					"true"
 				]
 			}
 		},

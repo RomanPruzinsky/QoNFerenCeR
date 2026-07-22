@@ -14,11 +14,34 @@ interface UserRepository : JpaRepository<User, Long> {
 	@Modifying
 	@Query(
 		value = """
-			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, consented, custom_data, created_at)
-			VALUES (:kcSub, :qrSecret, 0, false, '{}'::jsonb, now())
+			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, full_name, custom_data, created_at)
+			VALUES (:kcSub, :qrSecret, 0, :fullName, '{}'::jsonb, now())
 			ON CONFLICT (kc_sub) DO NOTHING
 		""",
 		nativeQuery = true,
 	)
-	fun insertIfAbsent(@Param("kcSub") kcSub: UUID, @Param("qrSecret") qrSecret: ByteArray)
+	fun insertIfAbsent(
+		@Param("kcSub") kcSub: UUID,
+		@Param("qrSecret") qrSecret: ByteArray,
+		@Param("fullName") fullName: String,
+	)
+
+	/** Info-desk lookup: `LIKE` answers a partial name, `word_similarity` survives a typo */
+	@Query(
+		value = """
+			SELECT * FROM app_user
+			WHERE lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%'
+			   OR word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
+			      >= :threshold
+			ORDER BY word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
+			         DESC, full_name
+			LIMIT :limit
+		""",
+		nativeQuery = true,
+	)
+	fun searchByName(
+		@Param("query") query: String,
+		@Param("threshold") threshold: Double,
+		@Param("limit") limit: Int,
+	): List<User>
 }

@@ -16,16 +16,23 @@ class KeycloakAdminService(
 	@param:Value($$"${qonferencer.keycloak.admin.realm}") private val realm: String,
 ) {
 	/**
-	 * Creates an enabled user with [role]
+	 * Creates an enabled user with [role] and its orthogonal attribute flags
+	 *
+	 * Assigning the whole attribute map means every flag has to be passed here; a later partial
+	 * write would drop the ones it omits.
 	 * @return User's Keycloak sub
 	 */
-	fun createUser(username: String, role: Role): UUID {
+	fun createUser(username: String, role: Role, isSpeaker: Boolean = false, canCheckByName: Boolean = false): UUID {
 		val rep = UserRepresentation().apply {
 			this.username = username
 			isEnabled = true
 			email = "$username@qonferencer.local"
 			firstName = username
 			lastName = "slot"
+			attributes = mapOf(
+				"isSpeaker" to listOf(isSpeaker.toString()),
+				"canCheckByName" to listOf(canCheckByName.toString()),
+			)
 		}
 		val realmRes = keycloak.realm(realm)
 		val sub = realmRes.users().create(rep).use { CreatedResponseUtil.getCreatedId(it) }

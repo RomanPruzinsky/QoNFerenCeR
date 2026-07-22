@@ -9,29 +9,21 @@ import java.util.Base64
 
 @Service
 class MeService(
-	private val users: UserRepository,
 	private val caller: CallerService,
 	private val anchors: UserAnchorService,
 	private val reservations: MealReservationRepository,
 ) {
-	@Transactional
+	@Transactional(readOnly = true)
 	fun me(): MeDto {
 		val user = caller.requireAppUser()
 		return MeDto(
 			userId = user.id,
+			fullName = user.fullName,
 			role = caller.role(),
 			isSpeaker = caller.isSpeaker(),
-			consented = user.consented,
 			qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
 			customData = anchors.customData(user),
 			meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 		)
-	}
-
-	@Transactional
-	fun consent() {
-		val user = caller.requireAppUser()
-		user.consented = true
-		users.save(user)
 	}
 }

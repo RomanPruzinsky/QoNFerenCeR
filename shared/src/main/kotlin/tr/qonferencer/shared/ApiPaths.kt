@@ -6,7 +6,6 @@ object ApiPaths {
 
 	object Me {
 		const val ROOT = "$BASE/me"
-		const val CONSENT = "$ROOT/consent"
 	}
 
 	object CustomScreens {
@@ -19,6 +18,9 @@ object ApiPaths {
 		const val SLOTS = "$ROOT/slots"
 		const val SLOT_LOGIN = "$SLOTS/{userId}/login"
 	}
+
+	/** Info-desk attendee lookup */
+	const val ATTENDEES = "$BASE/attendees"
 
 	const val SPLASH = "$BASE/splash"
 

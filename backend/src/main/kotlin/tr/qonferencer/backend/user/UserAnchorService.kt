@@ -14,12 +14,12 @@ class UserAnchorService(
 	private val random = SecureRandom()
 
 	/**
-	 * The anchor of [kcSub], created with a fresh secret when this identity has none yet
+	 * The anchor of [kcSub] named [fullName], created with a fresh secret when this identity has none yet
 	 *
 	 * Provisioning is the only place an anchor is born; logging in never creates one.
 	 */
-	fun ensure(kcSub: UUID): User {
-		users.insertIfAbsent(kcSub, newSecret())
+	fun ensure(kcSub: UUID, fullName: String): User {
+		users.insertIfAbsent(kcSub, newSecret(), fullName)
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
 	}
 

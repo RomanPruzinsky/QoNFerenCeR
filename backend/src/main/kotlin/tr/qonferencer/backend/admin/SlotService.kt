@@ -30,14 +30,20 @@ class SlotService(
 	@Transactional
 	fun createSlot(req: CreateSlotDto): SlotDto {
 		val username = "slot_%03d".format(nextSlotNumber())
-		val sub = kc.createUser(username, req.role)
-		val user = anchors.ensure(sub)
+		val sub = kc.createUser(
+			username = username,
+			role = req.role,
+			isSpeaker = req.isSpeaker,
+			canCheckByName = req.canCheckByName,
+		)
+		val user = anchors.ensure(sub, req.fullName)
 		anchors.storeCustomData(user, req.customData)
-		return SlotDto(user.id, username, req.customData)
+		return SlotDto(user.id, user.fullName, username, req.customData)
 	}
 
 	/** All app anchors, for organizer name lookup (customData holds imported data) */
-	fun listSlots(): List<SlotDto> = users.findAll().map { SlotDto(it.id, customData = anchors.customData(it)) }
+	fun listSlots(): List<SlotDto> =
+		users.findAll().map { SlotDto(it.id, it.fullName, customData = anchors.customData(it)) }
 
 	/** Re-issue a fresh password for the slot and return its login credentials */
 	fun issueLogin(userId: Long): SlotCredentialsDto {

@@ -29,12 +29,11 @@ class MeEndpointTest {
 	@Test
 	fun `provisioned identity gets its anchor`() {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, ByteArray(32) { 1 })
+		users.insertIfAbsent(sub, ByteArray(32) { 1 }, "Roman Pružinský")
 
 		mockMvc.get(ApiPaths.Me.ROOT) { with(callerWith(sub, Role.VISITOR)) }.andExpect {
 			status { isOk() }
 			jsonPath("$.role") { value("VISITOR") }
-			jsonPath("$.consented") { value(false) }
 			jsonPath("$.qrSecret") { exists() }
 		}
 	}

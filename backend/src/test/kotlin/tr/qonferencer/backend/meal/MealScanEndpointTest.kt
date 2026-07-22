@@ -46,7 +46,7 @@ class MealScanEndpointTest {
 
 	@BeforeEach
 	fun createScanner() {
-		users.insertIfAbsent(scannerSub, ByteArray(32))
+		users.insertIfAbsent(scannerSub, ByteArray(32), "Volunteer Scanner")
 	}
 
 	@Test
@@ -136,7 +136,7 @@ class MealScanEndpointTest {
 
 	private fun newUser(secret: ByteArray): Long {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, secret)
+		users.insertIfAbsent(sub, secret, "Hungry Attendee")
 		return users.findByKcSub(sub)!!.id
 	}
 

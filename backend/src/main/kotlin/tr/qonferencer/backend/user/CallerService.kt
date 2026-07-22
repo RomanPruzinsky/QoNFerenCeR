@@ -19,6 +19,9 @@ class CallerService(
 
 	fun isSpeaker(): Boolean = jwt().processIsSpeaker()
 
+	/** Explicit per-user grant for the info-desk lookup, required on top of the role threshold */
+	fun canCheckByName(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckByName") ?: false
+
 	fun activeRole(): Role = jwtOrNull()?.let { Role.highest(it.processKeycloakRoles()) } ?: Role.GUEST
 
 	fun activeIsSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false

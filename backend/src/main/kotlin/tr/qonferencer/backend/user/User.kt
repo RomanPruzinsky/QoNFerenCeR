@@ -16,7 +16,7 @@ import java.util.UUID
  * @property kcSub User's `Keycloak` identity
  * @property qrSecret HMAC secret for **QR/NFC** tokens
  * @property qrSecretV Version of used [qrSecret]
- * @property consented Whether user accepted GDPR
+ * @property fullName Attendee's name; always required, hence a column and not a [customData] key
  * @property customData Custom data
  * @property createdAt When was user created (first login time)
  */
@@ -37,8 +37,8 @@ class User(
 	@Column(name = "qr_secret_v", nullable = false)
 	var qrSecretV: Short = 0,
 
-	@Column(name = "consented", nullable = false)
-	var consented: Boolean = false,
+	@Column(name = "full_name", nullable = false)
+	var fullName: String,
 
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(name = "custom_data", nullable = false, columnDefinition = "jsonb")
