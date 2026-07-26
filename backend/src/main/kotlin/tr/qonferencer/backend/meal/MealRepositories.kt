@@ -11,9 +11,21 @@ interface MealWindowRepository : JpaRepository<MealWindow, Long>
 interface MealReservationRepository : JpaRepository<MealReservation, MealSlotId> {
 
 	fun findByIdUserId(userId: Long): List<MealReservation>
+
+	fun deleteByIdUserId(userId: Long)
 }
 
 interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId> {
+
+	fun deleteByIdUserId(userId: Long)
+
+	/** Clears [userId] from `scannedBy` without deleting the rows, which belong to other people */
+	@Modifying
+	@Query(
+		value = "UPDATE meal_consumption SET scanned_by = NULL WHERE scanned_by = :userId",
+		nativeQuery = true,
+	)
+	fun detachScanner(@Param("userId") userId: Long): Int
 
 	/** Records the consumption; false when the slot was already consumed */
 	fun consume(slot: MealSlotId, scannedBy: Long?, idempotencyKey: UUID): Boolean =

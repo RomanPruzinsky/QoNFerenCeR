@@ -5,12 +5,7 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.abs
 
-/**
- * Rotating scan token `Q1:<userId>:<window>:<hmac>`, built by the phone and verified by the backend
- *
- * `hmac` is base32 of the first 10 bytes (80 bits) of `HMAC-SHA256(qrSecret, "<userId>:<window>")`.
- * One shared implementation keeps format and base32 alphabet identical on both sides.
- */
+/** Rotating token `Q1:<userId>:<window>:<hmac>`, hmac=base32(HMAC-SHA256(qrSecret, id:window)[0..9]) */
 object ScanToken {
 
 	/** Seconds one token stays current */

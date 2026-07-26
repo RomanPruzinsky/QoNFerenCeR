@@ -13,11 +13,7 @@ class UserAnchorService(
 ) {
 	private val random = SecureRandom()
 
-	/**
-	 * The anchor of [kcSub] named [fullName], created with a fresh secret when this identity has none yet
-	 *
-	 * Provisioning is the only place an anchor is born; logging in never creates one.
-	 */
+	/** The anchor of [kcSub] named [fullName], created with a fresh secret when it has none yet */
 	fun ensure(kcSub: UUID, fullName: String): User {
 		users.insertIfAbsent(kcSub, newSecret(), fullName)
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
@@ -33,6 +29,17 @@ class UserAnchorService(
 	fun storeCustomData(user: User, customData: Map<String, Any?>) {
 		user.customData = objectMapper.writeValueAsString(customData)
 		users.save(user)
+	}
+
+	/**
+	 * Gives [user] a fresh scan secret, so every token built from the old one stops verifying
+	 * @return the new [User.qrSecretV]
+	 */
+	fun rotateSecret(user: User): Short {
+		user.qrSecret = newSecret()
+		user.qrSecretV = (user.qrSecretV + 1).toShort()
+		users.save(user)
+		return user.qrSecretV
 	}
 
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }

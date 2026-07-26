@@ -1,7 +1,5 @@
 package tr.qonferencer.shared.enums
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
-
 /** Result of meal scanning */
 enum class MealScanResult {
 	/** All good */
@@ -17,6 +15,5 @@ enum class MealScanResult {
 	NOT_REGISTERED_PORTION,
 
 	/** Anything else, fallback */
-	@JsonEnumDefaultValue
 	OTHER_ERROR,
 }

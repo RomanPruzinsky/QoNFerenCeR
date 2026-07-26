@@ -19,7 +19,7 @@ import java.util.UUID
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class AttendeeLookupTest {
+class SearchByNameTest {
 
 	@Autowired
 	private lateinit var mockMvc: MockMvc
@@ -88,7 +88,7 @@ class AttendeeLookupTest {
 		}
 	}
 
-	private fun search(query: String, role: Role, canCheckByName: Boolean = true) = mockMvc.get(ApiPaths.ATTENDEES) {
+	private fun search(query: String, role: Role, canCheckByName: Boolean = true) = mockMvc.get(ApiPaths.SEARCH_BY_NAME) {
 		param("q", query)
 		with(
 			jwt().jwt {

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import tr.qonferencer.shared.enums.CustomTextSize
 
+// TODO: dynamic list — no primitive repeats a template per data row, so fed screens stay static
+
 /** Custom element, drawn by renderer in received order */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(

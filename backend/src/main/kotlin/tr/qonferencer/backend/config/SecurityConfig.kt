@@ -19,14 +19,7 @@ import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.enums.Role
 
 /**
- * Spring security configuration
- *
- * Sets up as OAuth2 resource server that trusts JWT tokens
- *
- * `@Configuration`: Spring bean-definition class
- *
- * Authorization beyond "is authenticated" belongs in the services, as a `Role.atLeast` threshold;
- * `hasRole` would compare realm roles flat and miss the linear ladder.
+ * OAuth2 resource server trusting Keycloak JWTs; role checks live in services as `Role.atLeast`
  * @param jwkSetUri Where to fetch Keycloak's public signing keys
  * @param issuer Public issuer string tokens must claim
  */

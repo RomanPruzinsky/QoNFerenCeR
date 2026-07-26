@@ -13,9 +13,7 @@ class CustomElementJsonTest {
 
 	private val mapper = jacksonObjectMapper()
 
-	// Serialize via the declared element type, exactly like Spring MVC does for a
-	// `List<CustomElement>` return value — otherwise generics erase and the root
-	// element loses its type discriminator.
+	// Serialize via the declared type like Spring MVC does, or generics erase the discriminator
 	private val listWriter = mapper.writerFor(object : TypeReference<List<CustomElement>>() {})
 
 	@Test

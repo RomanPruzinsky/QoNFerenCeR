@@ -1,10 +1,6 @@
 package tr.qonferencer.shared.enums
 
-/**
- * Linear roles order
- *
- * Higher role has also lower privileges (`LEADER` has `GUEST`+`VISITOR`+`VOLUNTEER`+`LEADER` privileges)
- */
+/** Linear role ladder; a higher role also holds every lower role's privileges */
 enum class Role {
 	GUEST,
 	VISITOR,

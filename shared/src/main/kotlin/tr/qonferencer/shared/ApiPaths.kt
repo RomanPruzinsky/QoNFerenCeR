@@ -16,11 +16,13 @@ object ApiPaths {
 	object Admin {
 		const val ROOT = "$BASE/admin"
 		const val SLOTS = "$ROOT/slots"
+		const val SLOT_BY_ID = "$SLOTS/{userId}"
 		const val SLOT_LOGIN = "$SLOTS/{userId}/login"
+		const val SLOT_REVOKE = "$SLOTS/{userId}/revoke"
 	}
 
-	/** Info-desk attendee lookup */
-	const val ATTENDEES = "$BASE/attendees"
+	/** Info-desk search for the attendee the organizer is talking to */
+	const val SEARCH_BY_NAME = "$BASE/search-by-name"
 
 	const val SPLASH = "$BASE/splash"
 

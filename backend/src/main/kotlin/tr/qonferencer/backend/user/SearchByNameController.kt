@@ -7,9 +7,9 @@ import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.SlotDto
 
 @RestController
-class AttendeeLookupController(
-	private val lookupService: AttendeeLookupService,
+class SearchByNameController(
+	private val searchService: SearchByNameService,
 ) {
-	@GetMapping(ApiPaths.ATTENDEES)
-	fun search(@RequestParam("q") query: String): List<SlotDto> = lookupService.search(query)
+	@GetMapping(ApiPaths.SEARCH_BY_NAME)
+	fun search(@RequestParam("q") query: String): List<SlotDto> = searchService.search(query)
 }

@@ -17,9 +17,6 @@ class KeycloakAdminService(
 ) {
 	/**
 	 * Creates an enabled user with [role] and its orthogonal attribute flags
-	 *
-	 * Assigning the whole attribute map means every flag has to be passed here; a later partial
-	 * write would drop the ones it omits.
 	 * @return User's Keycloak sub
 	 */
 	fun createUser(username: String, role: Role, isSpeaker: Boolean = false, canCheckByName: Boolean = false): UUID {
@@ -39,6 +36,29 @@ class KeycloakAdminService(
 		val roleRep = realmRes.roles().get(role.name).toRepresentation()
 		realmRes.users().get(sub).roles().realmLevel().add(listOf(roleRep))
 		return UUID.fromString(sub)
+	}
+
+	/** Replaces [role] and the flags of an existing user; the realm role is swapped, not added */
+	fun updateUser(sub: UUID, role: Role, isSpeaker: Boolean, canCheckByName: Boolean) {
+		val realmRes = keycloak.realm(realm)
+		val userRes = realmRes.users().get(sub.toString())
+		userRes.update(
+			userRes.toRepresentation().apply {
+				attributes = mapOf(
+					"isSpeaker" to listOf(isSpeaker.toString()),
+					"canCheckByName" to listOf(canCheckByName.toString()),
+				)
+			},
+		)
+		val realmRoles = userRes.roles().realmLevel()
+		val ours = realmRoles.listAll().filter { held -> Role.entries.any { it.name == held.name } }
+		if (ours.isNotEmpty()) realmRoles.remove(ours)
+		realmRoles.add(listOf(realmRes.roles().get(role.name).toRepresentation()))
+	}
+
+	/** Kills every active session, so a refresh token left on a lost phone stops working */
+	fun logout(sub: UUID) {
+		keycloak.realm(realm).users().get(sub.toString()).logout()
 	}
 
 	/** Sets a fresh permanent password for the user */

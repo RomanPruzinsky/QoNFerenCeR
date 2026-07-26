@@ -20,10 +20,6 @@ spring:
       enabled: true
       locations: classpath:db/migration
 
-   jackson:
-      deserialization:
-         read-unknown-enum-values-using-default-value: true
-
 server:
    port: 8080
 
@@ -46,8 +42,15 @@ qonferencer:
          realm: ${KC_REALM:qonferencer}
          client-id: ${KC_ADMIN_CLIENT_ID:qonferencer-backend-admin}
          client-secret: ${KC_ADMIN_CLIENT_SECRET:backend-admin-secret} # TODO: real secret prod
+   n8n:
+      enabled: ${N8N_ENABLED:false} # TODO: true prod
+      base-url: ${N8N_BASE_URL:http://localhost:5678/webhook}
+      path-prefix: ${N8N_PATH_PREFIX:qonferencer_base}
+      event-name: ${QONFERENCER_EVENT:local-dev} # TODO: real conference id prod
+      path-token: ${N8N_PATH_TOKEN:} # TODO: generated per install
+      timeout-ms: ${N8N_TIMEOUT_MS:3000}
 
 logging:
    level:
-      tr.qonferencer: DEBUG
+      tr.qonferencer: DEBUG # TODO: INFO prod — DEBUG may echo entity fields incl. names
       org.springframework.security: INFO

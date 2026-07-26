@@ -17,6 +17,7 @@ import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.MealScanRequestDto
 import tr.qonferencer.shared.enums.Role
+import tr.qonferencer.shared.enums.ScanCarrier
 import tr.qonferencer.shared.scan.ScanToken
 import java.time.Instant
 import java.util.UUID
@@ -57,20 +58,20 @@ class MealScanEndpointTest {
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 		val key = UUID.randomUUID()
 
-		scan(MealScanRequestDto(token, windowId, key), Role.VOLUNTEER).andExpect {
+		scan(MealScanRequestDto(token, windowId, key, ScanCarrier.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("APPROVED") }
 			jsonPath("$.userId") { value(userId.toInt()) }
 			jsonPath("$.variantKey") { value("meal.vegan") }
 		}
 
-		scan(MealScanRequestDto(token, windowId, key), Role.VOLUNTEER).andExpect {
+		scan(MealScanRequestDto(token, windowId, key, ScanCarrier.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("APPROVED") }
 			jsonPath("$.variantKey") { value("meal.vegan") }
 		}
 
-		scan(MealScanRequestDto(token, windowId, UUID.randomUUID()), Role.VOLUNTEER).andExpect {
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("ALREADY_CONSUMED") }
 		}
@@ -83,7 +84,7 @@ class MealScanEndpointTest {
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 
-		scan(MealScanRequestDto(token, windowId, UUID.randomUUID()), Role.VISITOR).andExpect {
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.QR), Role.VISITOR).andExpect {
 			status { isForbidden() }
 		}
 	}
@@ -92,19 +93,46 @@ class MealScanEndpointTest {
 	fun `unreadable token is a verdict, not a transport error`() {
 		val windowId = windows.save(newWindow()).id
 
-		scan(MealScanRequestDto("Q1:nonsense", windowId, UUID.randomUUID()), Role.VOLUNTEER).andExpect {
+		scan(MealScanRequestDto("Q1:nonsense", windowId, UUID.randomUUID(), ScanCarrier.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NO_USER_FOUND") }
 		}
 	}
 
 	@Test
+	fun `a printed badge number feeds a flat phone`() {
+		val userId = newUser(ByteArray(32) { 2 })
+		val windowId = newWindowWithPortion(userId, "meal.regular")
+
+		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScanCarrier.BARCODE), Role.VOLUNTEER)
+			.andExpect {
+				status { isOk() }
+				jsonPath("$.result") { value("APPROVED") }
+				jsonPath("$.userId") { value(userId.toInt()) }
+			}
+	}
+
+	/** A weak carrier label on a rotating token — or the reverse — is a client bug, caught loudly */
+	@Test
+	fun `a carrier that disagrees with the token is rejected`() {
+		val secret = ByteArray(32) { 8 }
+		val userId = newUser(secret)
+		val windowId = newWindowWithPortion(userId, "meal.regular")
+		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
+
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.BARCODE), Role.VOLUNTEER).andExpect {
+			status { isBadRequest() }
+		}
+	}
+
+	/** Also guards the badge fallback: a forged token must not reach the bare-id branch */
+	@Test
 	fun `token signed by a foreign secret is not accepted`() {
 		val userId = newUser(ByteArray(32) { 7 })
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, ByteArray(32) { 9 }, Instant.now().epochSecond)
 
-		scan(MealScanRequestDto(token, windowId, UUID.randomUUID()), Role.VOLUNTEER).andExpect {
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NO_USER_FOUND") }
 		}
@@ -117,7 +145,7 @@ class MealScanEndpointTest {
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 
-		scan(MealScanRequestDto(token, windowId, UUID.randomUUID()), Role.VOLUNTEER).andExpect {
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NOT_REGISTERED_PORTION") }
 		}

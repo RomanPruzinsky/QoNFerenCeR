@@ -35,13 +35,8 @@ interface UserRepository : JpaRepository<User, Long> {
 			      >= :threshold
 			ORDER BY word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
 			         DESC, full_name
-			LIMIT :limit
 		""",
 		nativeQuery = true,
 	)
-	fun searchByName(
-		@Param("query") query: String,
-		@Param("threshold") threshold: Double,
-		@Param("limit") limit: Int,
-	): List<User>
+	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double): List<User>
 }
