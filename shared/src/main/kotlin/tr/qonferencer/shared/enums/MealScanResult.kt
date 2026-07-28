@@ -13,7 +13,4 @@ enum class MealScanResult {
 
 	/** User doesn't have ordered portion for this meal */
 	NOT_REGISTERED_PORTION,
-
-	/** Anything else, fallback */
-	OTHER_ERROR,
 }

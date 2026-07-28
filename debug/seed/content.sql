@@ -45,7 +45,7 @@ WHERE NOT EXISTS (SELECT 1 FROM meal_window w WHERE w.name_key = v.name_key);
 
 -- Screens the app renders. Bodies are List<CustomElement>; render order = array order.
 INSERT INTO custom_screen (id, title_key, min_role, body) VALUES
-	('home', 'menu.home', 'GUEST', '[
+	('home', 'menu.home', 'ANONYM', '[
 		{"type":"TEXT","source":{"kind":"REF","key":"home.welcome"},"size":"LARGE"},
 		{"type":"IMAGE","url":"https://picsum.photos/seed/devconf/800/300"},
 		{"type":"TEXT","source":{"kind":"REF","key":"home.intro"},"size":"MEDIUM"}
@@ -55,14 +55,14 @@ INSERT INTO custom_screen (id, title_key, min_role, body) VALUES
 		{"type":"TEXT","source":{"kind":"REF","key":"agenda.note"},"size":"SMALL"},
 		{"type":"TEXT","source":{"kind":"LINK","url":"http://localhost:5678/webhook/agenda"},"size":"MEDIUM"}
 	]'::jsonb),
-	('sponsors', 'menu.sponsors', 'GUEST', '[
+	('sponsors', 'menu.sponsors', 'ANONYM', '[
 		{"type":"TEXT","source":{"kind":"REF","key":"sponsors.title"},"size":"LARGE"},
 		{"type":"ROW","children":[
 			{"type":"IMAGE","url":"https://picsum.photos/seed/acme/200/100"},
 			{"type":"IMAGE","url":"https://picsum.photos/seed/globex/200/100"}
 		]}
 	]'::jsonb),
-	('info', 'menu.info', 'GUEST', '[
+	('info', 'menu.info', 'ANONYM', '[
 		{"type":"TEXT","source":{"kind":"REF","key":"menu.info"},"size":"LARGE"},
 		{"type":"TEXT","source":{"kind":"REF","key":"info.wifi"},"size":"MEDIUM"},
 		{"type":"TEXT","source":{"kind":"REF","key":"info.help"},"size":"SMALL"}

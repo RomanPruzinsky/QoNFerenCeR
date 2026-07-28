@@ -1,7 +1,7 @@
 package tr.qonferencer.shared.enums
 
 /** How a scan was captured, declared by the phone and checked against the token's strength */
-enum class ScanCarrier {
+enum class ScannerType {
 	/** Rotating token read off the screen with a camera */
 	QR,
 
@@ -15,6 +15,6 @@ enum class ScanCarrier {
 	MANUAL,
 	;
 
-	/** Whether this carrier delivers the rotating per-scan token rather than a static id */
+	/** Whether this scanner type delivers the rotating per-scan token rather than a static id */
 	val isRotating: Boolean get() = this == QR || this == NFC
 }

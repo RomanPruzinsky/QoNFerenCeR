@@ -10,6 +10,6 @@ import tr.qonferencer.shared.dtos.SlotDto
 class SearchByNameController(
 	private val searchService: SearchByNameService,
 ) {
-	@GetMapping(ApiPaths.SEARCH_BY_NAME)
-	fun search(@RequestParam("q") query: String): List<SlotDto> = searchService.search(query)
+	@GetMapping(ApiPaths.SEARCH_BY_NAME) // TODO: pagination
+	fun search(@RequestParam("searchFor") query: String): List<SlotDto> = searchService.search(query)
 }

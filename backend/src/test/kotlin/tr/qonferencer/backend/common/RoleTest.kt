@@ -17,15 +17,15 @@ class RoleTest {
 
 	@Test
 	fun `highest picks the strongest realm role`() {
-		assertEquals(Role.ADMIN, Role.highest(listOf("VISITOR", "ADMIN", "GUEST")))
-		assertEquals(Role.GUEST, Role.highest(emptyList()))
-		assertEquals(Role.GUEST, Role.highest(listOf("nonsense")))
+		assertEquals(Role.ADMIN, Role.highest(listOf("VISITOR", "ADMIN", "ANONYM")))
+		assertEquals(Role.ANONYM, Role.highest(emptyList()))
+		assertEquals(Role.ANONYM, Role.highest(listOf("nonsense")))
 	}
 
 	@Test
-	fun `fromOrGuest is case-insensitive and safe`() {
-		assertEquals(Role.VOLUNTEER, Role.fromOrGuest("volunteer"))
-		assertEquals(Role.GUEST, Role.fromOrGuest(null))
-		assertEquals(Role.GUEST, Role.fromOrGuest("does-not-exist"))
+	fun `fromOrAnonym is case-insensitive and safe`() {
+		assertEquals(Role.VOLUNTEER, Role.fromOrAnonym("volunteer"))
+		assertEquals(Role.ANONYM, Role.fromOrAnonym(null))
+		assertEquals(Role.ANONYM, Role.fromOrAnonym("does-not-exist"))
 	}
 }

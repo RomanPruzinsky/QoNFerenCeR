@@ -25,7 +25,7 @@ import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.MealScanRequestDto
 import tr.qonferencer.shared.enums.Role
-import tr.qonferencer.shared.enums.ScanCarrier
+import tr.qonferencer.shared.enums.ScannerType
 import tr.qonferencer.shared.scan.ScanToken
 import java.time.Instant
 import java.util.UUID
@@ -70,7 +70,7 @@ class DomainEventPublishingTest {
 
 		val event = published().single()
 		assertEquals(EventType.APP_LAUNCHED, event.type)
-		assertEquals(Role.GUEST.name, event.data["role"])
+		assertEquals(Role.ANONYM.name, event.data["role"])
 	}
 
 	@Test
@@ -80,13 +80,13 @@ class DomainEventPublishingTest {
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 
-		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.QR)).andExpect { status { isOk() } }
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
 
 		val event = published().single { it.type == EventType.MEAL_APPROVED }
 		assertEquals(userId, event.data["userId"])
 		assertEquals(windowId, event.data["windowId"])
 		assertEquals("meal.vegan", event.data["variantKey"])
-		assertEquals("QR", event.data["carrier"])
+		assertEquals("QR", event.data["scannerType"])
 	}
 
 	/** The organizer has to be able to tell a cryptographic scan from a copyable badge */
@@ -95,10 +95,10 @@ class DomainEventPublishingTest {
 		val userId = newUser(ByteArray(32) { 6 })
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 
-		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScanCarrier.BARCODE))
+		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE))
 			.andExpect { status { isOk() } }
 
-		assertEquals("BARCODE", published().single { it.type == EventType.MEAL_APPROVED }.data["carrier"])
+		assertEquals("BARCODE", published().single { it.type == EventType.MEAL_APPROVED }.data["scannerType"])
 	}
 
 	@Test
@@ -108,7 +108,7 @@ class DomainEventPublishingTest {
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 
-		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScanCarrier.QR)).andExpect { status { isOk() } }
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
 
 		val event = published().single { it.type == EventType.MEAL_DENIED }
 		assertEquals("NOT_REGISTERED_PORTION", event.data["reason"])

@@ -19,7 +19,7 @@ SELECT 'meal.lunch1.name', '2026-09-01T11:30:00Z', '2026-09-01T13:00:00Z'
 WHERE NOT EXISTS (SELECT 1 FROM meal_window WHERE name_key = 'meal.lunch1.name');
 
 INSERT INTO custom_screen (id, title_key, min_role, body) VALUES
-	('home', 'screen.home.title', 'GUEST', '[
+	('home', 'screen.home.title', 'ANONYM', '[
 		{"type":"TEXT","source":{"kind":"REF","key":"home.welcome"},"size":"LARGE"}
 	]'::jsonb),
 	('agenda', 'screen.agenda.title', 'VISITOR', '[

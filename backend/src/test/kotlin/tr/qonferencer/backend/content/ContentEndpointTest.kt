@@ -19,7 +19,7 @@ class ContentEndpointTest {
 
 	@Test
 	fun `splash returns seeded content, role-filtered, with an etag`() {
-		// anonymous caller = GUEST → sees only the GUEST screen 'home', not the VISITOR 'agenda'
+		// anonymous caller = ANONYM → sees only the ANONYM screen 'home', not the VISITOR 'agenda'
 		mockMvc.get("/api/v1/splash").andExpect {
 			status { isOk() }
 			header { exists("ETag") }
@@ -32,7 +32,7 @@ class ContentEndpointTest {
 
 	@Test
 	fun `custom screen above caller role is 403`() {
-		// 'agenda' is minRole VISITOR; anonymous GUEST must not reach it
+		// 'agenda' is minRole VISITOR; anonymous ANONYM must not reach it
 		mockMvc.get("/api/v1/custom-screens/agenda").andExpect {
 			status { isForbidden() }
 		}

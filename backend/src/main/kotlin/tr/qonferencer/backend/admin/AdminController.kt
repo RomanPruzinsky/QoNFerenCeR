@@ -24,7 +24,7 @@ class AdminController(
 	@ResponseStatus(HttpStatus.CREATED)
 	fun create(@RequestBody req: CreateUserSlotDto): SlotDto = slotService.createUserSlot(req)
 
-	@GetMapping(ApiPaths.Admin.SLOTS)
+	@GetMapping(ApiPaths.Admin.SLOTS) // TODO: pagination
 	fun list(): List<SlotDto> = slotService.listSlots()
 
 	@PostMapping(ApiPaths.Admin.SLOT_LOGIN)

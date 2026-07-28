@@ -89,7 +89,7 @@ class SearchByNameTest {
 	}
 
 	private fun search(query: String, role: Role, canCheckByName: Boolean = true) = mockMvc.get(ApiPaths.SEARCH_BY_NAME) {
-		param("q", query)
+		param("searchFor", query)
 		with(
 			jwt().jwt {
 				it.subject(UUID.randomUUID().toString())

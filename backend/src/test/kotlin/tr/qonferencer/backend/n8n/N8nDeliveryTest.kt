@@ -73,7 +73,7 @@ class N8nDeliveryTest {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/APP_LAUNCHED"))
 			.andRespond(withStatus(HttpStatus.NOT_FOUND))
 
-		listener(enabled = true).onEvent(N8nEvent(EventType.APP_LAUNCHED, mapOf("role" to "GUEST")))
+		listener(enabled = true).onEvent(N8nEvent(EventType.APP_LAUNCHED, mapOf("role" to "ANONYM")))
 
 		server.verify()
 	}

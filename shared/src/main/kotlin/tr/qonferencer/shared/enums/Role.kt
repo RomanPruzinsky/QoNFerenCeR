@@ -2,7 +2,7 @@ package tr.qonferencer.shared.enums
 
 /** Linear role ladder; a higher role also holds every lower role's privileges */
 enum class Role {
-	GUEST,
+	ANONYM,
 	VISITOR,
 	VOLUNTEER,
 	LEADER,
@@ -14,10 +14,10 @@ enum class Role {
 	fun atLeast(min: Role): Boolean = ordinal >= min.ordinal
 
 	companion object {
-		fun fromOrGuest(value: String?): Role = entries.firstOrNull { it.name == value?.uppercase() } ?: GUEST
+		fun fromOrAnonym(value: String?): Role = entries.firstOrNull { it.name == value?.uppercase() } ?: ANONYM
 
 		fun highest(roles: Collection<String>): Role = roles
-			.map { fromOrGuest(it) }
-			.maxByOrNull { it.ordinal } ?: GUEST
+			.map { fromOrAnonym(it) }
+			.maxByOrNull { it.ordinal } ?: ANONYM
 	}
 }

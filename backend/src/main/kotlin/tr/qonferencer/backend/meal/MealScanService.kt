@@ -11,7 +11,7 @@ import tr.qonferencer.shared.dtos.MealScanRequestDto
 import tr.qonferencer.shared.dtos.MealScanResultDto
 import tr.qonferencer.shared.enums.MealScanResult
 import tr.qonferencer.shared.enums.Role
-import tr.qonferencer.shared.enums.ScanCarrier
+import tr.qonferencer.shared.enums.ScannerType
 
 /** Meal scan domain logic: 1 meal per window, reservation presence = registered */
 @Service
@@ -28,19 +28,19 @@ class MealScanService(
 		if (!caller.role().atLeast(Role.VOLUNTEER)) throw forbidden("role below VOLUNTEER")
 		val scannedBy = caller.appUserId()
 		val windowId = request.mealWindowId
-		val carrier = request.carrier
+		val scannerType = request.scannerType
 		val verified = tokens.verify(request.token)
-			?: return denied(null, windowId, scannedBy, carrier, MealScanResult.NO_USER_FOUND)
-		if (carrier.isRotating != verified.rotating) {
-			throw badRequest("carrier $carrier does not match the scanned token")
+			?: return denied(null, windowId, scannedBy, scannerType, MealScanResult.NO_USER_FOUND)
+		if (scannerType.isRotating != verified.rotating) {
+			throw badRequest("scanner type $scannerType does not match the scanned token")
 		}
 		val userId = verified.userId
 		val slot = MealSlotId(userId, windowId)
 		val reservation = reservations.findById(slot).orElse(null)
-			?: return denied(userId, windowId, scannedBy, carrier, MealScanResult.NOT_REGISTERED_PORTION)
+			?: return denied(userId, windowId, scannedBy, scannerType, MealScanResult.NOT_REGISTERED_PORTION)
 		val approved = consumptions.consume(slot, scannedBy, request.idempotencyKey) ||
 			consumptions.findById(slot).orElse(null)?.idempotencyKey == request.idempotencyKey
-		if (!approved) return denied(userId, windowId, scannedBy, carrier, MealScanResult.ALREADY_CONSUMED)
+		if (!approved) return denied(userId, windowId, scannedBy, scannerType, MealScanResult.ALREADY_CONSUMED)
 		events.publish(
 			EventType.MEAL_APPROVED,
 			mapOf(
@@ -48,7 +48,7 @@ class MealScanService(
 				"windowId" to windowId,
 				"variantKey" to reservation.variantKey,
 				"scannedBy" to scannedBy,
-				"carrier" to carrier.name,
+				"scannerType" to scannerType.name,
 			),
 		)
 		return MealScanResultDto(MealScanResult.APPROVED, userId, reservation.variantKey)
@@ -59,7 +59,7 @@ class MealScanService(
 		userId: Long?,
 		windowId: Long,
 		scannedBy: Long,
-		carrier: ScanCarrier,
+		scannerType: ScannerType,
 		result: MealScanResult,
 	): MealScanResultDto {
 		events.publish(
@@ -69,7 +69,7 @@ class MealScanService(
 				"windowId" to windowId,
 				"reason" to result.name,
 				"scannedBy" to scannedBy,
-				"carrier" to carrier.name,
+				"scannerType" to scannerType.name,
 			),
 		)
 		return MealScanResultDto(result, userId, null)
