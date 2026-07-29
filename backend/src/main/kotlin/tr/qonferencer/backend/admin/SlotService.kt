@@ -2,6 +2,8 @@ package tr.qonferencer.backend.admin
 
 import jakarta.persistence.EntityManager
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.common.badRequest
@@ -20,6 +22,10 @@ import tr.qonferencer.shared.dtos.SlotCredentialsDto
 import tr.qonferencer.shared.dtos.SlotDto
 import tr.qonferencer.shared.dtos.UpdateUserSlotDto
 import java.security.SecureRandom
+import java.util.Base64
+
+/** Result of [SlotService.deleteUserSlot]: whether the Keycloak user was erased along with the app data */
+enum class DeleteOutcome { FULL, KEYCLOAK_SURVIVED }
 
 /** Slot provisioning: Keycloak users, app anchors, meal reservations, login re-issue */
 @Service
@@ -69,8 +75,8 @@ class SlotService(
 	}
 
 	/** All app anchors, for organizer name lookup (customData holds imported data) */
-	fun listSlots(): List<SlotDto> =
-		users.findAll().map { SlotDto(it.id, it.fullName, customData = anchors.customData(it)) }
+	fun listSlots(pageable: Pageable): Page<SlotDto> =
+		users.findAll(pageable).map { SlotDto(it.id, it.fullName, customData = anchors.customData(it)) }
 
 	/** Replaces everything mutable about [userId]; replaces reservations, keeps consumptions */
 	@Transactional
@@ -114,23 +120,27 @@ class SlotService(
 	}
 
 	/** Erases [userId] from the app database first, then from Keycloak; not transactional */
-	fun deleteUserSlot(userId: Long) {
+	fun deleteUserSlot(userId: Long): DeleteOutcome {
 		val user = users.findById(userId).orElseThrow { notFound("app_user $userId does not exist") }
 		val sub = user.kcSub
 		userDelete.delete(userId)
-		runCatching { kc.deleteUser(sub) }
-			.onFailure { log.warn("app data for {} is gone, Keycloak user survives: {}", userId, it.message) }
+		val outcome = runCatching { kc.deleteUser(sub) }
+			.fold({ DeleteOutcome.FULL }, { DeleteOutcome.KEYCLOAK_SURVIVED })
+		if (outcome == DeleteOutcome.KEYCLOAK_SURVIVED) {
+			log.warn("app data for {} is gone, Keycloak user survives", userId)
+		}
 		events.publish(EventType.SLOT_DELETED, mapOf("userId" to userId))
+		return outcome
 	}
 
-	/** Re-issue a fresh password for the slot and return its login credentials */
+	/** Re-issue a fresh password for the slot and return its login credentials, plus its scan secret */
 	fun issueLogin(userId: Long): SlotCredentialsDto {
 		val user = users.findById(userId).orElseThrow { notFound("app_user $userId does not exist") }
 		val password = SlotPasswords.generate(random)
 		kc.setPassword(user.kcSub, password)
 		val username = kc.username(user.kcSub)
 		events.publish(EventType.SLOT_LOGIN_ISSUED, mapOf("userId" to user.id, "username" to username))
-		return SlotCredentialsDto(username, password)
+		return SlotCredentialsDto(username, password, Base64.getEncoder().encodeToString(user.qrSecret))
 	}
 
 	private fun nextSlotNumber(): Long =

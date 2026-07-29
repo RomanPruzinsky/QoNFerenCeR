@@ -38,8 +38,12 @@ data class SlotDto(
 	val customData: Map<String, Any?> = emptyMap(),
 )
 
-/** Login credentials for slot */
+/**
+ * Login credentials for slot
+ * @property qrSecret HMAC seed for the attendee's rotating scan token, handed off alongside the QR login
+ */
 data class SlotCredentialsDto(
 	val username: String,
 	val password: String,
+	val qrSecret: String,
 )

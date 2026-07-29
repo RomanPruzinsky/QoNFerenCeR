@@ -2,15 +2,19 @@ package tr.qonferencer.backend.user
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.TestcontainersConfiguration
+import tr.qonferencer.backend.admin.KeycloakAdminService
+import tr.qonferencer.backend.admin.KeycloakUserInfo
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.enums.Role
 import java.util.UUID
@@ -27,18 +31,24 @@ class SearchByNameTest {
 	@Autowired
 	private lateinit var users: UserRepository
 
+	@MockitoBean
+	private lateinit var keycloak: KeycloakAdminService
+
 	@BeforeEach
 	fun seedAttendees() {
-		listOf("Roman Pružinský", "Jana Kováčová", "Peter Novák", "Marek Kovacs")
-			.forEach { users.insertIfAbsent(UUID.randomUUID(), ByteArray(32), it) }
+		listOf("Roman Pružinský", "Jana Kováčová", "Peter Novák", "Marek Kovacs").forEach {
+			val sub = UUID.randomUUID()
+			users.insertIfAbsent(sub, ByteArray(32), it)
+			Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot", Role.VISITOR, false, false))
+		}
 	}
 
 	@Test
 	fun `diacritics are folded away`() {
 		search("pruz", Role.ORGANISER).andExpect {
 			status { isOk() }
-			jsonPath("$.length()") { value(1) }
-			jsonPath("$[0].fullName") { value("Roman Pružinský") }
+			jsonPath("$.content.length()") { value(1) }
+			jsonPath("$.content[0].fullName") { value("Roman Pružinský") }
 		}
 	}
 
@@ -46,7 +56,7 @@ class SearchByNameTest {
 	fun `a transposed pair of letters still finds the person`() {
 		search("pruzinksy", Role.ORGANISER).andExpect {
 			status { isOk() }
-			jsonPath("$[0].fullName") { value("Roman Pružinský") }
+			jsonPath("$.content[0].fullName") { value("Roman Pružinský") }
 		}
 	}
 
@@ -54,7 +64,7 @@ class SearchByNameTest {
 	fun `full name typed out narrows to one`() {
 		search("roman pruzinsky", Role.ORGANISER).andExpect {
 			status { isOk() }
-			jsonPath("$.length()") { value(1) }
+			jsonPath("$.content.length()") { value(1) }
 		}
 	}
 
@@ -62,7 +72,7 @@ class SearchByNameTest {
 	fun `a shared surname returns every candidate for the organizer to tell apart`() {
 		search("kova", Role.ORGANISER).andExpect {
 			status { isOk() }
-			jsonPath("$.length()") { value(2) }
+			jsonPath("$.content.length()") { value(2) }
 		}
 	}
 
@@ -70,7 +80,16 @@ class SearchByNameTest {
 	fun `unknown name is an empty list, not an error`() {
 		search("zzzzz", Role.ORGANISER).andExpect {
 			status { isOk() }
-			jsonPath("$.length()") { value(0) }
+			jsonPath("$.content.length()") { value(0) }
+		}
+	}
+
+	@Test
+	fun `each row carries role and isSpeaker, not just the name`() {
+		search("pruz", Role.ORGANISER).andExpect {
+			status { isOk() }
+			jsonPath("$.content[0].role") { value("VISITOR") }
+			jsonPath("$.content[0].isSpeaker") { value(false) }
 		}
 	}
 

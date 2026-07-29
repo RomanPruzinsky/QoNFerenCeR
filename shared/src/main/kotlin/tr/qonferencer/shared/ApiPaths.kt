@@ -4,9 +4,7 @@ package tr.qonferencer.shared
 object ApiPaths {
 	private const val BASE = "/api/v1"
 
-	object Me {
-		const val ROOT = "$BASE/me"
-	}
+	const val USER_BY_ID = "$BASE/users/{userId}"
 
 	object CustomScreens {
 		const val ROOT = "$BASE/custom-screens"
@@ -15,10 +13,12 @@ object ApiPaths {
 
 	object Admin {
 		const val ROOT = "$BASE/admin"
-		const val SLOTS = "$ROOT/slots"
-		const val SLOT_BY_ID = "$SLOTS/{userId}"
-		const val SLOT_LOGIN = "$SLOTS/{userId}/login"
-		const val SLOT_REVOKE = "$SLOTS/{userId}/revoke"
+		const val ADD_USER = "$ROOT/add-user"
+		const val GET_ALL_USERS = "$ROOT/get-all-users"
+		const val UPDATE_USER = "$ROOT/update-user/{userId}"
+		const val LOGIN = "$ROOT/login/{userId}"
+		const val REVOKE = "$ROOT/revoke/{userId}"
+		const val DELETE_USER = "$ROOT/delete/{userId}"
 	}
 
 	/** Info-desk search for the attendee the organizer is talking to */

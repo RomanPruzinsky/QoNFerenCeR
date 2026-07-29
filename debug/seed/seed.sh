@@ -129,7 +129,7 @@ variant_for() {
 declare -a VISITOR_IDS=()
 VOL_USER=""; VOL_ID=""
 
-say "Provisioning ${#ATTENDEES[@]} attendees via POST /admin/slots"
+say "Provisioning ${#ATTENDEES[@]} attendees via POST /admin/add-user"
 for row in "${ATTENDEES[@]}"; do
 	IFS='|' read -r name role sp cc company tshirt diet <<<"$row"
 	variant="$(variant_for "$diet")"
@@ -140,7 +140,7 @@ for row in "${ATTENDEES[@]}"; do
 		'{fullName:$fn, role:$role, isSpeaker:$sp, canCheckByName:$cc,
 		  customData:{company:$comp, tshirt:$ts, dietary:$diet},
 		  meals:[{windowId:$w1,variantKey:$variant},{windowId:$w2,variantKey:$variant},{windowId:$w3,variantKey:$variant}]}')"
-	resp="$(curl -fsS -X POST "$BACKEND/api/v1/admin/slots" \
+	resp="$(curl -fsS -X POST "$BACKEND/api/v1/admin/add-user" \
 		-H "Authorization: Bearer $ADMIN_TOKEN" -H 'Content-Type: application/json' -d "$payload")"
 	uid="$(jq -r .userId <<<"$resp")"; uname="$(jq -r .username <<<"$resp")"
 	printf '  %-24s %-9s %s\n' "$name" "$role" "$uname (#$uid)"
@@ -149,7 +149,7 @@ for row in "${ATTENDEES[@]}"; do
 done
 
 say "Issuing a password for the demo volunteer $VOL_USER and recording ~15 lunches"
-VOL_PASS="$(curl -fsS -X POST "$BACKEND/api/v1/admin/slots/$VOL_ID/login" \
+VOL_PASS="$(curl -fsS -X POST "$BACKEND/api/v1/admin/login/$VOL_ID" \
 	-H "Authorization: Bearer $ADMIN_TOKEN" | jq -r .password)"
 VOL_TOKEN="$(token_for "$VOL_USER" "$VOL_PASS")"
 served=0
@@ -171,5 +171,5 @@ $(say "Done")
   demo login:   $VOL_USER / $VOL_PASS   (VOLUNTEER — scanner)
 
   Log in as any slot after issuing its password:
-    curl -X POST $BACKEND/api/v1/admin/slots/<userId>/login -H "Authorization: Bearer <adminToken>"
+    curl -X POST $BACKEND/api/v1/admin/login/<userId> -H "Authorization: Bearer <adminToken>"
 EOF

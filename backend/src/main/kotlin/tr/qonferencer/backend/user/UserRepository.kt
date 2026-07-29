@@ -1,5 +1,7 @@
 package tr.qonferencer.backend.user
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -36,7 +38,13 @@ interface UserRepository : JpaRepository<User, Long> {
 			ORDER BY word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
 			         DESC, full_name
 		""",
+		countQuery = """
+			SELECT count(*) FROM app_user
+			WHERE lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%'
+			   OR word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
+			      >= :threshold
+		""",
 		nativeQuery = true,
 	)
-	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double): List<User>
+	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double, pageable: Pageable): Page<User>
 }

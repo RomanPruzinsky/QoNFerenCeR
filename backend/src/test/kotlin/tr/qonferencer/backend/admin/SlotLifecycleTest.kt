@@ -1,6 +1,7 @@
 package tr.qonferencer.backend.admin
 
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -18,6 +19,7 @@ import tr.qonferencer.shared.dtos.UpdateUserSlotDto
 import tr.qonferencer.shared.dtos.UserMealEntryDto
 import tr.qonferencer.shared.enums.Role
 import java.time.Instant
+import java.util.Base64
 import java.util.UUID
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -70,6 +72,17 @@ class SlotLifecycleTest {
 			listOf(dinner to "meal.vegan"),
 			reservations.findByIdUserId(userId).map { it.id.windowId to it.variantKey },
 		)
+	}
+
+	@Test
+	fun `issuing login also hands back the current scan secret, base64-encoded`() {
+		val userId = newUser("Roman Pružinský")
+		val user = users.findById(userId).orElseThrow()
+		Mockito.`when`(keycloak.username(user.kcSub)).thenReturn("slot_007")
+
+		val credentials = slots.issueLogin(userId)
+
+		assertEquals(Base64.getEncoder().encodeToString(user.qrSecret), credentials.qrSecret)
 	}
 
 	@Test

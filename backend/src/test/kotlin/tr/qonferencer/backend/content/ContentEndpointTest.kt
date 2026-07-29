@@ -1,21 +1,36 @@
 package tr.qonferencer.backend.content
 
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.TestcontainersConfiguration
+import tr.qonferencer.backend.admin.KeycloakAdminService
+import tr.qonferencer.backend.user.UserRepository
+import tr.qonferencer.shared.enums.Role
+import java.util.UUID
 
 @Import(TestcontainersConfiguration::class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class ContentEndpointTest {
 
 	@Autowired
 	private lateinit var mockMvc: MockMvc
+
+	@Autowired
+	private lateinit var users: UserRepository
+
+	@MockitoBean
+	private lateinit var keycloak: KeycloakAdminService
 
 	@Test
 	fun `splash returns seeded content, role-filtered, with an etag`() {
@@ -27,6 +42,31 @@ class ContentEndpointTest {
 			jsonPath("$.customScreens.length()") { value(1) }
 			jsonPath("$.customScreens[0].id") { value("home") }
 			jsonPath("$.mealWindows[0].nameKey") { value("meal.lunch1.name") }
+			jsonPath("$.me") { doesNotExist() }
+		}
+	}
+
+	@Test
+	fun `splash embeds the caller's own profile when authenticated, minus the scan secret`() {
+		val sub = UUID.randomUUID()
+		users.insertIfAbsent(sub, ByteArray(32), "Jana Kováčová")
+		Mockito.`when`(keycloak.username(sub)).thenReturn("slot_042")
+
+		mockMvc.get("/api/v1/splash") {
+			with(
+				jwt().jwt {
+					it.subject(sub.toString())
+						.claim("realm_access", mapOf("roles" to listOf(Role.VOLUNTEER.name)))
+						.claim("isSpeaker", true)
+				},
+			)
+		}.andExpect {
+			status { isOk() }
+			jsonPath("$.me.fullName") { value("Jana Kováčová") }
+			jsonPath("$.me.username") { value("slot_042") }
+			jsonPath("$.me.role") { value("VOLUNTEER") }
+			jsonPath("$.me.isSpeaker") { value(true) }
+			jsonPath("$.me.qrSecret") { doesNotExist() }
 		}
 	}
 

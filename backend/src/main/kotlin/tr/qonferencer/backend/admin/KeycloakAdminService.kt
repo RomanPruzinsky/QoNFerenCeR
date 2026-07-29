@@ -9,6 +9,14 @@ import org.springframework.stereotype.Service
 import tr.qonferencer.shared.enums.Role
 import java.util.UUID
 
+/** Username, role and orthogonal flags read from Keycloak for a user who isn't the caller */
+data class KeycloakUserInfo(
+	val username: String,
+	val role: Role,
+	val isSpeaker: Boolean,
+	val canCheckByName: Boolean,
+)
+
 /** Wrapper over Keycloak Admin API for slot user */
 @Service
 class KeycloakAdminService(
@@ -73,6 +81,20 @@ class KeycloakAdminService(
 
 	/** Current username of the Keycloak user */
 	fun username(sub: UUID): String = keycloak.realm(realm).users().get(sub.toString()).toRepresentation().username
+
+	/** Username, role and orthogonal flags of an arbitrary user, for info-desk detail views */
+	fun info(sub: UUID): KeycloakUserInfo {
+		val userRes = keycloak.realm(realm).users().get(sub.toString())
+		val rep = userRes.toRepresentation()
+		val role = Role.highest(userRes.roles().realmLevel().listAll().map { it.name })
+		val attrs = rep.attributes ?: emptyMap()
+		return KeycloakUserInfo(
+			username = rep.username,
+			role = role,
+			isSpeaker = attrs["isSpeaker"]?.firstOrNull()?.toBoolean() ?: false,
+			canCheckByName = attrs["canCheckByName"]?.firstOrNull()?.toBoolean() ?: false,
+		)
+	}
 
 	/** Deletes the Keycloak user */
 	fun deleteUser(sub: UUID) {

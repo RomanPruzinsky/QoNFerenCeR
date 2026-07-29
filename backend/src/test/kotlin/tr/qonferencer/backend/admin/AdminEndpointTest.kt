@@ -38,21 +38,21 @@ class AdminEndpointTest {
 
 	@Test
 	fun `admin reaches the slot list`() {
-		mockMvc.get(ApiPaths.Admin.SLOTS) { with(callerWith(Role.ADMIN)) }.andExpect {
+		mockMvc.get(ApiPaths.Admin.GET_ALL_USERS) { with(callerWith(Role.ADMIN)) }.andExpect {
 			status { isOk() }
 		}
 	}
 
 	@Test
 	fun `organiser stays below the admin threshold`() {
-		mockMvc.get(ApiPaths.Admin.SLOTS) { with(callerWith(Role.ORGANISER)) }.andExpect {
+		mockMvc.get(ApiPaths.Admin.GET_ALL_USERS) { with(callerWith(Role.ORGANISER)) }.andExpect {
 			status { isForbidden() }
 		}
 	}
 
 	@Test
 	fun `anonymous caller is unauthorized`() {
-		mockMvc.get(ApiPaths.Admin.SLOTS).andExpect {
+		mockMvc.get(ApiPaths.Admin.GET_ALL_USERS).andExpect {
 			status { isUnauthorized() }
 		}
 	}
@@ -62,7 +62,7 @@ class AdminEndpointTest {
 	fun `an unknown meal window is refused before any account exists`() {
 		val before = users.count()
 
-		mockMvc.post(ApiPaths.Admin.SLOTS) {
+		mockMvc.post(ApiPaths.Admin.ADD_USER) {
 			with(callerWith(Role.ADMIN))
 			contentType = MediaType.APPLICATION_JSON
 			content = objectMapper.writeValueAsString(

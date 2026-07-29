@@ -13,7 +13,7 @@ so the n8n side has something to import while demoing.
 
 ```sh
 make inf-start          # bring up postgres + keycloak + backend + n8n
-./debug/seed/seed.sh    # content via SQL, attendees via the real /admin/slots API
+./debug/seed/seed.sh    # content via SQL, attendees via the real /admin/add-user API
 ```
 
 `seed.sh` prints demo logins at the end (an ADMIN and a VOLUNTEER with a real password). Everything

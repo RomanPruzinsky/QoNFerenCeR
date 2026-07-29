@@ -1,15 +1,22 @@
 package tr.qonferencer.backend.user
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import tr.qonferencer.shared.ApiPaths
-import tr.qonferencer.shared.dtos.SlotDto
+import tr.qonferencer.shared.DEFAULT_PAGING_SIZE
+import tr.qonferencer.shared.dtos.SearchByNameDisplayDto
 
 @RestController
 class SearchByNameController(
 	private val searchService: SearchByNameService,
 ) {
-	@GetMapping(ApiPaths.SEARCH_BY_NAME) // TODO: pagination
-	fun search(@RequestParam("searchFor") query: String): List<SlotDto> = searchService.search(query)
+	@GetMapping(ApiPaths.SEARCH_BY_NAME)
+	fun search(
+		@RequestParam("searchFor") query: String,
+		@PageableDefault(size = DEFAULT_PAGING_SIZE) pageable: Pageable,
+	): Page<SearchByNameDisplayDto> = searchService.search(query, pageable)
 }

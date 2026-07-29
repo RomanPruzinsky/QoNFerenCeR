@@ -2,20 +2,30 @@ package tr.qonferencer.backend.content
 
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import tr.qonferencer.backend.admin.KeycloakAdminService
+import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.meal.toDto
+import tr.qonferencer.backend.meal.toUserMealEntry
 import tr.qonferencer.backend.n8n.EventType
 import tr.qonferencer.backend.n8n.OutboundEvents
 import tr.qonferencer.backend.user.CallerService
+import tr.qonferencer.backend.user.User
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.shared.dtos.SplashDto
+import tr.qonferencer.shared.dtos.UserDetailDto
+import tr.qonferencer.shared.enums.Role
 
-/** Builds the splash aggregate (languages + translations + role-filtered screen menu + meal windows) */
+/** Builds the splash aggregate (languages + translations + role-filtered screen menu + meal windows + self profile) */
 @Service
 class SplashService(
 	private val languages: LanguageRepository,
 	private val translations: TranslationRepository,
 	private val screens: CustomScreenRepository,
 	private val windows: MealWindowRepository,
+	private val reservations: MealReservationRepository,
+	private val anchors: UserAnchorService,
+	private val kc: KeycloakAdminService,
 	private val caller: CallerService,
 	private val events: OutboundEvents,
 ) {
@@ -28,6 +38,19 @@ class SplashService(
 			translations = translations.findAll(Sort.by("id.key", "id.langCode")).map { it.toDto() },
 			customScreens = screens.findAll(Sort.by("id")).filter { role.atLeast(it.minRole) }.map { it.toDto() },
 			mealWindows = windows.findAll(Sort.by("startsAt")).map { it.toDto() },
+			me = caller.activeAppUser()?.let { buildMe(it, role) },
 		)
 	}
+
+	/** Role/isSpeaker/canCheckByName come free off the caller's own JWT; only username needs Keycloak */
+	private fun buildMe(user: User, role: Role) = UserDetailDto(
+		userId = user.id,
+		fullName = user.fullName,
+		username = kc.username(user.kcSub),
+		role = role,
+		isSpeaker = caller.activeIsSpeaker(),
+		canCheckByName = caller.canCheckByName(),
+		customData = anchors.customData(user),
+		meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
+	)
 }

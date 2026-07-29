@@ -30,6 +30,9 @@ class CallerService(
 
 	fun appUserId(): Long = requireAppUser().id
 
+	/** The caller's own anchor, or null when unauthenticated or not yet provisioned */
+	fun activeAppUser(): User? = jwtOrNull()?.let { users.findByKcSub(UUID.fromString(it.subject)) }
+
 // /////////////////// PUBLIC /////////////////////
 // ////////////////////////////////////////////////
 // ////////////////// HELPERS /////////////////////
