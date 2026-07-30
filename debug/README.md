@@ -5,7 +5,7 @@ stack does not depend on it, and it is safe to delete. It exists so the app has 
 so the n8n side has something to import while demoing.
 
 | Folder | What |
-|---|---|
+| --- | --- |
 | [`seed/`](seed/) | Fills a running dev stack with a fake "DevConf 2026": content + ~50 attendees + a few served meals |
 | [`n8n/`](n8n/) | Importable n8n workflow templates + the `QN-Token` credential |
 

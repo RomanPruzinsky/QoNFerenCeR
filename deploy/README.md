@@ -7,11 +7,11 @@ Docker Compose stack for QoNFerenCeR: PostgreSQL + Keycloak + backend + n8n.
 A single PostgreSQL instance hosts three **separate** databases — each service owns its own schema,
 so they can be backed up, migrated and wiped independently.
 
-| Database      | Holds                                                                                 | Created by                                                                |
-|---------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| Database      | Holds                                                                                  | Created by                                                                |
+| ------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `qonferencer` | App domain data: `User` (anchor), `CustomElementDef`, `CustomScreen`, meal entities, … | PostgreSQL image from `POSTGRES_DB=qonferencer` — **not** the init script |
-| `keycloak`    | Identity: realms, users, roles, sessions (~90 Keycloak tables)                        | `postgres/initdb/01-create-databases.sh`                                  |
-| `n8n`         | Workflow state: workflows, encrypted credentials, execution history                   | `postgres/initdb/01-create-databases.sh`                                  |
+| `keycloak`    | Identity: realms, users, roles, sessions (~90 Keycloak tables)                         | `postgres/initdb/01-create-databases.sh`                                  |
+| `n8n`         | Workflow state: workflows, encrypted credentials, execution history                    | `postgres/initdb/01-create-databases.sh`                                  |
 
 ### Who creates the tables
 

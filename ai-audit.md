@@ -3,12 +3,15 @@
 Brief log of AI-assisted changes: what was asked · what was done · date.
 
 ## always
+
 commit messages using claude opus 4.8
 
 ## 20.7.26 - Keycloak setup
+
 Implemented with help of Claude Sonnet 4.7
 
 ## 07.7.26 - be/config/Security
+
 implemented using Claude Sonnet 4.7
 
 ## 03.6.26 — Shared module

@@ -4,7 +4,7 @@ Ready-to-import demos of the backend's outbound events. Each is a Webhook whose 
 `EventType`, guarded by the shared `QN-Token` header, wired to a harmless external notification.
 
 | File | Listens on | Does |
-|---|---|---|
+| --- | --- | --- |
 | `meal-approved-to-discord.json` | `qonferencer_base/MEAL_APPROVED` | posts a line to a Discord webhook |
 | `slot-created-to-ntfy.json` | `qonferencer_base/SLOT_CREATED` | pushes a note to an [ntfy.sh](https://ntfy.sh) topic |
 
@@ -27,7 +27,7 @@ imports the credential straight into n8n's database:
 
 ```sh
 docker compose -f deploy/docker-compose.yml --env-file config/example.env \
-	exec n8n n8n import:credentials --input=/dev/stdin < debug/n8n/qn-token-credential.json
+  exec n8n n8n import:credentials --input=/dev/stdin < debug/n8n/qn-token-credential.json
 ```
 
 n8n encrypts it on import with `N8N_ENCRYPTION_KEY` (already in the stack), so the plaintext token
