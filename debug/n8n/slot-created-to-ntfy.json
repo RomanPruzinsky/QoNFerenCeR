@@ -1,0 +1,45 @@
+{
+	"name": "QoNFerenCeR — SLOT_CREATED → ntfy",
+	"nodes": [
+		{
+			"parameters": {
+				"httpMethod": "POST",
+				"path": "qonferencer_base/SLOT_CREATED",
+				"authentication": "headerAuth",
+				"responseMode": "onReceived",
+				"options": {}
+			},
+			"id": "webhook-slot-created",
+			"name": "SLOT_CREATED",
+			"type": "n8n-nodes-base.webhook",
+			"typeVersion": 2,
+			"position": [260, 300],
+			"webhookId": "qonferencer-slot-created",
+			"credentials": {
+				"httpHeaderAuth": { "id": "1", "name": "QN-Token" }
+			}
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://ntfy.sh/qonferencer-demo",
+				"sendBody": true,
+				"specifyBody": "string",
+				"body": "=New attendee registered: {{ $json.body.data.fullName }} ({{ $json.body.data.role }}, {{ $json.body.data.username }})",
+				"options": {}
+			},
+			"id": "http-ntfy",
+			"name": "Push to ntfy",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [540, 300]
+		}
+	],
+	"connections": {
+		"SLOT_CREATED": {
+			"main": [[{ "node": "Push to ntfy", "type": "main", "index": 0 }]]
+		}
+	},
+	"active": false,
+	"settings": { "executionOrder": "v1" }
+}

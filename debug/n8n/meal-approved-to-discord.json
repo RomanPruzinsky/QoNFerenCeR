@@ -1,0 +1,45 @@
+{
+	"name": "QoNFerenCeR — MEAL_APPROVED → Discord",
+	"nodes": [
+		{
+			"parameters": {
+				"httpMethod": "POST",
+				"path": "qonferencer_base/MEAL_APPROVED",
+				"authentication": "headerAuth",
+				"responseMode": "onReceived",
+				"options": {}
+			},
+			"id": "webhook-meal-approved",
+			"name": "MEAL_APPROVED",
+			"type": "n8n-nodes-base.webhook",
+			"typeVersion": 2,
+			"position": [260, 300],
+			"webhookId": "qonferencer-meal-approved",
+			"credentials": {
+				"httpHeaderAuth": { "id": "1", "name": "QN-Token" }
+			}
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://discord.com/api/webhooks/REPLACE_ME/REPLACE_ME",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={\n  \"content\": \"🍽️ Meal served to user {{ $json.body.data.userId }} (window {{ $json.body.data.windowId }}, {{ $json.body.data.variantKey }}) via {{ $json.body.data.scannerType }}\"\n}",
+				"options": {}
+			},
+			"id": "http-discord",
+			"name": "Notify Discord",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [540, 300]
+		}
+	],
+	"connections": {
+		"MEAL_APPROVED": {
+			"main": [[{ "node": "Notify Discord", "type": "main", "index": 0 }]]
+		}
+	},
+	"active": false,
+	"settings": { "executionOrder": "v1" }
+}

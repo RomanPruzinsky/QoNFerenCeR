@@ -1,9 +1,4 @@
 plugins {
-	// Kotlin 2.3.21 — kept in lockstep with android AND backend so the class
-	// metadata this module emits is readable by both consumers. Must support
-	// BOTH the android build's Gradle 9.2.1 and the backend build's Gradle
-	// 8.14.5, since a composite build compiles this module with each consumer's
-	// own Gradle.
 	kotlin("jvm") version "2.4.0"
 	id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
@@ -16,21 +11,19 @@ repositories {
 }
 
 dependencies {
+	compileOnly("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
 	testImplementation(kotlin("test"))
 }
 
-// JVM 11 is the lowest common denominator: the android app compiles to Java 11,
-// the backend to Java 21. Targeting 11 keeps this module's bytecode consumable
-// by both. DTOs / API / constants need no newer language level.
 kotlin {
 	compilerOptions {
-		jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+		jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
 	}
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType<Test> {

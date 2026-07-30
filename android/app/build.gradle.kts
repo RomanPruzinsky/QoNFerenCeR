@@ -22,7 +22,8 @@ android {
 
 	buildTypes {
 		release {
-			isMinifyEnabled = false
+			isMinifyEnabled = true
+			isShrinkResources = true
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
@@ -30,8 +31,8 @@ android {
 		}
 	}
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_11
-		targetCompatibility = JavaVersion.VERSION_11
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
 	}
 	buildFeatures {
 		compose = true
@@ -39,15 +40,42 @@ android {
 }
 
 dependencies {
-	// Shared DTO / API / constants — substituted from the /shared composite build.
 	implementation("tr.qonferencer:shared")
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.lifecycle.runtime.ktx)
+	implementation(libs.androidx.lifecycle.runtime.compose)
+	implementation(libs.androidx.lifecycle.viewmodel.compose)
 	implementation(libs.androidx.activity.compose)
+	implementation(libs.kotlinx.coroutines.android)
 	implementation(platform(libs.androidx.compose.bom))
 	implementation(libs.androidx.compose.ui)
 	implementation(libs.androidx.compose.ui.graphics)
 	implementation(libs.androidx.compose.material3)
+	implementation(libs.androidx.navigation.compose)
+	implementation(libs.androidx.datastore.preferences)
+
+	implementation(platform(libs.koin.bom))
+	implementation(libs.koin.android)
+	implementation(libs.koin.androidx.compose)
+
+	implementation(platform(libs.okhttp.bom))
+	implementation(libs.okhttp)
+	implementation(libs.okhttp.logging.interceptor)
+	implementation(libs.retrofit)
+	implementation(libs.retrofit.converter.jackson)
+	implementation(platform(libs.jackson.bom))
+	implementation(libs.jackson.module.kotlin)
+
+	implementation(libs.coil.compose)
+	implementation(libs.coil.network.okhttp)
+
+	implementation(libs.androidx.camera.core)
+	implementation(libs.androidx.camera.camera2)
+	implementation(libs.androidx.camera.lifecycle)
+	implementation(libs.androidx.camera.view)
+	implementation(libs.mlkit.barcode.scanning)
+	implementation(libs.zxing.core)
+
 	testImplementation(libs.junit)
 	androidTestImplementation(libs.androidx.junit)
 	androidTestImplementation(libs.androidx.espresso.core)
@@ -55,10 +83,6 @@ dependencies {
 	androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 	debugImplementation(libs.androidx.compose.ui.tooling)
 	debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-	// Compose-aware ktlint rules — fix-uje `function-naming` konflikt
-	// medzi Kotlin core (camelCase) a Compose (PascalCase pre Unit-returning).
-	// + ~30 dalsich Compose best-practice rules.
 	ktlintRuleset(libs.compose.rules.ktlint)
 }
 

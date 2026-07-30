@@ -3,3 +3,7 @@
 
 # Local AI context (not part of the repo)
 /CLAUDE.md
+
+# Secrets — real values live in config/ (committed template: config/example.env)
+/config/env.env
+/config/.env

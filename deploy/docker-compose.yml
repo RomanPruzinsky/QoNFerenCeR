@@ -4,15 +4,15 @@ services:
       image: postgres:16
       environment:
          POSTGRES_DB: qonferencer
-         POSTGRES_USER: app
-         POSTGRES_PASSWORD: secret
+         POSTGRES_USER: ${POSTGRES_USER}
+         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       ports:
          - "5432:5432"
       volumes:
          - postgres_data:/var/lib/postgresql/data
          - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
       healthcheck:
-         test: [ "CMD-SHELL", "pg_isready -U app -d qonferencer" ]
+         test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d qonferencer" ]
          interval: 5s
          retries: 5
 
@@ -22,10 +22,10 @@ services:
       environment:
          KC_DB: postgres
          KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-         KC_DB_USERNAME: app
-         KC_DB_PASSWORD: secret
-         KEYCLOAK_ADMIN: admin
-         KEYCLOAK_ADMIN_PASSWORD: admin
+         KC_DB_USERNAME: ${POSTGRES_USER}
+         KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+         KEYCLOAK_ADMIN: ${KC_ADMIN}
+         KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
       command: start-dev --import-realm
       volumes:
          - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
@@ -43,12 +43,15 @@ services:
          - "8081:8080"
       environment:
          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/qonferencer
-         SPRING_DATASOURCE_USERNAME: app
-         SPRING_DATASOURCE_PASSWORD: secret
-         # TODO: jwt
-         # KEYCLOAK_URL: http://keycloak:8080
-         # When wiring the OAuth2 resource server, use jwt.jwk-set-uri (lazy fetch on first request),
-         # NOT issuer-uri (eager fetch at startup → fails, since depends_on only waits for service_started, not ready).
+         SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+         SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+         KC_ISSUER: http://localhost:8080/realms/qonferencer
+         KC_JWK_SET_URI: http://keycloak:8080/realms/qonferencer/protocol/openid-connect/certs
+         KC_ADMIN_URL: http://keycloak:8080
+         N8N_ENABLED: "true"
+         N8N_BASE_URL: http://n8n:5678/webhook
+         N8N_PATH_TOKEN: ${N8N_PATH_TOKEN}
+         QONFERENCER_EVENT: ${QONFERENCER_EVENT}
       depends_on:
          postgres:
             condition: service_healthy
@@ -71,9 +74,9 @@ services:
          DB_POSTGRESDB_HOST: postgres
          DB_POSTGRESDB_PORT: "5432"
          DB_POSTGRESDB_DATABASE: n8n
-         DB_POSTGRESDB_USER: app
-         DB_POSTGRESDB_PASSWORD: secret
-         N8N_ENCRYPTION_KEY: 19c98f21389de8883fae9c7170e37c6becd5235fbd9b72099934ef8db9c0e039  # TODO: rotate + move to .env for prod
+         DB_POSTGRESDB_USER: ${POSTGRES_USER}
+         DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+         N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
          N8N_DIAGNOSTICS_ENABLED: "false"
          N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
       depends_on:

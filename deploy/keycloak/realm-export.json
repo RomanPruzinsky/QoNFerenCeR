@@ -12,7 +12,7 @@
 	"roles": {
 		"realm": [
 			{
-				"name": "GUEST",
+				"name": "ANONYM",
 				"description": "Not logged in / public content"
 			},
 			{
@@ -65,8 +65,34 @@
 						"access.token.claim": "true",
 						"userinfo.token.claim": "true"
 					}
+				},
+				{
+					"name": "canCheckByName",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-usermodel-attribute-mapper",
+					"consentRequired": false,
+					"config": {
+						"user.attribute": "canCheckByName",
+						"claim.name": "canCheckByName",
+						"jsonType.label": "boolean",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
 				}
 			]
+		},
+		{
+			"clientId": "qonferencer-backend-admin",
+			"name": "QoNFerenCeR backend admin (service account)",
+			"enabled": true,
+			"publicClient": false,
+			"secret": "backend-admin-secret",
+			"standardFlowEnabled": false,
+			"directAccessGrantsEnabled": false,
+			"serviceAccountsEnabled": true,
+			"redirectUris": [],
+			"webOrigins": []
 		}
 	],
 	"users": [
@@ -90,8 +116,26 @@
 			"attributes": {
 				"isSpeaker": [
 					"false"
+				],
+				"canCheckByName": [
+					"true"
+				]
+			}
+		},
+		{
+			"username": "service-account-qonferencer-backend-admin",
+			"enabled": true,
+			"serviceAccountClientId": "qonferencer-backend-admin",
+			"clientRoles": {
+				"realm-management": [
+					"manage-users",
+					"view-users",
+					"view-realm"
 				]
 			}
 		}
-	]
+	],
+	"attributes": {
+		"kc.user.profile.config": "{\"unmanagedAttributePolicy\": \"ENABLED\", \"attributes\": [{\"name\": \"username\", \"displayName\": \"${username}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"email\", \"displayName\": \"${email}\", \"validations\": {\"email\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"firstName\", \"displayName\": \"${firstName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"lastName\", \"displayName\": \"${lastName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"isSpeaker\", \"displayName\": \"isSpeaker\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"canCheckByName\", \"displayName\": \"canCheckByName\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}]}"
+	}
 }
