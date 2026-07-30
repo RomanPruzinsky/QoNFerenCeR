@@ -38,19 +38,24 @@ class MealScanService(
 		val slot = MealSlotId(userId, windowId)
 		val reservation = reservations.findById(slot).orElse(null)
 			?: return denied(userId, windowId, scannedBy, scannerType, MealScanResult.NOT_REGISTERED_PORTION)
-		val approved = consumptions.consume(slot, scannedBy, request.idempotencyKey) ||
+		val isNewConsumption = consumptions.consume(slot, scannedBy, request.idempotencyKey)
+		val isRetry = !isNewConsumption &&
 			consumptions.findById(slot).orElse(null)?.idempotencyKey == request.idempotencyKey
-		if (!approved) return denied(userId, windowId, scannedBy, scannerType, MealScanResult.ALREADY_CONSUMED)
-		events.publish(
-			EventType.MEAL_APPROVED,
-			mapOf(
-				"userId" to userId,
-				"windowId" to windowId,
-				"variantKey" to reservation.variantKey,
-				"scannedBy" to scannedBy,
-				"scannerType" to scannerType.name,
-			),
-		)
+		if (!isNewConsumption && !isRetry) {
+			return denied(userId, windowId, scannedBy, scannerType, MealScanResult.ALREADY_CONSUMED)
+		}
+		if (isNewConsumption) {
+			events.publish(
+				EventType.MEAL_APPROVED,
+				mapOf(
+					"userId" to userId,
+					"windowId" to windowId,
+					"variantKey" to reservation.variantKey,
+					"scannedBy" to scannedBy,
+					"scannerType" to scannerType.name,
+				),
+			)
+		}
 		return MealScanResultDto(MealScanResult.APPROVED, userId, reservation.variantKey)
 	}
 
