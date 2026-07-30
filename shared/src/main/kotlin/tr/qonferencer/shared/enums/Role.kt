@@ -1,5 +1,7 @@
 package tr.qonferencer.shared.enums
 
+import java.util.Locale
+
 /** Linear role ladder; a higher role also holds every lower role's privileges */
 enum class Role {
 	ANONYM,
@@ -14,7 +16,7 @@ enum class Role {
 	fun atLeast(min: Role): Boolean = ordinal >= min.ordinal
 
 	companion object {
-		fun fromOrAnonym(value: String?): Role = entries.firstOrNull { it.name == value?.uppercase() } ?: ANONYM
+		fun fromOrAnonym(value: String?): Role = entries.firstOrNull { it.name == value?.uppercase(Locale.ROOT) } ?: ANONYM
 
 		fun highest(roles: Collection<String>): Role = roles
 			.map { fromOrAnonym(it) }
