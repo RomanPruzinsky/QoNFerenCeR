@@ -155,7 +155,7 @@ VOL_TOKEN="$(token_for "$VOL_USER" "$VOL_PASS")"
 served=0
 for uid in "${VISITOR_IDS[@]:0:15}"; do
 	scan="$(jq -n --arg t "$uid" --argjson w "$W1" \
-		'{token:$t, mealWindowId:$w, idempotencyKey:"'"$(cat /proc/sys/kernel/random/uuid)"'", carrier:"MANUAL"}')"
+		'{token:$t, mealWindowId:$w, idempotencyKey:"'"$(cat /proc/sys/kernel/random/uuid)"'", scannerType:"MANUAL"}')"
 	res="$(curl -fsS -X POST "$BACKEND/api/v1/meal-scan" \
 		-H "Authorization: Bearer $VOL_TOKEN" -H 'Content-Type: application/json' -d "$scan" | jq -r .result)"
 	[ "$res" = "APPROVED" ] && served=$((served + 1))
