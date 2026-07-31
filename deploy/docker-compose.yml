@@ -48,10 +48,15 @@ services:
          KC_ISSUER: http://localhost:8080/realms/qonferencer
          KC_JWK_SET_URI: http://keycloak:8080/realms/qonferencer/protocol/openid-connect/certs
          KC_ADMIN_URL: http://keycloak:8080
-         N8N_ENABLED: "true"
+         KC_REALM: ${KC_REALM}
+         KC_ADMIN_CLIENT_ID: ${KC_ADMIN_CLIENT_ID}
+         KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET}
+         N8N_ENABLED: ${N8N_ENABLED}
          N8N_BASE_URL: http://n8n:5678/webhook
-         N8N_PATH_TOKEN: ${N8N_PATH_TOKEN}
-         QONFERENCER_EVENT: ${QONFERENCER_EVENT}
+         N8N_PATH_PREFIX: ${N8N_PATH_PREFIX}
+         N8N_TIMEOUT_MS: ${N8N_TIMEOUT_MS}
+         N8N_AUTH_TOKEN: ${N8N_AUTH_TOKEN}
+         EVENT_ID: ${EVENT_ID}
       depends_on:
          postgres:
             condition: service_healthy

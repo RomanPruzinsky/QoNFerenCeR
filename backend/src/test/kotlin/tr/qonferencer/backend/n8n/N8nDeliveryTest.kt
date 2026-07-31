@@ -98,7 +98,14 @@ class N8nDeliveryTest {
 
 	private fun listener(enabled: Boolean, token: String = "") = N8nOutboundListener(
 		builder.build(),
-		N8nProperties(enabled = enabled, baseUrl = BASE_URL, eventName = "devconf-2026", pathToken = token),
+		N8nProperties(
+			enabled = enabled,
+			baseUrl = BASE_URL,
+			pathPrefix = "qonferencer_base",
+			eventId = "devconf-2026",
+			authToken = token,
+			timeoutMs = 3000,
+		),
 	)
 
 	private companion object {

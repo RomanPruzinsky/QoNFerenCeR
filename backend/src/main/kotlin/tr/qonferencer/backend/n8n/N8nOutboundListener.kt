@@ -25,14 +25,14 @@ class N8nOutboundListener(
 			schemaVersion = SCHEMA_VERSION,
 			eventType = event.type,
 			ts = Instant.now(),
-			event = properties.eventName,
+			event = properties.eventId,
 			data = event.data,
 		)
 		try {
 			n8nRestClient.post()
 				.uri("/{prefix}/{eventType}", properties.pathPrefix, event.type.name)
 				.contentType(MediaType.APPLICATION_JSON)
-				.apply { if (properties.pathToken.isNotBlank()) header(TOKEN_HEADER, properties.pathToken) }
+				.apply { if (properties.authToken.isNotBlank()) header(TOKEN_HEADER, properties.authToken) }
 				.body(envelope)
 				.retrieve()
 				.toBodilessEntity()

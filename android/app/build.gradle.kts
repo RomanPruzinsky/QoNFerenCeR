@@ -4,6 +4,17 @@ plugins {
 	alias(libs.plugins.ktlint)
 }
 
+val eventId = rootDir.resolve("../config/QoNFerenCeR.env")
+	.readLines()
+	.first { it.startsWith("EVENT_ID=") }
+	.substringAfter("=")
+	.trim()
+
+require(Regex("[a-zA-Z][a-zA-Z0-9_]*").matches(eventId)) {
+	"EVENT_ID='$eventId' in config/QoNFerenCeR.env must start with letter and contain only " +
+		"letters, digits or underscores — it is an applicationId `tr.qonferencer.$eventId`."
+}
+
 android {
 	namespace = "tr.qonferencer"
 	compileSdk {
@@ -11,7 +22,7 @@ android {
 	}
 
 	defaultConfig {
-		applicationId = "tr.qonferencer"
+		applicationId = "tr.qonferencer.$eventId"
 		minSdk = 29
 		targetSdk = 36
 		versionCode = 1
