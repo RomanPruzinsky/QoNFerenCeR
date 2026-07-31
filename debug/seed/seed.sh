@@ -14,11 +14,11 @@ REALM="${REALM:-qonferencer}"
 CLIENT="${CLIENT:-qonferencer-android}"
 ADMIN_USER="${ADMIN_USER:-admin}"
 ADMIN_PASS="${ADMIN_PASS:-changeme}"
-# Keycloak master admin (config/example.env: KC_ADMIN / KC_ADMIN_PASSWORD) — needed once to enable
+# Keycloak master admin (config/QoNFerenCeR.env: KC_ADMIN / KC_ADMIN_PASSWORD) — needed once to enable
 # the custom user-profile attributes, which realm import silently drops (see below).
 MASTER_USER="${MASTER_USER:-admin}"
 MASTER_PASS="${MASTER_PASS:-admin}"
-COMPOSE="docker compose -f $(dirname "$0")/../../deploy/docker-compose.yml --env-file $(dirname "$0")/../../config/example.env"
+COMPOSE="docker compose -f $(dirname "$0")/../../deploy/docker-compose.yml --env-file $(dirname "$0")/../../config/QoNFerenCeR.env"
 
 say() { printf '\n\033[1;36m▶ %s\033[0m\n' "$*"; }
 

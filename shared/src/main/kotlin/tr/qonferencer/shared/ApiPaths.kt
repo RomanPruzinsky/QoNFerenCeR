@@ -2,7 +2,7 @@ package tr.qonferencer.shared
 
 /** REST paths shared by both clients */
 object ApiPaths {
-	private const val BASE = "/api/v1"
+	private const val BASE = "/api/v$API_VERSION"
 
 	const val USER_BY_ID = "$BASE/users/{userId}"
 
@@ -13,6 +13,7 @@ object ApiPaths {
 
 	object Admin {
 		const val ROOT = "$BASE/admin"
+
 		const val ADD_USER = "$ROOT/add-user"
 		const val GET_ALL_USERS = "$ROOT/get-all-users"
 		const val UPDATE_USER = "$ROOT/update-user/{userId}"
