@@ -3,12 +3,13 @@ package tr.qonferencer.backend.meal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.common.forbidden
-import tr.qonferencer.backend.n8n.EventType
+import tr.qonferencer.backend.n8n.OutboundEvent
 import tr.qonferencer.backend.n8n.OutboundEvents
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.dtos.MealScanRequestDto
 import tr.qonferencer.shared.dtos.MealScanResultDto
+import tr.qonferencer.shared.dtos.UserMealEntryDto
 import tr.qonferencer.shared.enums.MealScanResult
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.shared.enums.ScannerType
@@ -45,13 +46,11 @@ class MealScanService(
 		}
 		if (isNewConsumption) {
 			events.publish(
-				EventType.MEAL_APPROVED,
-				mapOf(
-					"userId" to userId,
-					"windowId" to windowId,
-					"variantKey" to reservation.variantKey,
-					"scannedBy" to scannedBy,
-					"scannerType" to scannerType.name,
+				OutboundEvent.MealApproved(
+					userId = userId,
+					meal = UserMealEntryDto(windowId, reservation.variantKey),
+					scannedBy = scannedBy,
+					scannerType = scannerType,
 				),
 			)
 		}
@@ -82,13 +81,12 @@ class MealScanService(
 		result: MealScanResult,
 	): MealScanResultDto {
 		events.publish(
-			EventType.MEAL_DENIED,
-			mapOf(
-				"userId" to userId,
-				"windowId" to windowId,
-				"reason" to result.name,
-				"scannedBy" to scannedBy,
-				"scannerType" to scannerType.name,
+			OutboundEvent.MealDenied(
+				userId = userId,
+				windowId = windowId,
+				reason = result,
+				scannedBy = scannedBy,
+				scannerType = scannerType,
 			),
 		)
 		return MealScanResultDto(result, null)

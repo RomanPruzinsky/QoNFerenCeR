@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.LoginCredentialsDto
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
+import tr.qonferencer.shared.dtos.SlotProvisionedDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 
 /** Admin-only slot provisioning + login re-issue; [SlotService] gates every method */
@@ -21,7 +22,7 @@ class AdminController(
 ) {
 	@PostMapping(ApiPaths.Admin.ADD_USER)
 	@ResponseStatus(HttpStatus.CREATED)
-	fun create(@RequestBody req: ModifyableUserDataDto): UserDetailDto = slotService.createUserSlot(req)
+	fun create(@RequestBody req: ModifyableUserDataDto): SlotProvisionedDto = slotService.createUserSlot(req)
 	
 	@PostMapping(ApiPaths.Admin.LOGIN)
 	fun login(@PathVariable userId: Long): LoginCredentialsDto = slotService.issueLogin(userId)

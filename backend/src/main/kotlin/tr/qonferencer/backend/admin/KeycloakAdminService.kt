@@ -100,4 +100,10 @@ class KeycloakAdminService(
 	fun deleteUser(sub: UUID) {
 		keycloak.realm(realm).users().delete(sub.toString()).close()
 	}
+
+	/** [username]'s Keycloak sub + display name, or null if no such user exists */
+	fun findByUsername(username: String): Pair<UUID, String>? =
+		keycloak.realm(realm).users().search(username, true).firstOrNull()?.let {
+			UUID.fromString(it.id) to listOfNotNull(it.firstName, it.lastName).joinToString(" ").ifBlank { username }
+		}
 }

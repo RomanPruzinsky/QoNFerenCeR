@@ -6,7 +6,7 @@ import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.meal.toDto
 import tr.qonferencer.backend.meal.toUserMealEntry
-import tr.qonferencer.backend.n8n.EventType
+import tr.qonferencer.backend.n8n.OutboundEvent
 import tr.qonferencer.backend.n8n.OutboundEvents
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.backend.user.User
@@ -30,13 +30,14 @@ class SplashService(
 	/** Assembles everything the app needs at start; the launch event fires before the ETag check */
 	fun build(): SplashDto {
 		val role = caller.role()
-		events.publish(EventType.APP_LAUNCHED, mapOf("role" to role.name, "isSpeaker" to caller.isSpeaker()))
+		val me = caller.userOrNull()?.let { buildMe(it, role) }
+		events.publish(OutboundEvent.AppLaunched(user = me))
 		return SplashDto(
 			languages = languages.findAll(Sort.by("code")).map { it.toDto() },
 			translations = translations.findAll(Sort.by("id.key", "id.langCode")).map { it.toDto() },
 			customScreens = screens.findAll(Sort.by("id")).filter { role.atLeast(it.minRole) }.map { it.toDto() },
 			mealWindows = windows.findAll(Sort.by("startsAt")).map { it.toDto() },
-			me = caller.userOrNull()?.let { buildMe(it, role) },
+			me = me,
 		)
 	}
 

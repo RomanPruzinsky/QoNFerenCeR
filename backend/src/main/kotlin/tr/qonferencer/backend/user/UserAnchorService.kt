@@ -6,6 +6,7 @@ import tr.qonferencer.shared.CustomDataType
 import java.security.SecureRandom
 import java.util.UUID
 
+// TODO: explain anchor
 /** Sole owner of the app anchor's own fields: its `qrSecret` and its free-form `customData` */
 @Service
 class UserAnchorService(
@@ -14,7 +15,7 @@ class UserAnchorService(
 ) {
 	private val random = SecureRandom()
 
-	/** The anchor of [kcSub] named [fullName], created with a fresh secret when it has none yet */
+	/** Makes sure entry for this user exists */
 	fun ensure(kcSub: UUID, fullName: String): User {
 		users.insertIfAbsent(kcSub, newSecret(), fullName)
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
