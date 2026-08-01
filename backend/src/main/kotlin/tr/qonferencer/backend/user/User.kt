@@ -16,9 +16,9 @@ import java.util.UUID
  * @property kcSub User's `Keycloak` identity
  * @property qrSecret HMAC secret for **QR/NFC** tokens
  * @property qrSecretV Version of used [qrSecret]
- * @property fullName Attendee's name; always required, hence a column and not a [customData] key
+ * @property fullName Attendee's name
  * @property customData Custom data
- * @property createdAt When was user created (first login time)
+ * @property createdAt When was user created
  */
 @Entity
 @Table(name = "app_user")

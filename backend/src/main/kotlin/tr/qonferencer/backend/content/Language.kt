@@ -6,10 +6,10 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 /**
- * Available UI language
- * @property code Language code ("en", "sk", ...)
- * @property name Readable name
- * @property isDefault Whether is fallback language when a key has no translation
+ * Available language
+ * @property code Language code ("en","sk",...)
+ * @property name Readable name ("English","Slovenčina",...)
+ * @property isDefault Whether is picked on first launch + fallback
  */
 @Entity
 @Table(name = "language")

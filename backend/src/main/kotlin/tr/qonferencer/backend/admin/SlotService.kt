@@ -144,7 +144,7 @@ class SlotService(
 	/** Re-issue a fresh password for the slot and return its login credentials, plus its scan secret */
 	fun issueLogin(userId: Long): LoginCredentialsDto {
 		val user = users.findById(userId).orElseThrow { notFound("app_user $userId doesn't exist") }
-		val password = SlotPasswords.generate(random)
+		val password = UserPasswordGenerator.generate(random)
 		kc.setPassword(user.kcSub, password)
 		val username = kc.username(user.kcSub)
 		events.publish(EventType.SLOT_LOGIN_ISSUED, mapOf("userId" to user.id, "username" to username))
