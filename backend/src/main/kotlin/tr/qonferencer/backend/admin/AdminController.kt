@@ -22,14 +22,14 @@ class AdminController(
 	@PostMapping(ApiPaths.Admin.ADD_USER)
 	@ResponseStatus(HttpStatus.CREATED)
 	fun create(@RequestBody req: ModifyableUserDataDto): UserDetailDto = slotService.createUserSlot(req)
-
+	
 	@PostMapping(ApiPaths.Admin.LOGIN)
 	fun login(@PathVariable userId: Long): LoginCredentialsDto = slotService.issueLogin(userId)
-
+	
 	@PutMapping(ApiPaths.Admin.UPDATE_USER)
 	fun update(@PathVariable userId: Long, @RequestBody req: ModifyableUserDataDto): UserDetailDto =
 		slotService.updateUserSlot(userId, req)
-
+	
 	@PostMapping(ApiPaths.Admin.REVOKE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	fun revoke(@PathVariable userId: Long) = slotService.revokeDevice(userId)

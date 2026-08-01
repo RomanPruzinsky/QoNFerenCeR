@@ -42,14 +42,14 @@ class N8nOutboundListener(
 			log.warn("n8n delivery of {} failed: {}", event.type, failure.message)
 		}
 	}
-
+	
 	private companion object {
 		/** Bump only when the envelope stops being backwards compatible */
 		const val SCHEMA_VERSION = 1
 
 		/** Shared-secret header for n8n's Header Auth; no `X-` prefix per RFC 6648 */
 		const val TOKEN_HEADER = "QN-Token"
-
+		
 		val log = LoggerFactory.getLogger(N8nOutboundListener::class.java)
 	}
 }

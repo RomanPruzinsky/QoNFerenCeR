@@ -17,16 +17,16 @@ import java.util.UUID
 @Entity
 @Table(name = "meal_consumption")
 class MealConsumption(
-
+	
 	@EmbeddedId
 	var id: MealSlotId,
-
+	
 	@Column(name = "scanned_by")
 	var scannedBy: Long?,
-
+	
 	@Column(name = "scanned_at", nullable = false)
 	var scannedAt: Instant,
-
+	
 	@Column(name = "idempotency_key", nullable = false)
 	var idempotencyKey: UUID,
 )

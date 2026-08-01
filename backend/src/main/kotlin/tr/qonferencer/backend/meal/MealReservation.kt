@@ -13,10 +13,10 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "meal_reservation")
 class MealReservation(
-
+	
 	@EmbeddedId
 	var id: MealSlotId,
-
+	
 	@Column(name = "variant_key", nullable = false)
 	var variantKey: String,
 )

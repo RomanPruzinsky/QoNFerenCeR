@@ -15,7 +15,7 @@ import java.time.Duration
 @EnableAsync
 @EnableConfigurationProperties(N8nProperties::class)
 class N8nConfig {
-
+	
 	/** The client that talks to n8n, built from Boot's builder so it shares the `ObjectMapper` */
 	@Bean
 	fun n8nRestClient(builder: RestClient.Builder, properties: N8nProperties): RestClient {
@@ -40,13 +40,13 @@ class N8nConfig {
 		setWaitForTasksToCompleteOnShutdown(true)
 		setAwaitTerminationSeconds(AWAIT_TERMINATION_SECONDS)
 	}
-
+	
 	companion object {
 		const val N8N_EXECUTOR = "n8nExecutor"
-
+		
 		private const val QUEUE_CAPACITY = 256
 		private const val AWAIT_TERMINATION_SECONDS = 5
-
+		
 		private val log = LoggerFactory.getLogger(N8nConfig::class.java)
 	}
 }

@@ -22,7 +22,7 @@ fun badRequest(detail: String) = ApiException(HttpStatus.BAD_REQUEST, "/problems
 /** Maps [ApiException] to problem; `@Valid` errors are handled by Spring */
 @RestControllerAdvice
 class GlobalExceptionHandler {
-
+	
 	@ExceptionHandler(ApiException::class)
 	fun onApi(ex: ApiException): ProblemDetail = ProblemDetail
 		.forStatusAndDetail(ex.status, ex.message)
@@ -36,7 +36,7 @@ class GlobalExceptionHandler {
 			.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "internal error")
 			.apply { type = URI.create("/problems/internal") }
 	}
-
+	
 	private companion object {
 		val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 	}

@@ -25,13 +25,13 @@ import kotlin.test.assertEquals
 @AutoConfigureMockMvc
 @Transactional
 class AdminEndpointTest {
-
+	
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-
+	
 	@Autowired
 	private lateinit var objectMapper: ObjectMapper
-
+	
 	@Autowired
 	private lateinit var users: UserRepository
 
@@ -39,7 +39,7 @@ class AdminEndpointTest {
 	@Test
 	fun `an unknown meal window is refused before any account exists`() {
 		val before = users.count()
-
+		
 		mockMvc.post(ApiPaths.Admin.ADD_USER) {
 			with(callerWith(Role.ADMIN))
 			contentType = MediaType.APPLICATION_JSON
@@ -47,10 +47,10 @@ class AdminEndpointTest {
 				ModifyableUserDataDto("Jana Nováková", meals = listOf(UserMealEntryDto(404_404L, "meal.vegan"))),
 			)
 		}.andExpect { status { isBadRequest() } }
-
+		
 		assertEquals(before, users.count())
 	}
-
+	
 	private fun callerWith(role: Role) = jwt().jwt {
 		it.subject(UUID.randomUUID().toString())
 			.claim("realm_access", mapOf("roles" to listOf(role.name)))

@@ -24,16 +24,16 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @Transactional
 class UserDetailTest {
-
+	
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-
+	
 	@Autowired
 	private lateinit var users: UserRepository
-
+	
 	@MockitoBean
 	private lateinit var keycloak: KeycloakAdminService
-
+	
 	private fun newUser(fullName: String): Long {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, ByteArray(32), fullName)
@@ -41,11 +41,11 @@ class UserDetailTest {
 		Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot_007", Role.VOLUNTEER, true, false))
 		return userId
 	}
-
+	
 	@Test
 	fun `organiser with the grant sees everything but the scan secret`() {
 		val userId = newUser("Jana Kováčová")
-
+		
 		detail(userId, Role.ORGANISER).andExpect {
 			status { isOk() }
 			jsonPath("$.userId") { value(userId.toInt()) }
@@ -55,42 +55,42 @@ class UserDetailTest {
 			jsonPath("$.qrSecret") { doesNotExist() }
 		}
 	}
-
+	
 	@Test
 	fun `volunteer is refused even with the grant`() {
 		val userId = newUser("Peter Novák")
-
+		
 		detail(userId, Role.VOLUNTEER, canCheckByName = true).andExpect {
 			status { isForbidden() }
 		}
 	}
-
+	
 	@Test
 	fun `organiser without the grant is refused`() {
 		val userId = newUser("Marek Kovacs")
-
+		
 		detail(userId, Role.ORGANISER, canCheckByName = false).andExpect {
 			status { isForbidden() }
 		}
 	}
-
+	
 	@Test
 	fun `admin sees everything too, no grant needed`() {
 		val userId = newUser("Roman Pružinský")
-
+		
 		detail(userId, Role.ADMIN, canCheckByName = false).andExpect {
 			status { isOk() }
 			jsonPath("$.fullName") { value("Roman Pružinský") }
 		}
 	}
-
+	
 	@Test
 	fun `unknown userId is 404`() {
 		detail(404_404L, Role.ORGANISER).andExpect {
 			status { isNotFound() }
 		}
 	}
-
+	
 	private fun detail(userId: Long, role: Role, canCheckByName: Boolean = true) =
 		mockMvc.get(ApiPaths.USER_BY_ID.replace("{userId}", userId.toString())) {
 			with(

@@ -18,16 +18,16 @@ dependencies {
 val generateApiVersion = tasks.register("generateApiVersion") {
 	val envFile = layout.projectDirectory.file("../config/QoNFerenCeR.env")
 	val outputDir = layout.buildDirectory.dir("generated/apiVersion")
-
+	
 	inputs.file(envFile)
 	outputs.dir(outputDir)
-
+	
 	doLast {
 		val apiVersion = envFile.asFile.readLines()
 			.first { it.startsWith("API_VERSION=") }
 			.substringAfter("=")
 			.trim()
-
+		
 		outputDir.get().file("tr/qonferencer/shared/GeneratedApiVersion.kt").asFile.apply {
 			parentFile.mkdirs()
 			writeText(

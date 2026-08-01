@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 /** Maps Keycloak realm roles from JWT into Spring `ROLE_*` authorities */
 @Component
 class JwtAuthConverter : Converter<Jwt, AbstractAuthenticationToken> {
-
+	
 	@Suppress("UNCHECKED_CAST")
 	override fun convert(jwt: Jwt): AbstractAuthenticationToken {
 		val realmAccess: Map<String, Any> = jwt.getClaimAsMap("realm_access") ?: emptyMap()

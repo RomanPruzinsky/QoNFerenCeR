@@ -20,18 +20,18 @@ import tr.qonferencer.shared.enums.Role
 @Entity
 @Table(name = "custom_screen")
 class CustomScreen(
-
+	
 	@Id
 	@Column(name = "id")
 	var id: String,
-
+	
 	@Column(name = "title_key", nullable = false)
 	var titleKey: String,
-
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "min_role", nullable = false)
 	var minRole: Role,
-
+	
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(name = "body", nullable = false, columnDefinition = "jsonb")
 	var body: String,

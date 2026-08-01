@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SlotPasswordsTest {
-
+	
 	@Test
 	fun `generates length-8 crockford without ambiguous chars`() {
 		val random = SecureRandom()
