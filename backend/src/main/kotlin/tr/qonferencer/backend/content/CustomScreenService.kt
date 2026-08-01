@@ -16,8 +16,8 @@ class CustomScreenService(
 	private val objectMapper: ObjectMapper,
 ) {
 	fun body(id: String): List<CustomElement> {
-		val screen = screens.findById(id).orElseThrow { notFound("custom_screen $id does not exist") }
-		if (!caller.activeRole().atLeast(screen.minRole)) throw forbidden("role below screen minRole")
+		val screen = screens.findById(id).orElseThrow { notFound("custom_screen $id doesn't exist") }
+		if (!caller.role().atLeast(screen.minRole)) throw forbidden("role below screen minRole")
 		return objectMapper.readValue(screen.body, object : TypeReference<List<CustomElement>>() {})
 	}
 }

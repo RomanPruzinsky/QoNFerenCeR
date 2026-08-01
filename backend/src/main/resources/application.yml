@@ -3,9 +3,9 @@ spring:
       name: backend
 
    datasource:
-      url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/qonferencer}
-      username: ${SPRING_DATASOURCE_USERNAME:app}
-      password: ${SPRING_DATASOURCE_PASSWORD:secret}
+      url: ${SPRING_DATASOURCE_URL}
+      username: ${SPRING_DATASOURCE_USERNAME}
+      password: ${SPRING_DATASOURCE_PASSWORD}
 
    jpa:
       hibernate:
@@ -35,19 +35,19 @@ management:
 
 qonferencer:
    keycloak:
-      issuer: ${KC_ISSUER:http://localhost:8080/realms/qonferencer}
-      jwk-set-uri: ${KC_JWK_SET_URI:http://localhost:8080/realms/qonferencer/protocol/openid-connect/certs}
+      issuer: ${KC_ISSUER}
+      jwk-set-uri: ${KC_JWK_SET_URI}
       admin:
-         server-url: ${KC_ADMIN_URL:http://localhost:8080}
-         realm: ${KC_REALM:qonferencer}
-         client-id: ${KC_ADMIN_CLIENT_ID:qonferencer-backend-admin}
-         client-secret: ${KC_ADMIN_CLIENT_SECRET:backend-admin-secret} # TODO: real secret prod
+         server-url: ${KC_ADMIN_URL}
+         realm: ${KC_REALM}
+         client-id: ${KC_ADMIN_CLIENT_ID}
+         client-secret: ${KC_ADMIN_CLIENT_SECRET}
    n8n:
-      enabled: ${N8N_ENABLED:false} # TODO: true prod
-      base-url: ${N8N_BASE_URL:http://localhost:5678/webhook}
-      path-prefix: ${N8N_PATH_PREFIX:qonferencer_base}
-      event-name: ${QONFERENCER_EVENT:local-dev} # TODO: real conference id prod
-      path-token: ${N8N_PATH_TOKEN:} # TODO: generated per install
+      enabled: ${N8N_ENABLED}
+      base-url: ${N8N_BASE_URL}
+      path-prefix: ${N8N_PATH_PREFIX}
+      event-id: ${EVENT_ID}
+      auth-token: ${N8N_AUTH_TOKEN}
       timeout-ms: ${N8N_TIMEOUT_MS:3000}
 
 logging:

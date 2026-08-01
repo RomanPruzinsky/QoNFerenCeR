@@ -28,18 +28,19 @@ class SecurityConfig(
 	@param:Value($$"${qonferencer.keycloak.jwk-set-uri}") private val jwkSetUri: String,
 	@param:Value($$"${qonferencer.keycloak.issuer}") private val issuer: String,
 ) {
-
+	
 	@Bean
 	fun securityFilterChain(http: HttpSecurity, converter: JwtAuthConverter, caller: CallerService): SecurityFilterChain {
 		http
 			.csrf { it.disable() }
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) } // Server remembers nothing
 			.authorizeHttpRequests { reg ->
-				reg.requestMatchers(
-					"/api/v1/splash",
-					"/api/v1/custom-screens/**",
-				).permitAll() // Public endpoints
-					.requestMatchers("/actuator/health/**").permitAll()
+				reg
+					.requestMatchers(
+						ApiPaths.SPLASH,
+						"${ApiPaths.CustomScreens.ROOT}/**",
+						"/actuator/health/**",
+					).permitAll()
 					.requestMatchers("${ApiPaths.Admin.ROOT}/**").access(minRole(caller, Role.ADMIN))
 					.anyRequest().authenticated()
 			}
@@ -51,7 +52,7 @@ class SecurityConfig(
 
 	/** Threshold gate for a whole path prefix, so a newly added endpoint under it is covered by default */
 	private fun minRole(caller: CallerService, min: Role) = AuthorizationManager<RequestAuthorizationContext> { _, _ ->
-		AuthorizationDecision(caller.activeRole().atLeast(min))
+		AuthorizationDecision(caller.role().atLeast(min))
 	}
 
 	/** Custom JWT validation */

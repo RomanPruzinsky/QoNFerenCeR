@@ -86,7 +86,7 @@ class KeycloakAdminService(
 	fun info(sub: UUID): KeycloakUserInfo {
 		val userRes = keycloak.realm(realm).users().get(sub.toString())
 		val rep = userRes.toRepresentation()
-		val role = Role.highest(userRes.roles().realmLevel().listAll().map { it.name })
+		val role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name })
 		val attrs = rep.attributes ?: emptyMap()
 		return KeycloakUserInfo(
 			username = rep.username,

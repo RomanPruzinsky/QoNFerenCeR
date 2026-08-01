@@ -4,7 +4,7 @@ package tr.qonferencer.shared.dtos
  * Available language
  * @property code Language code ("en","sk",...)
  * @property name Readable name ("English","Slovenčina",...)
- * @property isDefault Whether is fallback language when a key has no translation
+ * @property isDefault Whether is picked on first launch + fallback
  */
 data class LanguageDto(
 	val code: String,

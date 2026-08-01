@@ -15,6 +15,36 @@ dependencies {
 	testImplementation(kotlin("test"))
 }
 
+val generateApiVersion = tasks.register("generateApiVersion") {
+	val envFile = layout.projectDirectory.file("../config/QoNFerenCeR.env")
+	val outputDir = layout.buildDirectory.dir("generated/apiVersion")
+
+	inputs.file(envFile)
+	outputs.dir(outputDir)
+
+	doLast {
+		val apiVersion = envFile.asFile.readLines()
+			.first { it.startsWith("API_VERSION=") }
+			.substringAfter("=")
+			.trim()
+
+		outputDir.get().file("tr/qonferencer/shared/GeneratedApiVersion.kt").asFile.apply {
+			parentFile.mkdirs()
+			writeText(
+				"""
+				package tr.qonferencer.shared
+
+				internal const val API_VERSION = "$apiVersion"
+				""".trimIndent() + "\n",
+			)
+		}
+	}
+}
+
+sourceSets.main {
+	kotlin.srcDir(generateApiVersion)
+}
+
 kotlin {
 	compilerOptions {
 		jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)

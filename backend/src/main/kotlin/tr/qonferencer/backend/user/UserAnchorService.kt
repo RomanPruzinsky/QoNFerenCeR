@@ -2,6 +2,7 @@ package tr.qonferencer.backend.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import tr.qonferencer.shared.CustomDataType
 import java.security.SecureRandom
 import java.util.UUID
 
@@ -21,12 +22,12 @@ class UserAnchorService(
 
 	/** [User.customData] as a map; an unreadable bag reads as empty */
 	@Suppress("UNCHECKED_CAST")
-	fun customData(user: User): Map<String, Any?> =
-		runCatching { objectMapper.readValue(user.customData, Map::class.java) as Map<String, Any?> }
+	fun customData(user: User): CustomDataType =
+		runCatching { objectMapper.readValue(user.customData, Map::class.java) as CustomDataType }
 			.getOrDefault(emptyMap())
 
 	/** Replaces the whole [User.customData] bag and persists it */
-	fun storeCustomData(user: User, customData: Map<String, Any?>) {
+	fun storeCustomData(user: User, customData: CustomDataType) {
 		user.customData = objectMapper.writeValueAsString(customData)
 		users.save(user)
 	}
@@ -41,9 +42,9 @@ class UserAnchorService(
 		users.save(user)
 		return user.qrSecretV
 	}
-
+	
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
-
+	
 	private companion object {
 		/** Length of `qrSecret` in bytes, matching the HMAC-SHA256 block the scan token signs with */
 		const val SECRET_LENGTH = 32

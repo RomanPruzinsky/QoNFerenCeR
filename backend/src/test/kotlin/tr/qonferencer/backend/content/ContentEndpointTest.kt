@@ -1,7 +1,6 @@
 package tr.qonferencer.backend.content
 
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -50,7 +49,6 @@ class ContentEndpointTest {
 	fun `splash embeds the caller's own profile when authenticated, minus the scan secret`() {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, ByteArray(32), "Jana Kováčová")
-		Mockito.`when`(keycloak.username(sub)).thenReturn("slot_042")
 
 		mockMvc.get("/api/v1/splash") {
 			with(
@@ -63,7 +61,6 @@ class ContentEndpointTest {
 		}.andExpect {
 			status { isOk() }
 			jsonPath("$.me.fullName") { value("Jana Kováčová") }
-			jsonPath("$.me.username") { value("slot_042") }
 			jsonPath("$.me.role") { value("VOLUNTEER") }
 			jsonPath("$.me.isSpeaker") { value(true) }
 			jsonPath("$.me.qrSecret") { doesNotExist() }

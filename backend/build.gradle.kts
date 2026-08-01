@@ -60,6 +60,24 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	// None of these have an app-level default (must crash if unset in real deployments) — tests
+	// supply their own values the same way docker-compose does, via the process environment.
+	// SPRING_DATASOURCE_* is exempt: Testcontainers' @ServiceConnection overrides it outright.
+	environment(
+		mapOf(
+			"EVENT_ID" to "test",
+			"KC_ISSUER" to "http://localhost:8080/realms/qonferencer",
+			"KC_JWK_SET_URI" to "http://localhost:8080/realms/qonferencer/protocol/openid-connect/certs",
+			"KC_ADMIN_URL" to "http://localhost:8080",
+			"KC_REALM" to "qonferencer",
+			"KC_ADMIN_CLIENT_ID" to "qonferencer-backend-admin",
+			"KC_ADMIN_CLIENT_SECRET" to "test",
+			"N8N_ENABLED" to "false",
+			"N8N_BASE_URL" to "http://localhost:5678/webhook",
+			"N8N_PATH_PREFIX" to "qonferencer_base",
+			"N8N_AUTH_TOKEN" to "",
+		),
+	)
 }
 
 ktlint {

@@ -107,6 +107,21 @@ class SearchByNameTest {
 		}
 	}
 
+	@Test
+	fun `organiser with a too-short query is refused, before it becomes an unfiltered browse`() {
+		search("p", Role.ORGANISER).andExpect {
+			status { isBadRequest() }
+		}
+	}
+
+	@Test
+	fun `admin browses everyone with an empty query, no grant needed`() {
+		search("", Role.ADMIN, canCheckByName = false).andExpect {
+			status { isOk() }
+			jsonPath("$.content.length()") { value(4) }
+		}
+	}
+
 	private fun search(query: String, role: Role, canCheckByName: Boolean = true) = mockMvc.get(ApiPaths.SEARCH_BY_NAME) {
 		param("searchFor", query)
 		with(

@@ -10,7 +10,6 @@ import tr.qonferencer.backend.meal.toUserMealEntry
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.shared.enums.Role
 
-/** Full profile of an attendee other than the caller; the info-desk detail view after a search */
 @Service
 class UserDetailService(
 	private val users: UserRepository,
@@ -21,14 +20,15 @@ class UserDetailService(
 ) {
 	@Transactional(readOnly = true)
 	fun detail(userId: Long): UserDetailDto {
-		val allowed = caller.role().atLeast(Role.ORGANISER) && caller.canCheckByName()
-		if (!allowed) throw forbidden("needs ORGANISER and canCheckByName")
-		val user = users.findById(userId).orElseThrow { notFound("app_user $userId does not exist") }
+		val role = caller.role()
+		val allowed = role == Role.ADMIN || (role.atLeast(Role.ORGANISER) && caller.canCheckByName())
+		if (!allowed) throw forbidden("needs ORGANISER with canCheckByName, or ADMIN")
+		
+		val user = users.findById(userId).orElseThrow { notFound("user $userId doesn't exist") }
 		val info = kc.info(user.kcSub)
 		return UserDetailDto(
 			userId = user.id,
 			fullName = user.fullName,
-			username = info.username,
 			role = info.role,
 			isSpeaker = info.isSpeaker,
 			canCheckByName = info.canCheckByName,

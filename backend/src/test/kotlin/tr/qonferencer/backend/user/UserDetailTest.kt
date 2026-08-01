@@ -50,7 +50,6 @@ class UserDetailTest {
 			status { isOk() }
 			jsonPath("$.userId") { value(userId.toInt()) }
 			jsonPath("$.fullName") { value("Jana Kováčová") }
-			jsonPath("$.username") { value("slot_007") }
 			jsonPath("$.role") { value("VOLUNTEER") }
 			jsonPath("$.isSpeaker") { value(true) }
 			jsonPath("$.qrSecret") { doesNotExist() }
@@ -72,6 +71,16 @@ class UserDetailTest {
 
 		detail(userId, Role.ORGANISER, canCheckByName = false).andExpect {
 			status { isForbidden() }
+		}
+	}
+
+	@Test
+	fun `admin sees everything too, no grant needed`() {
+		val userId = newUser("Roman Pružinský")
+
+		detail(userId, Role.ADMIN, canCheckByName = false).andExpect {
+			status { isOk() }
+			jsonPath("$.fullName") { value("Roman Pružinský") }
 		}
 	}
 

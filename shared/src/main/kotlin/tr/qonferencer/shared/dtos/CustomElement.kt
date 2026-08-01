@@ -15,37 +15,19 @@ import tr.qonferencer.shared.enums.CustomTextSize
 	JsonSubTypes.Type(value = CustomElement.Column::class, name = "COLUMN"),
 )
 sealed class CustomElement {
-
-	/**
-	 * Text element
-	 * @property source Where text comes from
-	 * @property size Text size
-	 */
 	data class Text(
 		val source: TextSource,
 		val size: CustomTextSize = CustomTextSize.MEDIUM,
 	) : CustomElement()
-
-	/**
-	 * Image element
-	 * @property url Image location
-	 */
+	
 	data class Image(
 		val url: String,
 	) : CustomElement()
-
-	/**
-	 * Horizontal container
-	 * @property children Nested elements
-	 */
+	
 	data class Row(
 		val children: List<CustomElement>,
 	) : CustomElement()
-
-	/**
-	 * Vertical container
-	 * @property children Nested elements
-	 */
+	
 	data class Column(
 		val children: List<CustomElement>,
 	) : CustomElement()

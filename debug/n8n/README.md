@@ -13,25 +13,25 @@ Everything else — path, header auth, field mapping — is already set.
 
 ## The shared secret (`QN-Token`)
 
-The backend stamps every outbound request with a `QN-Token` header (`N8N_PATH_TOKEN` in
-`config/example.env`). The Webhook nodes reference an n8n **Header Auth** credential named `QN-Token`
+The backend stamps every outbound request with a `QN-Token` header (`N8N_AUTH_TOKEN` in
+`config/QoNFerenCeR.env`). The Webhook nodes reference an n8n **Header Auth** credential named `QN-Token`
 that must hold the same value, or every delivery gets rejected.
 
 Two ways to create it:
 
 **A. Click once (manual).** Credentials → New → *Header Auth* → Name `QN-Token`, Header Name
-`QN-Token`, Value = the token from `config/example.env`.
+`QN-Token`, Value = the token from `config/QoNFerenCeR.env`.
 
 **B. Seed it from the file (no clicks).** So the organizer never touches the n8n UI, the installer
 imports the credential straight into n8n's database:
 
 ```sh
-docker compose -f deploy/docker-compose.yml --env-file config/example.env \
+docker compose -f deploy/docker-compose.yml --env-file config/QoNFerenCeR.env \
   exec n8n n8n import:credentials --input=/dev/stdin < debug/n8n/qn-token-credential.json
 ```
 
 n8n encrypts it on import with `N8N_ENCRYPTION_KEY` (already in the stack), so the plaintext token
-never lands in n8n's DB. Keep `qn-token-credential.json`'s value in sync with `config/example.env`
+never lands in n8n's DB. Keep `qn-token-credential.json`'s value in sync with `config/QoNFerenCeR.env`
 — in a real install the installer generates both from one source.
 
 > If `import:credentials` can't read `/dev/stdin` on your n8n build, copy the file into the

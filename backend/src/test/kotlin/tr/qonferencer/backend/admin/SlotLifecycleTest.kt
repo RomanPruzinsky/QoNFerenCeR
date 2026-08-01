@@ -15,7 +15,7 @@ import tr.qonferencer.backend.meal.MealSlotId
 import tr.qonferencer.backend.meal.MealWindow
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.user.UserRepository
-import tr.qonferencer.shared.dtos.UpdateUserSlotDto
+import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.UserMealEntryDto
 import tr.qonferencer.shared.enums.Role
 import java.time.Instant
@@ -60,7 +60,7 @@ class SlotLifecycleTest {
 
 		slots.updateUserSlot(
 			userId,
-			UpdateUserSlotDto(
+			ModifyableUserDataDto(
 				fullName = "Jana Kováčová",
 				role = Role.VOLUNTEER,
 				meals = listOf(UserMealEntryDto(dinner, "meal.vegan")),

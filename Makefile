@@ -1,6 +1,6 @@
 .PHONY: inf-pause inf-start inf-reset inf-logs be-pause be-start be-logs
 
-ENV_FILE := config/example.env # TODO: config/env.env for prod
+ENV_FILE := config/QoNFerenCeR.env # TODO: config/env.env for prod
 COMPOSE  := docker compose -f deploy/docker-compose.yml --env-file $(ENV_FILE)
 
 

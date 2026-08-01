@@ -17,9 +17,9 @@ class RoleTest {
 
 	@Test
 	fun `highest picks the strongest realm role`() {
-		assertEquals(Role.ADMIN, Role.highest(listOf("VISITOR", "ADMIN", "ANONYM")))
-		assertEquals(Role.ANONYM, Role.highest(emptyList()))
-		assertEquals(Role.ANONYM, Role.highest(listOf("nonsense")))
+		assertEquals(Role.ADMIN, Role.highestAvailable(listOf("VISITOR", "ADMIN", "ANONYM")))
+		assertEquals(Role.ANONYM, Role.highestAvailable(emptyList()))
+		assertEquals(Role.ANONYM, Role.highestAvailable(listOf("nonsense")))
 	}
 
 	@Test

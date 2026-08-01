@@ -2,7 +2,6 @@ package tr.qonferencer.backend.content
 
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import tr.qonferencer.backend.admin.KeycloakAdminService
 import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.meal.toDto
@@ -25,30 +24,28 @@ class SplashService(
 	private val windows: MealWindowRepository,
 	private val reservations: MealReservationRepository,
 	private val anchors: UserAnchorService,
-	private val kc: KeycloakAdminService,
 	private val caller: CallerService,
 	private val events: OutboundEvents,
 ) {
 	/** Assembles everything the app needs at start; the launch event fires before the ETag check */
 	fun build(): SplashDto {
-		val role = caller.activeRole()
-		events.publish(EventType.APP_LAUNCHED, mapOf("role" to role.name, "isSpeaker" to caller.activeIsSpeaker()))
+		val role = caller.role()
+		events.publish(EventType.APP_LAUNCHED, mapOf("role" to role.name, "isSpeaker" to caller.isSpeaker()))
 		return SplashDto(
 			languages = languages.findAll(Sort.by("code")).map { it.toDto() },
 			translations = translations.findAll(Sort.by("id.key", "id.langCode")).map { it.toDto() },
 			customScreens = screens.findAll(Sort.by("id")).filter { role.atLeast(it.minRole) }.map { it.toDto() },
 			mealWindows = windows.findAll(Sort.by("startsAt")).map { it.toDto() },
-			me = caller.activeAppUser()?.let { buildMe(it, role) },
+			me = caller.userOrNull()?.let { buildMe(it, role) },
 		)
 	}
 
-	/** Role/isSpeaker/canCheckByName come free off the caller's own JWT; only username needs Keycloak */
+	/** Role/isSpeaker/canCheckByName come free off the caller's own JWT */
 	private fun buildMe(user: User, role: Role) = UserDetailDto(
 		userId = user.id,
 		fullName = user.fullName,
-		username = kc.username(user.kcSub),
 		role = role,
-		isSpeaker = caller.activeIsSpeaker(),
+		isSpeaker = caller.isSpeaker(),
 		canCheckByName = caller.canCheckByName(),
 		customData = anchors.customData(user),
 		meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },

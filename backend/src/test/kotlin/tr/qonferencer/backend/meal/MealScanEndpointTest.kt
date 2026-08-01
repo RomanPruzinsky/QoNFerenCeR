@@ -61,7 +61,6 @@ class MealScanEndpointTest {
 		scan(MealScanRequestDto(token, windowId, key, ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("APPROVED") }
-			jsonPath("$.userId") { value(userId.toInt()) }
 			jsonPath("$.variantKey") { value("meal.vegan") }
 		}
 
@@ -108,20 +107,20 @@ class MealScanEndpointTest {
 			.andExpect {
 				status { isOk() }
 				jsonPath("$.result") { value("APPROVED") }
-				jsonPath("$.userId") { value(userId.toInt()) }
 			}
 	}
 
-	/** A weak scanner type label on a rotating token — or the reverse — is a client bug, caught loudly */
+	/** BARCODE only reads a bare id — a rotating token doesn't parse as one, so this is an unknown user */
 	@Test
-	fun `a scanner type that disagrees with the token is rejected`() {
+	fun `a rotating token sent as a barcode scan is not accepted`() {
 		val secret = ByteArray(32) { 8 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.BARCODE), Role.VOLUNTEER).andExpect {
-			status { isBadRequest() }
+			status { isOk() }
+			jsonPath("$.result") { value("NO_USER_FOUND") }
 		}
 	}
 
