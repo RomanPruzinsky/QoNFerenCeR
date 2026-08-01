@@ -1,6 +1,6 @@
 package tr.qonferencer.backend.n8n
 
-import tr.qonferencer.shared.LiteralyAny
+import tr.qonferencer.shared.LiterallyAny
 import java.time.Instant
 
 /**
@@ -10,7 +10,7 @@ import java.time.Instant
  */
 data class N8nEvent(
 	val type: EventType,
-	val data: Map<String, LiteralyAny>,
+	val data: Map<String, LiterallyAny>,
 )
 
 /**
@@ -26,5 +26,5 @@ data class N8nEnvelope(
 	val eventType: EventType,
 	val ts: Instant,
 	val event: String,
-	val data: Map<String, LiteralyAny>,
+	val data: Map<String, LiterallyAny>,
 )

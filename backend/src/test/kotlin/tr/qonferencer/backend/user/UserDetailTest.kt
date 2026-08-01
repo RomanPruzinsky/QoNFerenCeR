@@ -75,6 +75,16 @@ class UserDetailTest {
 	}
 
 	@Test
+	fun `admin sees everything too, no grant needed`() {
+		val userId = newUser("Roman Pružinský")
+
+		detail(userId, Role.ADMIN, canCheckByName = false).andExpect {
+			status { isOk() }
+			jsonPath("$.fullName") { value("Roman Pružinský") }
+		}
+	}
+
+	@Test
 	fun `unknown userId is 404`() {
 		detail(404_404L, Role.ORGANISER).andExpect {
 			status { isNotFound() }

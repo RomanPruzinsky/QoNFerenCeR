@@ -9,10 +9,10 @@ import org.springframework.data.repository.query.Param
 import java.util.UUID
 
 interface UserRepository : JpaRepository<User, Long> {
-
+	
 	fun findByKcSub(kcSub: UUID): User?
 
-	/** Creates [User], uses `Keycloak` data */
+	/** Creates [User] or skips it if is already present by [kcSub]  */
 	@Modifying
 	@Query(
 		value = """
@@ -28,23 +28,21 @@ interface UserRepository : JpaRepository<User, Long> {
 		@Param("fullName") fullName: String,
 	)
 
-	/** Info-desk lookup: `LIKE` answers a partial name, `word_similarity` survives a typo */
+	/** 
+	 * Find user by name: 
+	 * - `LIKE`: checks for substrings
+	 * - `word_similarity`: saferize typo 
+	 */
 	@Query(
-		value = """
-			SELECT * FROM app_user
-			WHERE lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%'
-			   OR word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
-			      >= :threshold
-			ORDER BY word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
-			         DESC, full_name
-		""",
-		countQuery = """
-			SELECT count(*) FROM app_user
-			WHERE lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%'
-			   OR word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))
-			      >= :threshold
-		""",
+		value = "SELECT * FROM app_user WHERE $NAME_MATCH ORDER BY $SIMILARITY DESC, full_name",
+		countQuery = "SELECT count(*) FROM app_user WHERE $NAME_MATCH",
 		nativeQuery = true,
 	)
 	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double, pageable: Pageable): Page<User>
+	
+	private companion object {
+		const val SIMILARITY = "word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))"
+		const val NAME_MATCH =
+			"lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%' OR $SIMILARITY >= :threshold"
+	}
 }

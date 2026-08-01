@@ -13,37 +13,27 @@ import java.util.UUID
 class CallerService(
 	private val users: UserRepository,
 ) {
-	fun kcSub(): UUID = UUID.fromString(jwt().subject)
-
-	fun role(): Role = Role.highestAvailable(jwt().processKeycloakRoles())
-
-	fun isSpeaker(): Boolean = jwt().processIsSpeaker()
-
-	/** Explicit per-user grant for the info-desk lookup, required on top of the role threshold */
+	fun userOrNull(): User? = jwtOrNull()?.let { users.findByKcSub(UUID.fromString(it.subject)) }
+	fun requireUserId(): Long = (
+		users.findByKcSub(UUID.fromString(jwt().subject))
+			?: throw notFound("User doesn't exist")
+		).id
+	
+	fun role(): Role = jwtOrNull()?.let { Role.highestAvailable(it.processKeycloakRoles()) } ?: Role.ANONYM
+	fun isSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false
 	fun canCheckByName(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckByName") ?: false
-
-	fun activeRole(): Role = jwtOrNull()?.let { Role.highestAvailable(it.processKeycloakRoles()) } ?: Role.ANONYM
-
-	fun activeIsSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false
-
-	fun requireAppUser(): User = users.findByKcSub(kcSub()) ?: throw notFound("app_user does not exist")
-
-	fun appUserId(): Long = requireAppUser().id
-
-	/** The caller's own anchor, or null when unauthenticated or not yet provisioned */
-	fun activeAppUser(): User? = jwtOrNull()?.let { users.findByKcSub(UUID.fromString(it.subject)) }
 
 // /////////////////// PUBLIC /////////////////////
 // ////////////////////////////////////////////////
 // ////////////////// HELPERS /////////////////////
-
+	
 	private fun jwt(): Jwt = jwtOrNull() ?: throw notFound("no authenticated principal")
-
+	
 	private fun jwtOrNull(): Jwt? = (SecurityContextHolder.getContext().authentication as? JwtAuthenticationToken)?.token
-
+	
 	@Suppress("UNCHECKED_CAST")
 	private fun Jwt.processKeycloakRoles(): List<String> =
 		(getClaimAsMap("realm_access")?.get("roles") as? List<String>).orEmpty()
-
+	
 	private fun Jwt.processIsSpeaker(): Boolean = getClaim<Boolean>("isSpeaker") ?: false
 }

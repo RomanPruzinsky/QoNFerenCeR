@@ -6,8 +6,4 @@ enum class ScannerType {
 	NFC,
 	BARCODE,
 	MANUAL,
-	;
-
-	/** Whether scan is **rotating** or **static** */
-	val isRotating: Boolean get() = this == QR || this == NFC
 }

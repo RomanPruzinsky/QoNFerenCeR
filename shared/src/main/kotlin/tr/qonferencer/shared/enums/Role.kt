@@ -18,15 +18,14 @@ enum class Role {
 
 	/** Whether can access [min]'s privileges */
 	fun atLeast(min: Role): Boolean = ordinal >= min.ordinal
-
+	
 	companion object {
-		/** @return Parsed [Role] or lowest as fallback */
-		fun fromOrLowest(value: String?): Role =
-			entries.firstOrNull { it.name == value?.uppercase(Locale.ROOT) } ?: Role.entries.first()
+		/** @return Parsed [Role] or ANONYM as fallback */
+		fun fromOrAnonym(value: String?): Role = entries.firstOrNull { it.name == value?.uppercase(Locale.ROOT) } ?: ANONYM
 
 		/** @return Highest [Role] from [roles] */
 		fun highestAvailable(roles: Collection<String>): Role = roles
-			.map { fromOrLowest(it) }
+			.map { fromOrAnonym(it) }
 			.maxByOrNull { it.ordinal } ?: ANONYM
 	}
 }

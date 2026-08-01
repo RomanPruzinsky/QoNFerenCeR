@@ -24,8 +24,8 @@ class RoleTest {
 
 	@Test
 	fun `fromOrAnonym is case-insensitive and safe`() {
-		assertEquals(Role.VOLUNTEER, Role.fromOrLowest("volunteer"))
-		assertEquals(Role.ANONYM, Role.fromOrLowest(null))
-		assertEquals(Role.ANONYM, Role.fromOrLowest("does-not-exist"))
+		assertEquals(Role.VOLUNTEER, Role.fromOrAnonym("volunteer"))
+		assertEquals(Role.ANONYM, Role.fromOrAnonym(null))
+		assertEquals(Role.ANONYM, Role.fromOrAnonym("does-not-exist"))
 	}
 }

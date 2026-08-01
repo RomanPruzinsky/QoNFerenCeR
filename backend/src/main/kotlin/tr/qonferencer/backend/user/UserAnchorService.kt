@@ -42,9 +42,9 @@ class UserAnchorService(
 		users.save(user)
 		return user.qrSecretV
 	}
-
+	
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
-
+	
 	private companion object {
 		/** Length of `qrSecret` in bytes, matching the HMAC-SHA256 block the scan token signs with */
 		const val SECRET_LENGTH = 32

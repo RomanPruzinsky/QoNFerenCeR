@@ -31,13 +31,13 @@ class ScanTokenTest {
 	}
 
 	@Test
-	fun `foreign secret does not verify`() {
+	fun `foreign secret doesn't verify`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
 		assertFalse(ScanToken.matches(parsed, foreignSecret, now))
 	}
 
 	@Test
-	fun `swapped userId does not verify`() {
+	fun `swapped userId doesn't verify`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
 		assertFalse(ScanToken.matches(parsed.copy(userId = 43), secret, now))
 	}
@@ -51,7 +51,12 @@ class ScanTokenTest {
 		assertNull(ScanToken.parse("Q1:42:59333333"))
 		assertNull(ScanToken.parse("Q1:abc:59333333:$hmac"))
 		assertNull(ScanToken.parse("Q1:42:later:$hmac"))
-		assertNull(ScanToken.parse("Q1:42:59333333:${hmac.drop(1)}"))
-		assertNull(ScanToken.parse("Q1:42:59333333:${hmac.dropLast(1)}1"))
+	}
+
+	@Test
+	fun `tampered hmac fails to match`() {
+		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
+		assertFalse(ScanToken.matches(parsed.copy(hmac = parsed.hmac.drop(1)), secret, now))
+		assertFalse(ScanToken.matches(parsed.copy(hmac = parsed.hmac.dropLast(1) + "0"), secret, now))
 	}
 }

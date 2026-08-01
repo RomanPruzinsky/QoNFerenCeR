@@ -28,8 +28,8 @@ class MealScanService(
 	@Transactional
 	fun scan(request: MealScanRequestDto): MealScanResultDto {
 		if (!caller.role().atLeast(Role.VOLUNTEER)) throw forbidden("role below VOLUNTEER")
-
-		val scannedBy = caller.appUserId()
+		
+		val scannedBy = caller.requireUserId()
 		val windowId = request.mealWindowId
 		val scannerType = request.scannerType
 		val userId = verify(request.token, scannerType)
@@ -66,7 +66,7 @@ class MealScanService(
 			if (!ScanToken.matches(parsed, secret, now.epochSecond)) return null
 			parsed.userId
 		}
-
+			
 		ScannerType.BARCODE, ScannerType.MANUAL -> {
 			val userId = token.trim().toLongOrNull() ?: return null
 			if (users.existsById(userId)) userId else null
