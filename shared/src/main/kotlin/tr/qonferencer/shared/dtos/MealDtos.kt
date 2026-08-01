@@ -5,7 +5,7 @@ import java.time.Instant
 /**
  * Meal serving window (canonical, shared across users)
  * @property id Window id
- * @property nameKey Translation key of the window name
+ * @property nameKey Translation key of window name (breakfast, ...)
  * @property startsAt Serving start
  * @property endsAt Serving end
  */
@@ -17,9 +17,9 @@ data class MealWindowDto(
 )
 
 /**
- * One meal the current user is registered for
+ * One meal user is registered for
  * @property windowId Which [MealWindowDto] this entry belongs to
- * @property variantKey Translation key of the meal variant the user gets
+ * @property variantKey Translation key of meal variant
  */
 data class UserMealEntryDto(
 	val windowId: Long,

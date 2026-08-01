@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.DEFAULT_PAGING_SIZE
-import tr.qonferencer.shared.dtos.SearchByNameDisplayDto
+import tr.qonferencer.shared.dtos.UserDisplayDto
 
 @RestController
 class SearchByNameController(
@@ -18,5 +18,5 @@ class SearchByNameController(
 	fun search(
 		@RequestParam("searchFor") query: String,
 		@PageableDefault(size = DEFAULT_PAGING_SIZE) pageable: Pageable,
-	): Page<SearchByNameDisplayDto> = searchService.search(query, pageable)
+	): Page<UserDisplayDto> = searchService.search(query, pageable)
 }

@@ -2,7 +2,6 @@ package tr.qonferencer.backend.content
 
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import tr.qonferencer.backend.admin.KeycloakAdminService
 import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.meal.toDto
@@ -25,7 +24,6 @@ class SplashService(
 	private val windows: MealWindowRepository,
 	private val reservations: MealReservationRepository,
 	private val anchors: UserAnchorService,
-	private val kc: KeycloakAdminService,
 	private val caller: CallerService,
 	private val events: OutboundEvents,
 ) {
@@ -42,11 +40,10 @@ class SplashService(
 		)
 	}
 
-	/** Role/isSpeaker/canCheckByName come free off the caller's own JWT; only username needs Keycloak */
+	/** Role/isSpeaker/canCheckByName come free off the caller's own JWT */
 	private fun buildMe(user: User, role: Role) = UserDetailDto(
 		userId = user.id,
 		fullName = user.fullName,
-		username = kc.username(user.kcSub),
 		role = role,
 		isSpeaker = caller.activeIsSpeaker(),
 		canCheckByName = caller.canCheckByName(),

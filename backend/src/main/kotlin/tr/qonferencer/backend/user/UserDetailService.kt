@@ -28,7 +28,6 @@ class UserDetailService(
 		return UserDetailDto(
 			userId = user.id,
 			fullName = user.fullName,
-			username = info.username,
 			role = info.role,
 			isSpeaker = info.isSpeaker,
 			canCheckByName = info.canCheckByName,

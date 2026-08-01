@@ -1,5 +1,6 @@
 package tr.qonferencer.shared.dtos
 
+import tr.qonferencer.shared.CustomDataType
 import tr.qonferencer.shared.enums.Role
 
 /**
@@ -13,7 +14,7 @@ data class CreateUserSlotDto(
 	val role: Role = Role.VISITOR,
 	val isSpeaker: Boolean = false,
 	val canCheckByName: Boolean = false,
-	val customData: Map<String, Any?> = emptyMap(),
+	val customData: CustomDataType = emptyMap(),
 	val meals: List<UserMealEntryDto> = emptyList(),
 )
 
@@ -26,7 +27,7 @@ data class UpdateUserSlotDto(
 	val role: Role = Role.VISITOR,
 	val isSpeaker: Boolean = false,
 	val canCheckByName: Boolean = false,
-	val customData: Map<String, Any?> = emptyMap(),
+	val customData: CustomDataType = emptyMap(),
 	val meals: List<UserMealEntryDto> = emptyList(),
 )
 
@@ -35,7 +36,7 @@ data class SlotDto(
 	val userId: Long,
 	val fullName: String,
 	val username: String? = null,
-	val customData: Map<String, Any?> = emptyMap(),
+	val customData: CustomDataType = emptyMap(),
 )
 
 /**

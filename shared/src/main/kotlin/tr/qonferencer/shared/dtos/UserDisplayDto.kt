@@ -2,8 +2,11 @@ package tr.qonferencer.shared.dtos
 
 import tr.qonferencer.shared.enums.Role
 
-/** One row of an info-desk name search result; click through to `GET /users/{userId}` for the rest */
-data class SearchByNameDisplayDto(
+/**
+ * Simple data of user searched by name
+ * @see [UserDetailDto]
+ */
+data class UserDisplayDto(
 	val userId: Long,
 	val fullName: String,
 	val role: Role,

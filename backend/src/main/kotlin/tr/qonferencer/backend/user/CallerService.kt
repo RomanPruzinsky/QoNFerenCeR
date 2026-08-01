@@ -15,14 +15,14 @@ class CallerService(
 ) {
 	fun kcSub(): UUID = UUID.fromString(jwt().subject)
 
-	fun role(): Role = Role.highest(jwt().processKeycloakRoles())
+	fun role(): Role = Role.highestAvailable(jwt().processKeycloakRoles())
 
 	fun isSpeaker(): Boolean = jwt().processIsSpeaker()
 
 	/** Explicit per-user grant for the info-desk lookup, required on top of the role threshold */
 	fun canCheckByName(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckByName") ?: false
 
-	fun activeRole(): Role = jwtOrNull()?.let { Role.highest(it.processKeycloakRoles()) } ?: Role.ANONYM
+	fun activeRole(): Role = jwtOrNull()?.let { Role.highestAvailable(it.processKeycloakRoles()) } ?: Role.ANONYM
 
 	fun activeIsSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false
 

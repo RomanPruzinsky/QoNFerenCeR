@@ -5,33 +5,28 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.abs
 
-/** Rotating token `Q1:<userId>:<window>:<hmac>`, hmac=base32(HMAC-SHA256(qrSecret, id:window)[0..9]) */
+/** Rotating token `Q1:<userId>:<window>:<hmac>` */
 object ScanToken {
 
-	/** Seconds one token stays current */
+	/** Token rotation time */
 	const val WINDOW_SECONDS = 30L
 
-	/** How many windows around the current one still verify (clock skew) */
+	/** ±N valid windows */
 	const val WINDOW_TOLERANCE = 1L
 
-	private const val PREFIX = "Q1"
+	/** Compatibility version of token */
+	private const val TOKEN_VERSION = 1
+	private const val PREFIX = "Q$TOKEN_VERSION"
 	private const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 	private const val MAC_BYTES = 10
 	private const val HMAC_LENGTH = 16
 
-	/**
-	 * Token split into its fields, nothing verified yet
-	 * @property userId Claimed `app_user.id`
-	 * @property window Claimed time window
-	 * @property hmac Claimed signature, authentic only once [matches] says so
-	 */
 	data class Parsed(
 		val userId: Long,
 		val window: Long,
 		val hmac: String,
 	)
 
-	/** Builds the token current at [epochSeconds] */
 	fun build(userId: Long, qrSecret: ByteArray, epochSeconds: Long): String {
 		val window = windowOf(epochSeconds)
 		return "$PREFIX:$userId:$window:${hmacOf(userId, window, qrSecret)}"

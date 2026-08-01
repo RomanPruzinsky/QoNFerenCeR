@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 )
 sealed class TextSource {
 	/**
-	 * Static translated text
+	 * Static text (translated)
 	 * @property key Translation key
 	 */
 	data class Ref(
@@ -19,7 +19,7 @@ sealed class TextSource {
 	) : TextSource()
 
 	/**
-	 * Downloaded text
+	 * Downloaded text (not translated)
 	 * @property url Where to fetch text from
 	 */
 	data class Link(

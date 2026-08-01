@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.admin.KeycloakAdminService
 import tr.qonferencer.backend.common.forbidden
-import tr.qonferencer.shared.dtos.SearchByNameDisplayDto
+import tr.qonferencer.shared.dtos.UserDisplayDto
 import tr.qonferencer.shared.enums.Role
 
 /** Info-desk lookup; returns every plausible match, gated by role and a per-user grant */
@@ -17,12 +17,12 @@ class SearchByNameService(
 	private val caller: CallerService,
 ) {
 	@Transactional(readOnly = true)
-	fun search(query: String, pageable: Pageable): Page<SearchByNameDisplayDto> {
+	fun search(query: String, pageable: Pageable): Page<UserDisplayDto> {
 		val allowed = caller.role().atLeast(Role.ORGANISER) && caller.canCheckByName()
 		if (!allowed) throw forbidden("needs ORGANISER and canCheckByName")
 		return users.searchByName(query.trim(), SIMILARITY_THRESHOLD, pageable).map {
 			val info = kc.info(it.kcSub)
-			SearchByNameDisplayDto(it.id, it.fullName, info.role, info.isSpeaker)
+			UserDisplayDto(it.id, it.fullName, info.role, info.isSpeaker)
 		}
 	}
 

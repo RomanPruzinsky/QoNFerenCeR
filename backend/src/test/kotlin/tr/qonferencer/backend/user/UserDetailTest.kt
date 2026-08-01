@@ -50,7 +50,6 @@ class UserDetailTest {
 			status { isOk() }
 			jsonPath("$.userId") { value(userId.toInt()) }
 			jsonPath("$.fullName") { value("Jana Kováčová") }
-			jsonPath("$.username") { value("slot_007") }
 			jsonPath("$.role") { value("VOLUNTEER") }
 			jsonPath("$.isSpeaker") { value(true) }
 			jsonPath("$.qrSecret") { doesNotExist() }
