@@ -9,14 +9,14 @@ import java.util.UUID
 interface MealWindowRepository : JpaRepository<MealWindow, Long>
 
 interface MealReservationRepository : JpaRepository<MealReservation, MealSlotId> {
-
+	
 	fun findByIdUserId(userId: Long): List<MealReservation>
-
+	
 	fun deleteByIdUserId(userId: Long)
 }
 
 interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId> {
-
+	
 	fun deleteByIdUserId(userId: Long)
 
 	/** Clears [userId] from `scannedBy` without deleting the rows, which belong to other people */

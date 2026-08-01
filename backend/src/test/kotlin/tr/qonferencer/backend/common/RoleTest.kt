@@ -7,21 +7,21 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class RoleTest {
-
+	
 	@Test
 	fun `atLeast is a linear threshold`() {
 		assertTrue(Role.ORGANISER.atLeast(Role.VISITOR))
 		assertTrue(Role.VISITOR.atLeast(Role.VISITOR))
 		assertFalse(Role.VISITOR.atLeast(Role.ORGANISER))
 	}
-
+	
 	@Test
 	fun `highest picks the strongest realm role`() {
 		assertEquals(Role.ADMIN, Role.highestAvailable(listOf("VISITOR", "ADMIN", "ANONYM")))
 		assertEquals(Role.ANONYM, Role.highestAvailable(emptyList()))
 		assertEquals(Role.ANONYM, Role.highestAvailable(listOf("nonsense")))
 	}
-
+	
 	@Test
 	fun `fromOrAnonym is case-insensitive and safe`() {
 		assertEquals(Role.VOLUNTEER, Role.fromOrAnonym("volunteer"))

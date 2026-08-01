@@ -8,18 +8,18 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ScanTokenTest {
-
+	
 	private val secret = ByteArray(32) { it.toByte() }
 	private val foreignSecret = ByteArray(32) { (it + 1).toByte() }
 	private val now = 1_780_000_000L
-
+	
 	@Test
 	fun `round trip verifies`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
 		assertEquals(42L, parsed.userId)
 		assertTrue(ScanToken.matches(parsed, secret, now))
 	}
-
+	
 	@Test
 	fun `neighbouring windows verify, further ones do not`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
@@ -29,19 +29,19 @@ class ScanTokenTest {
 		assertFalse(ScanToken.matches(parsed, secret, now + 2 * window))
 		assertFalse(ScanToken.matches(parsed, secret, now - 2 * window))
 	}
-
+	
 	@Test
 	fun `foreign secret doesn't verify`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
 		assertFalse(ScanToken.matches(parsed, foreignSecret, now))
 	}
-
+	
 	@Test
 	fun `swapped userId doesn't verify`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))
 		assertFalse(ScanToken.matches(parsed.copy(userId = 43), secret, now))
 	}
-
+	
 	@Test
 	fun `malformed tokens parse to null`() {
 		val hmac = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now))).hmac
@@ -52,7 +52,7 @@ class ScanTokenTest {
 		assertNull(ScanToken.parse("Q1:abc:59333333:$hmac"))
 		assertNull(ScanToken.parse("Q1:42:later:$hmac"))
 	}
-
+	
 	@Test
 	fun `tampered hmac fails to match`() {
 		val parsed = assertNotNull(ScanToken.parse(ScanToken.build(42, secret, now)))

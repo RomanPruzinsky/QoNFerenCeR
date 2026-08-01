@@ -1,5 +1,6 @@
 package tr.qonferencer.shared.scan
 
+import tr.qonferencer.shared.scan.ScanToken.WINDOW_TOLERANCE
 import java.security.MessageDigest
 import java.util.HexFormat
 import javax.crypto.Mac
@@ -40,11 +41,11 @@ object ScanToken {
 	fun parse(token: String): Parsed? {
 		val parts = token.split(':')
 		if (parts.size != 4 || parts[0] != PREFIX) return null
-
+		
 		val (_, windowPart, userIdPart, hmac) = parts
 		val window = windowPart.toLongOrNull() ?: return null
 		val userId = userIdPart.toLongOrNull() ?: return null
-
+		
 		return Parsed(userId, window, hmac)
 	}
 

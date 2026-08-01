@@ -38,50 +38,50 @@ import kotlin.test.assertEquals
 @RecordApplicationEvents
 @Transactional
 class DomainEventPublishingTest {
-
+	
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-
+	
 	@Autowired
 	private lateinit var objectMapper: ObjectMapper
-
+	
 	@Autowired
 	private lateinit var events: ApplicationEvents
-
+	
 	@Autowired
 	private lateinit var users: UserRepository
-
+	
 	@Autowired
 	private lateinit var windows: MealWindowRepository
-
+	
 	@Autowired
 	private lateinit var reservations: MealReservationRepository
-
+	
 	private val scannerSub = UUID.randomUUID()
-
+	
 	@BeforeEach
 	fun createScanner() {
 		users.insertIfAbsent(scannerSub, ByteArray(32), "Volunteer Scanner")
 	}
-
+	
 	@Test
 	fun `fetching the splash announces a launch`() {
 		mockMvc.get(ApiPaths.SPLASH).andExpect { status { isOk() } }
-
+		
 		val event = published().single()
 		assertEquals(EventType.APP_LAUNCHED, event.type)
 		assertEquals(Role.ANONYM.name, event.data["role"])
 	}
-
+	
 	@Test
 	fun `a handed out meal announces who got what`() {
 		val secret = ByteArray(32) { 7 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-
+		
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
-
+		
 		val event = published().single { it.type == EventType.MEAL_APPROVED }
 		assertEquals(userId, event.data["userId"])
 		assertEquals(windowId, event.data["windowId"])
@@ -94,29 +94,29 @@ class DomainEventPublishingTest {
 	fun `a badge scan says so, so the weaker ones can be counted`() {
 		val userId = newUser(ByteArray(32) { 6 })
 		val windowId = newWindowWithPortion(userId, "meal.regular")
-
+		
 		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE))
 			.andExpect { status { isOk() } }
-
+		
 		assertEquals("BARCODE", published().single { it.type == EventType.MEAL_APPROVED }.data["scannerType"])
 	}
-
+	
 	@Test
 	fun `a refused scan announces the reason, since nothing is written down`() {
 		val secret = ByteArray(32) { 5 }
 		val userId = newUser(secret)
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-
+		
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
-
+		
 		val event = published().single { it.type == EventType.MEAL_DENIED }
 		assertEquals("NOT_REGISTERED_PORTION", event.data["reason"])
 		assertEquals(userId, event.data["userId"])
 	}
-
+	
 	private fun published(): List<N8nEvent> = events.stream(N8nEvent::class.java).toList()
-
+	
 	private fun scan(request: MealScanRequestDto) = mockMvc.post(ApiPaths.MEAL_SCAN) {
 		with(
 			jwt().jwt {
@@ -127,18 +127,18 @@ class DomainEventPublishingTest {
 		contentType = MediaType.APPLICATION_JSON
 		content = objectMapper.writeValueAsString(request)
 	}
-
+	
 	private fun newUser(secret: ByteArray): Long {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, secret, "Hungry Attendee")
 		return users.findByKcSub(sub)!!.id
 	}
-
+	
 	private fun newWindowWithPortion(userId: Long, variantKey: String): Long {
 		val windowId = windows.save(newWindow()).id
 		reservations.save(MealReservation(MealSlotId(userId, windowId), variantKey))
 		return windowId
 	}
-
+	
 	private fun newWindow() = MealWindow(0, "meal.test", Instant.now(), Instant.now().plusSeconds(3600))
 }

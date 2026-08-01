@@ -23,27 +23,27 @@ import java.util.UUID
 @Entity
 @Table(name = "app_user")
 class User(
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	var id: Long,
-
+	
 	@Column(name = "kc_sub", nullable = false, unique = true)
 	var kcSub: UUID,
-
+	
 	@Column(name = "qr_secret", nullable = false)
 	var qrSecret: ByteArray,
-
+	
 	@Column(name = "qr_secret_v", nullable = false)
 	var qrSecretV: Short = 0,
-
+	
 	@Column(name = "full_name", nullable = false)
 	var fullName: String,
-
+	
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(name = "custom_data", nullable = false, columnDefinition = "jsonb")
 	var customData: String = "{}",
-
+	
 	@Column(name = "created_at", nullable = false)
 	var createdAt: Instant = Instant.now(),
 )
