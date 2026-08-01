@@ -2,6 +2,11 @@ spring:
    application:
       name: backend
 
+   data:
+      web:
+         pageable:
+            max-page-size: 100
+
    datasource:
       url: ${SPRING_DATASOURCE_URL}
       username: ${SPRING_DATASOURCE_USERNAME}
