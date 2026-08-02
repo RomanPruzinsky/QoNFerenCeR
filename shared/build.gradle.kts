@@ -1,5 +1,5 @@
 plugins {
-	kotlin("jvm") version "2.4.0"
+	kotlin("jvm") version "2.4.10"
 	id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-	compileOnly("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
+	compileOnly("com.fasterxml.jackson.core:jackson-annotations:2.22")
 	testImplementation(kotlin("test"))
 }
 
