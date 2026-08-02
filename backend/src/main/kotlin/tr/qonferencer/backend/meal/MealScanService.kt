@@ -16,7 +16,6 @@ import tr.qonferencer.shared.enums.ScannerType
 import tr.qonferencer.shared.scan.ScanToken
 import java.time.Instant
 
-/** Meal scan domain logic: 1 meal per window, reservation presence = registered */
 @Service
 class MealScanService(
 	private val reservations: MealReservationRepository,
@@ -25,27 +24,31 @@ class MealScanService(
 	private val caller: CallerService,
 	private val events: ApplicationEventPublisher,
 ) {
-	/** Serves scanner request; every domain verdict is result, only authorization is error */
 	@Transactional
 	fun scan(request: MealScanRequestDto): MealScanResultDto {
 		if (!caller.role().atLeast(Role.VOLUNTEER)) throw forbidden("role below VOLUNTEER")
 		
-		val scannedBy = caller.requireUserId()
 		val windowId = request.mealWindowId
+		val scannedBy = caller.requireUserId()
 		val scannerType = request.scannerType
+		
 		val userId = verify(request.token, scannerType)
 			?: return denied(null, windowId, scannedBy, scannerType, MealScanResult.NO_USER_FOUND)
-		val slot = MealSlotId(userId, windowId)
-		val reservation = reservations.findById(slot).orElse(null)
+		
+		val mealSlotId = MealSlotId(userId, windowId)
+		val reservation = reservations.findById(mealSlotId).orElse(null)
 			?: return denied(userId, windowId, scannedBy, scannerType, MealScanResult.NOT_REGISTERED_PORTION)
-		val isNewConsumption = consumptions.consume(slot, scannedBy, request.idempotencyKey)
-		val isRetry = !isNewConsumption &&
-			consumptions.findById(slot).orElse(null)?.idempotencyKey == request.idempotencyKey
-		if (!isNewConsumption && !isRetry) {
-			return denied(userId, windowId, scannedBy, scannerType, MealScanResult.ALREADY_CONSUMED)
-		}
-		if (isNewConsumption) {
-			events.publishEvent(
+		
+		when (consumptions.consume(mealSlotId, scannedBy, request.idempotencyKey)) {
+			ConsumeOutcome.CONFLICT -> return denied(
+				userId = userId,
+				windowId = windowId,
+				scannedBy = scannedBy,
+				scannerType = scannerType,
+				result = MealScanResult.ALREADY_CONSUMED,
+			)
+			
+			ConsumeOutcome.NEW -> events.publishEvent(
 				OutboundEvent.MealApproved(
 					userId = userId,
 					meal = UserMealEntryDto(windowId, reservation.variantKey),
@@ -53,11 +56,14 @@ class MealScanService(
 					scannerType = scannerType,
 				),
 			)
+			
+			ConsumeOutcome.RETRY -> Unit
 		}
+		
 		return MealScanResultDto(MealScanResult.APPROVED, reservation.variantKey)
 	}
 
-	/** @return Verified `app_user.id`, or null */
+	/** @return Verified `app_user.id`, or null if user not found */
 	private fun verify(token: String, scannerType: ScannerType, now: Instant = Instant.now()): Long? = when (scannerType) {
 		ScannerType.QR, ScannerType.NFC -> {
 			val parsed = ScanToken.parse(token) ?: return null
@@ -71,8 +77,7 @@ class MealScanService(
 			if (users.existsById(userId)) userId else null
 		}
 	}
-
-	/** Answers [result] and tells organizer; refused scan leaves no database trace */
+	
 	private fun denied(
 		userId: Long?,
 		windowId: Long,
@@ -89,6 +94,7 @@ class MealScanService(
 				scannerType = scannerType,
 			),
 		)
+		
 		return MealScanResultDto(result, null)
 	}
 }
