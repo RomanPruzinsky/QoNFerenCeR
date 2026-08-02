@@ -6,32 +6,37 @@ import tr.qonferencer.shared.CustomDataType
 import java.security.SecureRandom
 import java.util.UUID
 
-// TODO: explain anchor
-/** Sole owner of app anchor's own fields: its `qrSecret` and its free-form `customData` */
+/** **ANCHOR** is local record carrying app-specific data, that are not stored in Keycloak */
 @Service
 class UserAnchorService(
 	private val users: UserRepository,
 	private val objectMapper: ObjectMapper,
 ) {
-	private val random = SecureRandom()
-
 	/** Makes sure entry for this user exists */
-	fun ensure(kcSub: UUID, fullName: String): User {
-		users.insertIfAbsent(kcSub, newSecret(), fullName)
+	fun ensure(kcSub: UUID, fullName: String, customData: CustomDataType = emptyMap()): User {
+		users.insertIfAbsent(kcSub, newSecret(), fullName, objectMapper.writeValueAsString(customData))
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
 	}
 
-	/** [User.customData] as map; unreadable bag reads as empty */
+// ////////////////// CREATION ////////////////////
+// ////////////////////////////////////////////////
+// //////////////// CUSTOM DATA ///////////////////
+
+	/** Deserializes [User.customData] as map */
 	@Suppress("UNCHECKED_CAST")
 	fun customData(user: User): CustomDataType =
 		runCatching { objectMapper.readValue(user.customData, Map::class.java) as CustomDataType }
 			.getOrDefault(emptyMap())
 
-	/** Replaces whole [User.customData] bag and persists it */
+	/** Replaces whole [User.customData] */
 	fun storeCustomData(user: User, customData: CustomDataType) {
 		user.customData = objectMapper.writeValueAsString(customData)
 		users.save(user)
 	}
+
+// //////////////// CUSTOM DATA ///////////////////
+// ////////////////////////////////////////////////
+// ///////////////// QR SECRET ////////////////////
 
 	/**
 	 * Gives [user] fresh scan secret, so every token built from old one stops verifying
@@ -39,15 +44,16 @@ class UserAnchorService(
 	 */
 	fun rotateSecret(user: User): Short {
 		user.qrSecret = newSecret()
-		user.qrSecretV = (user.qrSecretV + 1).toShort()
+		user.qrSecretV++
 		users.save(user)
 		return user.qrSecretV
 	}
 	
+	private val random = SecureRandom()
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
 	
 	private companion object {
-		/** Length of `qrSecret` in bytes, matching HMAC-SHA256 block scan token signs with */
+		/** Length of `qrSecret` in bytes */
 		const val SECRET_LENGTH = 32
 	}
 }

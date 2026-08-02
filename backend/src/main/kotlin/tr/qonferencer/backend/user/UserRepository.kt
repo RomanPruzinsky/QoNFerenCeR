@@ -17,7 +17,7 @@ interface UserRepository : JpaRepository<User, Long> {
 	@Query(
 		value = """
 			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, full_name, custom_data, created_at)
-			VALUES (:kcSub, :qrSecret, 0, :fullName, '{}'::jsonb, now())
+			VALUES (:kcSub, :qrSecret, 0, :fullName, :customData::jsonb, now())
 			ON CONFLICT (kc_sub) DO NOTHING
 		""",
 		nativeQuery = true,
@@ -26,6 +26,7 @@ interface UserRepository : JpaRepository<User, Long> {
 		@Param("kcSub") kcSub: UUID,
 		@Param("qrSecret") qrSecret: ByteArray,
 		@Param("fullName") fullName: String,
+		@Param("customData") customData: String = "{}",
 	)
 
 	/** 

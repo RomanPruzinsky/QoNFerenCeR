@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import tr.qonferencer.shared.enums.Role
 import java.util.UUID
 
-/** Username, role and orthogonal flags read from Keycloak for user who isn't caller */
+/** User's data read from Keycloak */
 data class KeycloakUserInfo(
 	val username: String,
 	val role: Role,
@@ -48,9 +48,12 @@ class KeycloakAdminService(
 	fun updateUser(sub: UUID, role: Role, isSpeaker: Boolean, canCheckByName: Boolean) {
 		val userRes = userResource(sub)
 		userRes.update(userRes.toRepresentation().apply { attributes = keycloakedAttributes(isSpeaker, canCheckByName) })
+		
 		val realmRoles = userRes.roles().realmLevel()
+		
 		val ours = realmRoles.listAll().filter { held -> Role.entries.any { it.name == held.name } }
 		if (ours.isNotEmpty()) realmRoles.remove(ours)
+		
 		realmRoles.add(listOf(realmRole(role)))
 	}
 
@@ -72,11 +75,12 @@ class KeycloakAdminService(
 	/** Current username of Keycloak user */
 	fun username(sub: UUID): String = userResource(sub).toRepresentation().username
 
-	/** Username, role and orthogonal flags of arbitrary user, for info-desk detail views */
+	/** @return Keycloak data for user */
 	fun info(sub: UUID): KeycloakUserInfo {
 		val userRes = userResource(sub)
 		val rep = userRes.toRepresentation()
 		val attrs = rep.attributes ?: emptyMap()
+		
 		return KeycloakUserInfo(
 			username = rep.username,
 			role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name }),
