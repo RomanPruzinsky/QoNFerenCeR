@@ -15,15 +15,11 @@ class BootstrapAdminAnchor(
 	private val kc: KeycloakAdminService,
 	private val users: UserRepository,
 	private val anchors: UserAnchorService,
-	@param:Value($$"${qonferencer.keycloak.admin.bootstrap-username}") private val bootstrapUsername: String,
+	@Value($$"${qonferencer.keycloak.admin.bootstrap-username}") private val bootstrapUsername: String,
 ) : ApplicationRunner {
 	override fun run(args: ApplicationArguments) {
 		try {
-			val (sub, fullName) = kc.findByUsername(bootstrapUsername) ?: run {
-				log.warn("bootstrap admin '$bootstrapUsername' not found in Keycloak, no anchor created")
-				return
-			}
-			
+			val (sub, fullName) = kc.searchFirstAdmin(bootstrapUsername)
 			if (users.findByKcSub(sub) == null) {
 				anchors.ensure(sub, fullName)
 				log.info("anchored bootstrap admin '$bootstrapUsername' ($sub)")
