@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 
-/** Anchors the Keycloak-seeded bootstrap admin too, since it skips normal provisioning */
+/** Anchors firsst admin created by keycloak */
 @Component
 class BootstrapAdminAnchor(
 	private val kc: KeycloakAdminService,
@@ -29,7 +29,7 @@ class BootstrapAdminAnchor(
 				log.info("anchored bootstrap admin '$bootstrapUsername' ($sub)")
 			}
 		} catch (e: Exception) {
-			log.warn("could not anchor bootstrap admin '$bootstrapUsername': ${e.message}")
+			log.warn("couldn't anchor bootstrap admin '$bootstrapUsername': ${e.message}")
 		}
 	}
 	

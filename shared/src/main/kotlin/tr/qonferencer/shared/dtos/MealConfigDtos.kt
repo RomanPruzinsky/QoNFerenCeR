@@ -3,7 +3,7 @@ package tr.qonferencer.shared.dtos
 import java.time.Instant
 
 /**
- * Meal serving window (canonical, shared across users)
+ * Meal serving window
  * @property id Window id
  * @property nameKey Translation key of window name (breakfast, ...)
  * @property startsAt Serving start
