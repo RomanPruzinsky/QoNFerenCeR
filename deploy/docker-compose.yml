@@ -18,7 +18,7 @@ services:
 
    keycloak:
       # sslRequired="external"  # TODO: "none" for localhost only; switch for prod, also in realm-export (~line 4)
-      image: quay.io/keycloak/keycloak:24.0
+      image: quay.io/keycloak/keycloak:26.0
       environment:
          KC_DB: postgres
          KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
