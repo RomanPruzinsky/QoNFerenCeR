@@ -2,6 +2,7 @@ FROM eclipse-temurin:25-jdk AS build
 WORKDIR /workspace
 COPY backend/ backend/
 COPY shared/ shared/
+COPY config/ config/
 WORKDIR /workspace/backend
 RUN ./gradlew --no-daemon bootJar
 

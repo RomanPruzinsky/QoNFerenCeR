@@ -2,6 +2,7 @@ package tr.qonferencer.backend.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.shared.CustomDataType
 import java.security.SecureRandom
 import java.util.UUID
@@ -13,6 +14,7 @@ class UserAnchorService(
 	private val objectMapper: ObjectMapper,
 ) {
 	/** Makes sure entry for this user exists */
+	@Transactional
 	fun ensure(kcSub: UUID, fullName: String, customData: CustomDataType = emptyMap()): User {
 		users.insertIfAbsent(kcSub, newSecret(), fullName, objectMapper.writeValueAsString(customData))
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
