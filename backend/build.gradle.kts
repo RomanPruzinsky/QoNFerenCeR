@@ -69,13 +69,11 @@ tasks.withType<Test> {
 			"KC_ISSUER" to "http://localhost:8080/realms/qonferencer",
 			"KC_JWK_SET_URI" to "http://localhost:8080/realms/qonferencer/protocol/openid-connect/certs",
 			"KC_ADMIN_URL" to "http://localhost:8080",
-			"KC_REALM" to "qonferencer",
-			"KC_ADMIN_CLIENT_ID" to "qonferencer-backend-admin",
-			"KC_ADMIN_CLIENT_SECRET" to "test",
+			"KC_BEADMIN_CLIENT_SECRET" to "test",
 			"N8N_ENABLED" to "false",
 			"N8N_BASE_URL" to "http://localhost:5678/webhook",
 			"N8N_PATH_PREFIX" to "qonferencer_base",
-			"N8N_AUTH_TOKEN" to "",
+			"BE_N8N_COMMS__AUTH_TOKEN" to "",
 		),
 	)
 }

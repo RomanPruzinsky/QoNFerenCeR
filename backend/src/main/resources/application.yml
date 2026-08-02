@@ -44,16 +44,16 @@ qonferencer:
       jwk-set-uri: ${KC_JWK_SET_URI}
       admin:
          server-url: ${KC_ADMIN_URL}
-         realm: ${KC_REALM}
-         client-id: ${KC_ADMIN_CLIENT_ID}
-         client-secret: ${KC_ADMIN_CLIENT_SECRET}
-         bootstrap-username: ${KC_BOOTSTRAP_ADMIN_USERNAME:admin}
+         client-id: qonferencer-backend-admin # must match "clientId" of service-account client in `realm-export`
+         client-secret: ${KC_BEADMIN_CLIENT_SECRET}
+         realm: qonferencer # must match "realm" in `realm-export`
+         bootstrap-username: First Admin # must match "username" of the admin user in `realm-export`
    n8n:
       enabled: ${N8N_ENABLED}
       base-url: ${N8N_BASE_URL}
       path-prefix: ${N8N_PATH_PREFIX}
       event-id: ${EVENT_ID}
-      auth-token: ${N8N_AUTH_TOKEN}
+      auth-token: ${BE_N8N_COMMS__AUTH_TOKEN}
       timeout-ms: ${N8N_TIMEOUT_MS:3000}
 
 logging:

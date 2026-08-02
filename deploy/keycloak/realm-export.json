@@ -97,12 +97,12 @@
 	],
 	"users": [
 		{
-			"username": "admin",
+			"username": "First Admin",
 			"enabled": true,
 			"emailVerified": true,
 			"email": "admin@qonferencer.local",
-			"firstName": "System",
-			"lastName": "Administrator",
+			"firstName": "First",
+			"lastName": "Admin",
 			"credentials": [
 				{
 					"type": "password",

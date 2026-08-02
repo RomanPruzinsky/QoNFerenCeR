@@ -13,7 +13,7 @@ Everything else — path, header auth, field mapping — is already set.
 
 ## The shared secret (`QN-Token`)
 
-The backend stamps every outbound request with a `QN-Token` header (`N8N_AUTH_TOKEN` in
+The backend stamps every outbound request with a `QN-Token` header (`BE_N8N_COMMS__AUTH_TOKEN` in
 `config/QoNFerenCeR.env`). The Webhook nodes reference an n8n **Header Auth** credential named `QN-Token`
 that must hold the same value, or every delivery gets rejected.
 
