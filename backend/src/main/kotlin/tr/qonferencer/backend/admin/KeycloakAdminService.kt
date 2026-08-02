@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import tr.qonferencer.shared.enums.Role
 import java.util.UUID
 
-/** Username, role and orthogonal flags read from Keycloak for a user who isn't the caller */
+/** User's data read from Keycloak */
 data class KeycloakUserInfo(
 	val username: String,
 	val role: Role,
@@ -20,11 +20,14 @@ data class KeycloakUserInfo(
 /** Wrapper over Keycloak Admin API for slot user */
 @Service
 class KeycloakAdminService(
-	private val keycloak: Keycloak,
-	@param:Value($$"${qonferencer.keycloak.admin.realm}") private val realm: String,
+	keycloak: Keycloak,
+	@Value($$"${qonferencer.keycloak.admin.realm}") realm: String,
 ) {
+	private val realmRes = keycloak.realm(realm)
+	private val usersRes = realmRes.users()
+
 	/**
-	 * Creates an enabled user with [role] and its orthogonal attribute flags
+	 * Creates enabled user with [role] and its orthogonal attribute flags
 	 * @return User's Keycloak sub
 	 */
 	fun createUser(username: String, role: Role, isSpeaker: Boolean = false, canCheckByName: Boolean = false): UUID {
@@ -34,70 +37,84 @@ class KeycloakAdminService(
 			email = "$username@qonferencer.local"
 			firstName = username
 			lastName = "slot"
-			attributes = mapOf(
-				"isSpeaker" to listOf(isSpeaker.toString()),
-				"canCheckByName" to listOf(canCheckByName.toString()),
-			)
+			attributes = keycloakedAttributes(isSpeaker, canCheckByName)
 		}
-		val realmRes = keycloak.realm(realm)
-		val sub = realmRes.users().create(rep).use { CreatedResponseUtil.getCreatedId(it) }
-		val roleRep = realmRes.roles().get(role.name).toRepresentation()
-		realmRes.users().get(sub).roles().realmLevel().add(listOf(roleRep))
-		return UUID.fromString(sub)
+		val sub = UUID.fromString(usersRes.create(rep).use { CreatedResponseUtil.getCreatedId(it) })
+		userResource(sub).roles().realmLevel().add(listOf(realmRole(role)))
+		return sub
 	}
 
-	/** Replaces [role] and the flags of an existing user; the realm role is swapped, not added */
+	/** Replaces [role] and flags of existing user; realm role is swapped, not added */
 	fun updateUser(sub: UUID, role: Role, isSpeaker: Boolean, canCheckByName: Boolean) {
-		val realmRes = keycloak.realm(realm)
-		val userRes = realmRes.users().get(sub.toString())
-		userRes.update(
-			userRes.toRepresentation().apply {
-				attributes = mapOf(
-					"isSpeaker" to listOf(isSpeaker.toString()),
-					"canCheckByName" to listOf(canCheckByName.toString()),
-				)
-			},
-		)
+		val userRes = userResource(sub)
+		userRes.update(userRes.toRepresentation().apply { attributes = keycloakedAttributes(isSpeaker, canCheckByName) })
+		
 		val realmRoles = userRes.roles().realmLevel()
+		
 		val ours = realmRoles.listAll().filter { held -> Role.entries.any { it.name == held.name } }
 		if (ours.isNotEmpty()) realmRoles.remove(ours)
-		realmRoles.add(listOf(realmRes.roles().get(role.name).toRepresentation()))
+		
+		realmRoles.add(listOf(realmRole(role)))
 	}
 
-	/** Kills every active session, so a refresh token left on a lost phone stops working */
+	/** Kills every active session, so refresh token left on lost phone stops working */
 	fun logout(sub: UUID) {
-		keycloak.realm(realm).users().get(sub.toString()).logout()
+		userResource(sub).logout()
 	}
 
-	/** Sets a fresh permanent password for the user */
+	/** Sets fresh permanent password for user */
 	fun setPassword(sub: UUID, password: String) {
 		val cred = CredentialRepresentation().apply {
 			type = CredentialRepresentation.PASSWORD
 			value = password
 			isTemporary = false
 		}
-		keycloak.realm(realm).users().get(sub.toString()).resetPassword(cred)
+		userResource(sub).resetPassword(cred)
 	}
 
-	/** Current username of the Keycloak user */
-	fun username(sub: UUID): String = keycloak.realm(realm).users().get(sub.toString()).toRepresentation().username
+	/** Current username of Keycloak user */
+	fun username(sub: UUID): String = userResource(sub).toRepresentation().username
 
-	/** Username, role and orthogonal flags of an arbitrary user, for info-desk detail views */
+	/** @return Keycloak data for user */
 	fun info(sub: UUID): KeycloakUserInfo {
-		val userRes = keycloak.realm(realm).users().get(sub.toString())
+		val userRes = userResource(sub)
 		val rep = userRes.toRepresentation()
-		val role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name })
 		val attrs = rep.attributes ?: emptyMap()
+		
 		return KeycloakUserInfo(
 			username = rep.username,
-			role = role,
+			role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name }),
 			isSpeaker = attrs["isSpeaker"]?.firstOrNull()?.toBoolean() ?: false,
 			canCheckByName = attrs["canCheckByName"]?.firstOrNull()?.toBoolean() ?: false,
 		)
 	}
 
-	/** Deletes the Keycloak user */
+	/** Deletes Keycloak user */
 	fun deleteUser(sub: UUID) {
-		keycloak.realm(realm).users().delete(sub.toString()).close()
+		usersRes.delete(sub.toString()).close()
 	}
+
+	/**
+	 * @return first admin created from `realm-export` 
+	 * @throws IllegalStateException When admin is not found
+	 */
+	fun searchFirstAdmin(username: String): Pair<UUID, String> {
+		val rep = usersRes.search(username, true).firstOrNull() ?: error("Username $username not found in Keycloak")
+		return UUID.fromString(rep.id) to "${rep.firstName} ${rep.lastName}"
+	}
+
+// ///////////////// OPERATIONS ///////////////////
+// ////////////////////////////////////////////////
+// ////////////////// HELPERS /////////////////////
+
+	/** Handle for [sub]'s user resource, used by every per-user API call */
+	private fun userResource(sub: UUID) = usersRes.get(sub.toString())
+
+	/** Realm's representation of [role] */
+	private fun realmRole(role: Role) = realmRes.roles().get(role.name).toRepresentation()
+	
+	private fun keycloakedAttributes(isSpeaker: Boolean, canCheckByName: Boolean) = mapOf(
+		"isSpeaker" to listOf(isSpeaker.toString()),
+		"canCheckByName" to listOf(canCheckByName.toString()),
+	)
 }

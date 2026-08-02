@@ -10,13 +10,16 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.content
 import org.springframework.test.web.client.match.MockRestRequestMatchers.header
-import org.springframework.test.web.client.match.MockRestRequestMatchers.headerDoesNotExist
 import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
 import org.springframework.test.web.client.match.MockRestRequestMatchers.method
 import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestClient
+import tr.qonferencer.shared.dtos.ModifyableUserDataDto
+import tr.qonferencer.shared.dtos.UserMealEntryDto
+import tr.qonferencer.shared.enums.MealScanResult
+import tr.qonferencer.shared.enums.ScannerType
 
 /** Delivery mechanics, invoked straight rather than through `@Async` so assertions cannot race */
 class N8nDeliveryTest {
@@ -34,37 +37,33 @@ class N8nDeliveryTest {
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.schemaVersion").value(1))
 			.andExpect(jsonPath("$.eventType").value("MEAL_APPROVED"))
-			.andExpect(jsonPath("$.event").value("devconf-2026"))
+			.andExpect(jsonPath("$.conferenceId").value("devconf-2026"))
 			.andExpect(jsonPath("$.data.userId").value(42))
-			.andExpect(jsonPath("$.data.variantKey").value("meal.vegan"))
+			.andExpect(jsonPath("$.data.meal.variantKey").value("meal.vegan"))
 			.andRespond(withSuccess())
 		
-		listener(enabled = true).onEvent(
-			N8nEvent(EventType.MEAL_APPROVED, mapOf("userId" to 42L, "variantKey" to "meal.vegan")),
+		listener(enabled = true).sendMessageToN8n(
+			OutboundEvent.MealApproved(
+				userId = 42L,
+				meal = UserMealEntryDto(1L, "meal.vegan"),
+				scannedBy = 99L,
+				scannerType = ScannerType.QR,
+			),
 		)
 		
 		server.verify()
 	}
 	
 	@Test
-	fun `the shared secret rides along when one is configured`() {
+	fun `the shared secret rides along on every request`() {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/SLOT_CREATED"))
 			.andExpect(header("QN-Token", "s3cret"))
 			.andRespond(withSuccess())
-		
-		listener(enabled = true, token = "s3cret").onEvent(N8nEvent(EventType.SLOT_CREATED, mapOf("userId" to 1L)))
-		
-		server.verify()
-	}
-	
-	@Test
-	fun `no secret configured means no header, not an empty one`() {
-		server.expect(requestTo("$BASE_URL/qonferencer_base/SLOT_CREATED"))
-			.andExpect(headerDoesNotExist("QN-Token"))
-			.andRespond(withSuccess())
-		
-		listener(enabled = true).onEvent(N8nEvent(EventType.SLOT_CREATED, mapOf("userId" to 1L)))
-		
+
+		listener(enabled = true, token = "s3cret").sendMessageToN8n(
+			OutboundEvent.SlotCreated(userId = 1L, username = "slot_001", userData = ModifyableUserDataDto("Roman")),
+		)
+
 		server.verify()
 	}
 	
@@ -73,7 +72,7 @@ class N8nDeliveryTest {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/APP_LAUNCHED"))
 			.andRespond(withStatus(HttpStatus.NOT_FOUND))
 		
-		listener(enabled = true).onEvent(N8nEvent(EventType.APP_LAUNCHED, mapOf("role" to "ANONYM")))
+		listener(enabled = true).sendMessageToN8n(OutboundEvent.AppLaunched(user = null))
 		
 		server.verify()
 	}
@@ -83,7 +82,9 @@ class N8nDeliveryTest {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/SLOT_CREATED"))
 			.andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
 		
-		listener(enabled = true).onEvent(N8nEvent(EventType.SLOT_CREATED, mapOf("userId" to 1L)))
+		listener(enabled = true).sendMessageToN8n(
+			OutboundEvent.SlotCreated(userId = 1L, username = "slot_001", userData = ModifyableUserDataDto("Roman")),
+		)
 		
 		server.verify()
 	}
@@ -91,12 +92,20 @@ class N8nDeliveryTest {
 	/** No expectation is registered, so any outgoing call would fail the mock server on its own */
 	@Test
 	fun `disabled outbound sends nothing at all`() {
-		listener(enabled = false).onEvent(N8nEvent(EventType.MEAL_DENIED, mapOf("reason" to "NO_USER_FOUND")))
+		listener(enabled = false).sendMessageToN8n(
+			OutboundEvent.MealDenied(
+				userId = null,
+				windowId = 1L,
+				reason = MealScanResult.NO_USER_FOUND,
+				scannedBy = 99L,
+				scannerType = ScannerType.QR,
+			),
+		)
 		
 		server.verify()
 	}
 	
-	private fun listener(enabled: Boolean, token: String = "") = N8nOutboundListener(
+	private fun listener(enabled: Boolean, token: String = "test-secret") = N8nOutboundListener(
 		builder.build(),
 		N8nProperties(
 			enabled = enabled,

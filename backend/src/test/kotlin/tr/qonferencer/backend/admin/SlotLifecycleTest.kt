@@ -80,7 +80,7 @@ class SlotLifecycleTest {
 		val user = users.findById(userId).orElseThrow()
 		Mockito.`when`(keycloak.username(user.kcSub)).thenReturn("slot_007")
 		
-		val credentials = slots.issueLogin(userId)
+		val credentials = slots.getLoginCredentials(userId)
 		
 		assertEquals(Base64.getEncoder().encodeToString(user.qrSecret), credentials.qrSecret)
 	}

@@ -5,13 +5,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SlotPasswordsTest {
+class UserPasswordGeneratorTest {
 	
 	@Test
 	fun `generates length-8 crockford without ambiguous chars`() {
 		val random = SecureRandom()
 		repeat(200) {
-			val pwd = SlotPasswords.generate(random)
+			val pwd = UserPasswordGenerator.generate(random)
 			assertEquals(8, pwd.length)
 			assertTrue(pwd.all { it in "0123456789ABCDEFGHJKMNPQRSTVWXYZ" })
 			assertTrue(pwd.none { it in "ILOU" })

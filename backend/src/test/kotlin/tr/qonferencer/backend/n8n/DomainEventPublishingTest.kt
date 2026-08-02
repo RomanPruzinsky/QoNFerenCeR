@@ -24,6 +24,7 @@ import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.MealScanRequestDto
+import tr.qonferencer.shared.enums.MealScanResult
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.shared.enums.ScannerType
 import tr.qonferencer.shared.scan.ScanToken
@@ -65,14 +66,33 @@ class DomainEventPublishingTest {
 	}
 	
 	@Test
-	fun `fetching the splash announces a launch`() {
+	fun `an anonymous launch carries no profile`() {
 		mockMvc.get(ApiPaths.SPLASH).andExpect { status { isOk() } }
-		
-		val event = published().single()
-		assertEquals(EventType.APP_LAUNCHED, event.type)
-		assertEquals(Role.ANONYM.name, event.data["role"])
+
+		val event = published().single() as OutboundEvent.AppLaunched
+		assertEquals(null, event.user)
 	}
-	
+
+	@Test
+	fun `a logged-in launch carries the caller's own profile`() {
+		val sub = UUID.randomUUID()
+		users.insertIfAbsent(sub, ByteArray(32), "Hungry Attendee")
+		val userId = users.findByKcSub(sub)!!.id
+
+		mockMvc.get(ApiPaths.SPLASH) {
+			with(
+				jwt().jwt {
+					it.subject(sub.toString())
+						.claim("realm_access", mapOf("roles" to listOf(Role.VISITOR.name)))
+				},
+			)
+		}.andExpect { status { isOk() } }
+
+		val event = published().single() as OutboundEvent.AppLaunched
+		assertEquals(userId, event.user?.userId)
+		assertEquals("Hungry Attendee", event.user?.fullName)
+	}
+
 	@Test
 	fun `a handed out meal announces who got what`() {
 		val secret = ByteArray(32) { 7 }
@@ -82,11 +102,11 @@ class DomainEventPublishingTest {
 		
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
 		
-		val event = published().single { it.type == EventType.MEAL_APPROVED }
-		assertEquals(userId, event.data["userId"])
-		assertEquals(windowId, event.data["windowId"])
-		assertEquals("meal.vegan", event.data["variantKey"])
-		assertEquals("QR", event.data["scannerType"])
+		val event = published().filterIsInstance<OutboundEvent.MealApproved>().single()
+		assertEquals(userId, event.userId)
+		assertEquals(windowId, event.meal.windowId)
+		assertEquals("meal.vegan", event.meal.variantKey)
+		assertEquals(ScannerType.QR, event.scannerType)
 	}
 
 	/** The organizer has to be able to tell a cryptographic scan from a copyable badge */
@@ -98,7 +118,8 @@ class DomainEventPublishingTest {
 		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE))
 			.andExpect { status { isOk() } }
 		
-		assertEquals("BARCODE", published().single { it.type == EventType.MEAL_APPROVED }.data["scannerType"])
+		val event = published().filterIsInstance<OutboundEvent.MealApproved>().single()
+		assertEquals(ScannerType.BARCODE, event.scannerType)
 	}
 	
 	@Test
@@ -110,12 +131,12 @@ class DomainEventPublishingTest {
 		
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
 		
-		val event = published().single { it.type == EventType.MEAL_DENIED }
-		assertEquals("NOT_REGISTERED_PORTION", event.data["reason"])
-		assertEquals(userId, event.data["userId"])
+		val event = published().filterIsInstance<OutboundEvent.MealDenied>().single()
+		assertEquals(MealScanResult.NOT_REGISTERED_PORTION, event.reason)
+		assertEquals(userId, event.userId)
 	}
 	
-	private fun published(): List<N8nEvent> = events.stream(N8nEvent::class.java).toList()
+	private fun published(): List<OutboundEvent> = events.stream(OutboundEvent::class.java).toList()
 	
 	private fun scan(request: MealScanRequestDto) = mockMvc.post(ApiPaths.MEAL_SCAN) {
 		with(

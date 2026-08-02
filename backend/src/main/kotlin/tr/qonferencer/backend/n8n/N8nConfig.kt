@@ -10,13 +10,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.web.client.RestClient
 import java.time.Duration
 
-/** Wiring for outbound delivery: its own HTTP client and its own threads */
+/** Setting that error on n8n don't break BE */
 @Configuration
 @EnableAsync
 @EnableConfigurationProperties(N8nProperties::class)
 class N8nConfig {
 	
-	/** The client that talks to n8n, built from Boot's builder so it shares the `ObjectMapper` */
+	/** Sets up client that talks to n8n */
 	@Bean
 	fun n8nRestClient(builder: RestClient.Builder, properties: N8nProperties): RestClient {
 		val factory = SimpleClientHttpRequestFactory().apply {
@@ -29,24 +29,23 @@ class N8nConfig {
 			.build()
 	}
 
-	/** Delivery threads, bounded; a full queue drops the event rather than growing a backlog */
+	/** Sets margins */
 	@Bean(N8N_EXECUTOR)
-	fun n8nExecutor(): ThreadPoolTaskExecutor = ThreadPoolTaskExecutor().apply {
+	fun n8nMarginer(): ThreadPoolTaskExecutor = ThreadPoolTaskExecutor().apply {
 		corePoolSize = 1
 		maxPoolSize = 4
-		queueCapacity = QUEUE_CAPACITY
+		queueCapacity = 256
+		
 		setThreadNamePrefix("n8n-")
+		
 		setRejectedExecutionHandler { _, _ -> log.warn("n8n delivery queue full, event dropped") }
+		
 		setWaitForTasksToCompleteOnShutdown(true)
-		setAwaitTerminationSeconds(AWAIT_TERMINATION_SECONDS)
+		setAwaitTerminationSeconds(5)
 	}
 	
 	companion object {
 		const val N8N_EXECUTOR = "n8nExecutor"
-		
-		private const val QUEUE_CAPACITY = 256
-		private const val AWAIT_TERMINATION_SECONDS = 5
-		
 		private val log = LoggerFactory.getLogger(N8nConfig::class.java)
 	}
 }

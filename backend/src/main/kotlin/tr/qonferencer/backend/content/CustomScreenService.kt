@@ -8,7 +8,7 @@ import tr.qonferencer.backend.common.notFound
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.shared.dtos.CustomElement
 
-/** Serves a custom screen's body (its [CustomElement] tree), gated by [CustomScreen.minRole] */
+/** Obtains custom screen's body */
 @Service
 class CustomScreenService(
 	private val screens: CustomScreenRepository,
@@ -17,7 +17,7 @@ class CustomScreenService(
 ) {
 	fun body(id: String): List<CustomElement> {
 		val screen = screens.findById(id).orElseThrow { notFound("custom_screen $id doesn't exist") }
-		if (!caller.role().atLeast(screen.minRole)) throw forbidden("role below screen minRole")
+		if (!caller.role().atLeast(screen.minRole)) throw forbidden("role below screen's minRole")
 		return objectMapper.readValue(screen.body, object : TypeReference<List<CustomElement>>() {})
 	}
 }

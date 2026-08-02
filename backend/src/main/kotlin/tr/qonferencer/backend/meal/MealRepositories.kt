@@ -15,11 +15,23 @@ interface MealReservationRepository : JpaRepository<MealReservation, MealSlotId>
 	fun deleteByIdUserId(userId: Long)
 }
 
+/** Outcome of [MealConsumptionRepository.consume] */
+enum class ConsumeOutcome {
+	/** First successful scan for this slot */
+	NEW,
+
+	/** Same [MealConsumption.idempotencyKey] seen before, valid */
+	RETRY,
+
+	/** Slot already consumed under a different [MealConsumption.idempotencyKey] */
+	CONFLICT,
+}
+
 interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId> {
 	
 	fun deleteByIdUserId(userId: Long)
 
-	/** Clears [userId] from `scannedBy` without deleting the rows, which belong to other people */
+	/** Clears [userId] from `scannedBy` */
 	@Modifying
 	@Query(
 		value = "UPDATE meal_consumption SET scanned_by = NULL WHERE scanned_by = :userId",
@@ -27,11 +39,18 @@ interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId>
 	)
 	fun detachScanner(@Param("userId") userId: Long): Int
 
-	/** Records the consumption; false when the slot was already consumed */
-	fun consume(slot: MealSlotId, scannedBy: Long?, idempotencyKey: UUID): Boolean =
-		insertIfAbsent(slot.userId, slot.windowId, scannedBy, idempotencyKey) == 1
+	/** Records consumption */
+	fun consume(slot: MealSlotId, scannedBy: Long?, idempotencyKey: UUID): ConsumeOutcome {
+		if (insertIfAbsent(slot.userId, slot.windowId, scannedBy, idempotencyKey) == 1) return ConsumeOutcome.NEW
+		val idempotencyKeysMatches = findById(slot).orElse(null)?.idempotencyKey == idempotencyKey
+		return if (idempotencyKeysMatches) ConsumeOutcome.RETRY else ConsumeOutcome.CONFLICT
+	}
 
-	/** Backs [consume]; `@Modifying` allows only void/int/long as return type */
+	/**
+	 * Inserts meal consumption entry. Tracks if inserted or skipped
+	 * @return `1` on insert, `0` when slot already existed
+	 * @see [consume]
+	 */
 	@Modifying
 	@Query(
 		value = """

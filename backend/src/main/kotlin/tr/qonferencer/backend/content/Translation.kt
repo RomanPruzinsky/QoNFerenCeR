@@ -17,9 +17,9 @@ data class TranslationId(
 ) : Serializable
 
 /**
- * Translation entry for a key per language
+ * Translation entry for key per language
  * @property id Composite key (translation key + language code)
- * @property text Text to display for the key in that language
+ * @property text Text to display for [id]
  */
 @Entity
 @Table(name = "translation")

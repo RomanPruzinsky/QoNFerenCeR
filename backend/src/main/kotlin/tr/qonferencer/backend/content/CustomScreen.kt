@@ -8,14 +8,15 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import tr.qonferencer.shared.dtos.CustomElement
 import tr.qonferencer.shared.enums.Role
 
 /**
  * Runtime-added screen
  * @property id Screen id
- * @property titleKey Translation key of the menu title
- * @property minRole Minimum role to see this screen
- * @property body Displayed content
+ * @property titleKey Key to match for title translations
+ * @property minRole Minimum [Role] to see this screen
+ * @property body Displayed list of [CustomElement]
  */
 @Entity
 @Table(name = "custom_screen")

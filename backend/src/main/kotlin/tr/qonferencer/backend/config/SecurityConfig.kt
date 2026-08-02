@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authorization.AuthorizationDecision
-import org.springframework.security.authorization.AuthorizationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
@@ -13,7 +12,6 @@ import org.springframework.security.oauth2.jwt.JwtIssuerValidator
 import org.springframework.security.oauth2.jwt.JwtValidators
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.enums.Role
@@ -30,9 +28,9 @@ class SecurityConfig(
 ) {
 	
 	@Bean
-	fun securityFilterChain(http: HttpSecurity, converter: JwtAuthConverter, caller: CallerService): SecurityFilterChain {
+	fun securityFilterChain(http: HttpSecurity, caller: CallerService): SecurityFilterChain {
 		http
-			.csrf { it.disable() }
+			.csrf { it.disable() } // QoNFerenCeR don't use cookies
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) } // Server remembers nothing
 			.authorizeHttpRequests { reg ->
 				reg
@@ -41,18 +39,13 @@ class SecurityConfig(
 						"${ApiPaths.CustomScreens.ROOT}/**",
 						"/actuator/health/**",
 					).permitAll()
-					.requestMatchers("${ApiPaths.Admin.ROOT}/**").access(minRole(caller, Role.ADMIN))
+					.requestMatchers("${ApiPaths.Admin.ROOT}/**").access { _, _ ->
+						AuthorizationDecision(caller.role().atLeast(Role.ADMIN))
+					}
 					.anyRequest().authenticated()
 			}
-			.oauth2ResourceServer { rs ->
-				rs.jwt { it.decoder(jwtDecoder()).jwtAuthenticationConverter(converter) }
-			}
+			.oauth2ResourceServer { it.jwt { } } // Decoder resolved from the JwtDecoder bean bellow
 		return http.build()
-	}
-
-	/** Threshold gate for a whole path prefix, so a newly added endpoint under it is covered by default */
-	private fun minRole(caller: CallerService, min: Role) = AuthorizationManager<RequestAuthorizationContext> { _, _ ->
-		AuthorizationDecision(caller.role().atLeast(min))
 	}
 
 	/** Custom JWT validation */

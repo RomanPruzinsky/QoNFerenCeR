@@ -9,9 +9,9 @@ import jakarta.persistence.Table
 import java.time.Instant
 
 /**
- * Meal serving window (organizer-defined)
+ * Meal serving window
  * @property id Window id
- * @property nameKey Translation key of the window name
+ * @property nameKey Translation key of window name (breakfast, ...)
  * @property startsAt Serving start
  * @property endsAt Serving end
  */

@@ -12,12 +12,12 @@ interface UserRepository : JpaRepository<User, Long> {
 	
 	fun findByKcSub(kcSub: UUID): User?
 
-	/** Creates [User] or skips it if is already present by [kcSub]  */
+	/** Creates [User] or skips it if is already present  */
 	@Modifying
 	@Query(
 		value = """
 			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, full_name, custom_data, created_at)
-			VALUES (:kcSub, :qrSecret, 0, :fullName, '{}'::jsonb, now())
+			VALUES (:kcSub, :qrSecret, 0, :fullName, CAST(:customData AS jsonb), now())
 			ON CONFLICT (kc_sub) DO NOTHING
 		""",
 		nativeQuery = true,
@@ -26,10 +26,11 @@ interface UserRepository : JpaRepository<User, Long> {
 		@Param("kcSub") kcSub: UUID,
 		@Param("qrSecret") qrSecret: ByteArray,
 		@Param("fullName") fullName: String,
+		@Param("customData") customData: String = "{}",
 	)
 
 	/** 
-	 * Find user by name: 
+	 * Finds user by name: 
 	 * - `LIKE`: checks for substrings
 	 * - `word_similarity`: saferize typo 
 	 */
@@ -41,7 +42,10 @@ interface UserRepository : JpaRepository<User, Long> {
 	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double, pageable: Pageable): Page<User>
 	
 	private companion object {
+		/** Helper for SQL script, similarity eval query */
 		const val SIMILARITY = "word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))"
+
+		/** Helper for SQL script, name search query */
 		const val NAME_MATCH =
 			"lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%' OR $SIMILARITY >= :threshold"
 	}

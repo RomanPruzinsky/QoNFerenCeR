@@ -41,3 +41,9 @@ data class LoginCredentialsDto(
 	val password: String,
 	val qrSecret: String,
 )
+
+/** User's data with credentials */
+data class SlotProvisionedDto(
+	val user: UserDetailDto,
+	val credentials: LoginCredentialsDto,
+)
