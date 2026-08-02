@@ -39,7 +39,7 @@ class N8nDeliveryTest {
 			.andExpect(jsonPath("$.eventType").value("MEAL_APPROVED"))
 			.andExpect(jsonPath("$.conferenceId").value("devconf-2026"))
 			.andExpect(jsonPath("$.data.userId").value(42))
-			.andExpect(jsonPath("$.data.variantKey").value("meal.vegan"))
+			.andExpect(jsonPath("$.data.meal.variantKey").value("meal.vegan"))
 			.andRespond(withSuccess())
 		
 		listener(enabled = true).sendMessageToN8n(

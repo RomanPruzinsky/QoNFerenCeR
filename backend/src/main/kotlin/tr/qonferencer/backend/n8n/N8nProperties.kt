@@ -1,6 +1,5 @@
 package tr.qonferencer.backend.n8n
 
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.validation.annotation.Validated
@@ -11,7 +10,7 @@ import org.springframework.validation.annotation.Validated
  * @property baseUrl n8n webhook path
  * @property pathPrefix Path part shared by every workflow
  * @property eventId Conference identity
- * @property authToken Shared secret sent on every request
+ * @property authToken Shared secret sent on every request; blank omits the header
  * @property timeoutMs Connect and read timeout
  */
 @Validated
@@ -24,7 +23,6 @@ data class N8nProperties(
 	val pathPrefix: String,
 	@field:Pattern(regexp = "[a-zA-Z][a-zA-Z0-9_]*")
 	val eventId: String,
-	@field:NotBlank
 	val authToken: String,
-	val timeoutMs: Long,
+	val timeoutMs: Long = 3000,
 )

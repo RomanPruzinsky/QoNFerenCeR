@@ -17,7 +17,7 @@ interface UserRepository : JpaRepository<User, Long> {
 	@Query(
 		value = """
 			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, full_name, custom_data, created_at)
-			VALUES (:kcSub, :qrSecret, 0, :fullName, :customData::jsonb, now())
+			VALUES (:kcSub, :qrSecret, 0, :fullName, CAST(:customData AS jsonb), now())
 			ON CONFLICT (kc_sub) DO NOTHING
 		""",
 		nativeQuery = true,
