@@ -13,6 +13,7 @@ import tr.qonferencer.backend.meal.MealSlotId
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.n8n.OutboundEvent
 import tr.qonferencer.backend.n8n.OutboundEvents
+import tr.qonferencer.backend.user.User
 import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserDeleteService
 import tr.qonferencer.backend.user.UserRepository
@@ -20,6 +21,7 @@ import tr.qonferencer.shared.dtos.LoginCredentialsDto
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.SlotProvisionedDto
 import tr.qonferencer.shared.dtos.UserDetailDto
+import tr.qonferencer.shared.dtos.UserMealEntryDto
 import java.security.SecureRandom
 import java.util.Base64
 
@@ -43,9 +45,7 @@ class SlotService(
 	/** Provisions one attendee: Keycloak user + password, app anchor, custom data, meal reservations */
 	@Transactional
 	fun createUserSlot(req: ModifyableUserDataDto): SlotProvisionedDto {
-		req.meals.forEach {
-			if (!windows.existsById(it.windowId)) throw badRequest("meal window ${it.windowId} doesn't exist")
-		}
+		validateMealWindows(req.meals)
 		val username = "slot_%03d".format(nextSlotNumber())
 		val sub = kc.createUser(
 			username = username,
@@ -62,26 +62,16 @@ class SlotService(
 		}
 		events.publish(OutboundEvent.SlotCreated(userId = user.id, username = username, user = req))
 		return SlotProvisionedDto(
-			user = UserDetailDto(
-				user.id,
-				user.fullName,
-				req.role,
-				req.isSpeaker,
-				req.canCheckByName,
-				req.meals,
-				req.customData,
-			),
-			credentials = LoginCredentialsDto(username, password, Base64.getEncoder().encodeToString(user.qrSecret)),
+			user = userDetail(user, req),
+			credentials = loginCredentials(user, username, password),
 		)
 	}
 
 	/** Replaces everything mutable about [userId]; replaces reservations, keeps consumptions */
 	@Transactional
 	fun updateUserSlot(userId: Long, req: ModifyableUserDataDto): UserDetailDto {
-		req.meals.forEach {
-			if (!windows.existsById(it.windowId)) throw badRequest("meal window ${it.windowId} doesn't exist")
-		}
-		val user = users.findById(userId).orElseThrow { notFound("app_user $userId doesn't exist") }
+		validateMealWindows(req.meals)
+		val user = findUser(userId)
 		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckByName)
 		user.fullName = req.fullName
 		anchors.storeCustomData(user, req.customData)
@@ -90,21 +80,13 @@ class SlotService(
 			reservations.save(MealReservation(MealSlotId(userId, it.windowId), it.variantKey))
 		}
 		events.publish(OutboundEvent.SlotUpdated(userId = userId, user = req))
-		return UserDetailDto(
-			user.id,
-			user.fullName,
-			req.role,
-			req.isSpeaker,
-			req.canCheckByName,
-			req.meals,
-			req.customData,
-		)
+		return userDetail(user, req)
 	}
 
 	/** Cuts a lost phone off: rotates the scan secret and kills every Keycloak session */
 	@Transactional
 	fun revokeDevice(userId: Long) {
-		val user = users.findById(userId).orElseThrow { notFound("app_user $userId doesn't exist") }
+		val user = findUser(userId)
 		val version = anchors.rotateSecret(user)
 		kc.logout(user.kcSub)
 		events.publish(OutboundEvent.SlotRevoked(userId = user.id, fullName = user.fullName, qrSecretV = version))
@@ -112,8 +94,7 @@ class SlotService(
 
 	/** Erases [userId] from the app database first, then from Keycloak; not transactional */
 	fun deleteUserSlot(userId: Long): DeleteOutcome {
-		val user = users.findById(userId).orElseThrow { notFound("app_user $userId doesn't exist") }
-		val sub = user.kcSub
+		val sub = findUser(userId).kcSub
 		userDelete.delete(userId)
 		val outcome = runCatching { kc.deleteUser(sub) }
 			.fold({ DeleteOutcome.FULL }, { DeleteOutcome.KEYCLOAK_SURVIVED })
@@ -125,16 +106,39 @@ class SlotService(
 	}
 
 	/** Re-issue a fresh password for the slot and return its login credentials, plus its scan secret */
-	fun issueLogin(userId: Long): LoginCredentialsDto {
-		val user = users.findById(userId).orElseThrow { notFound("app_user $userId doesn't exist") }
+	fun getLoginCredentials(userId: Long): LoginCredentialsDto {
+		val user = findUser(userId)
 		val password = UserPasswordGenerator.generate(random)
 		kc.setPassword(user.kcSub, password)
 		val username = kc.username(user.kcSub)
-		return LoginCredentialsDto(username, password, Base64.getEncoder().encodeToString(user.qrSecret))
+		return loginCredentials(user, username, password)
 	}
 	
 	private fun nextSlotNumber(): Long =
 		(entityManager.createNativeQuery("SELECT nextval('slot_seq')").singleResult as Number).toLong()
+	
+	private fun findUser(userId: Long): User =
+		users.findById(userId).orElseThrow { notFound("app_user $userId doesn't exist") }
+	
+	private fun validateMealWindows(meals: List<UserMealEntryDto>) = meals.forEach {
+		if (!windows.existsById(it.windowId)) throw badRequest("meal window ${it.windowId} doesn't exist")
+	}
+	
+	private fun loginCredentials(user: User, username: String, password: String) = LoginCredentialsDto(
+		username = username,
+		password = password,
+		qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
+	)
+	
+	private fun userDetail(user: User, mod: ModifyableUserDataDto) = UserDetailDto(
+		userId = user.id,
+		fullName = user.fullName,
+		role = mod.role,
+		isSpeaker = mod.isSpeaker,
+		canCheckByName = mod.canCheckByName,
+		meals = mod.meals,
+		customData = mod.customData,
+	)
 	
 	private companion object {
 		val log: Logger = LoggerFactory.getLogger(SlotService::class.java)

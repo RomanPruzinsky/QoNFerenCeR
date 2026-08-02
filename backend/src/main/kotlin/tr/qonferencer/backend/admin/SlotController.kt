@@ -15,9 +15,8 @@ import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.SlotProvisionedDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 
-/** Admin-only slot provisioning + login re-issue; [SlotService] gates every method */
 @RestController
-class AdminController(
+class SlotController(
 	private val slotService: SlotService,
 ) {
 	@PostMapping(ApiPaths.Admin.ADD_USER)
@@ -25,19 +24,21 @@ class AdminController(
 	fun create(@RequestBody req: ModifyableUserDataDto): SlotProvisionedDto = slotService.createUserSlot(req)
 	
 	@PostMapping(ApiPaths.Admin.LOGIN)
-	fun login(@PathVariable userId: Long): LoginCredentialsDto = slotService.issueLogin(userId)
+	fun login(@PathVariable userId: Long): LoginCredentialsDto = slotService.getLoginCredentials(userId)
 	
 	@PutMapping(ApiPaths.Admin.UPDATE_USER)
 	fun update(@PathVariable userId: Long, @RequestBody req: ModifyableUserDataDto): UserDetailDto =
 		slotService.updateUserSlot(userId, req)
-	
+
+	// TODO: rename to lostDevice endpoitn+function
 	@PostMapping(ApiPaths.Admin.REVOKE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	fun revoke(@PathVariable userId: Long) = slotService.revokeDevice(userId)
 
 	/**
-	 * Erasure on request: the attendee asks at the desk, the admin does it (GDPR art. 17).
-	 * 200 = app data and Keycloak user both gone; 207 = app data gone, Keycloak user survives.
+	 * Erasure on request
+	 * - 200 = app data and Keycloak user both gone
+	 * - 207 = app data gone, Keycloak user survived (internal error)
 	 */
 	@DeleteMapping(ApiPaths.Admin.DELETE_USER)
 	fun delete(@PathVariable userId: Long): ResponseEntity<Void> = when (slotService.deleteUserSlot(userId)) {
