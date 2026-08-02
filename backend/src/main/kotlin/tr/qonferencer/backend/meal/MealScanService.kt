@@ -1,10 +1,10 @@
 package tr.qonferencer.backend.meal
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.common.forbidden
 import tr.qonferencer.backend.n8n.OutboundEvent
-import tr.qonferencer.backend.n8n.OutboundEvents
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.dtos.MealScanRequestDto
@@ -23,9 +23,9 @@ class MealScanService(
 	private val consumptions: MealConsumptionRepository,
 	private val users: UserRepository,
 	private val caller: CallerService,
-	private val events: OutboundEvents,
+	private val events: ApplicationEventPublisher,
 ) {
-	/** Serves a scanner request; every domain verdict is a result, only authorization is an error */
+	/** Serves scanner request; every domain verdict is result, only authorization is error */
 	@Transactional
 	fun scan(request: MealScanRequestDto): MealScanResultDto {
 		if (!caller.role().atLeast(Role.VOLUNTEER)) throw forbidden("role below VOLUNTEER")
@@ -45,7 +45,7 @@ class MealScanService(
 			return denied(userId, windowId, scannedBy, scannerType, MealScanResult.ALREADY_CONSUMED)
 		}
 		if (isNewConsumption) {
-			events.publish(
+			events.publishEvent(
 				OutboundEvent.MealApproved(
 					userId = userId,
 					meal = UserMealEntryDto(windowId, reservation.variantKey),
@@ -72,7 +72,7 @@ class MealScanService(
 		}
 	}
 
-	/** Answers [result] and tells the organizer; a refused scan leaves no database trace */
+	/** Answers [result] and tells organizer; refused scan leaves no database trace */
 	private fun denied(
 		userId: Long?,
 		windowId: Long,
@@ -80,7 +80,7 @@ class MealScanService(
 		scannerType: ScannerType,
 		result: MealScanResult,
 	): MealScanResultDto {
-		events.publish(
+		events.publishEvent(
 			OutboundEvent.MealDenied(
 				userId = userId,
 				windowId = windowId,

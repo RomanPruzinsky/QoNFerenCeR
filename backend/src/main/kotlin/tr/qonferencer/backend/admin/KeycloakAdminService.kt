@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import tr.qonferencer.shared.enums.Role
 import java.util.UUID
 
-/** Username, role and orthogonal flags read from Keycloak for a user who isn't the caller */
+/** Username, role and orthogonal flags read from Keycloak for user who isn't caller */
 data class KeycloakUserInfo(
 	val username: String,
 	val role: Role,
@@ -27,7 +27,7 @@ class KeycloakAdminService(
 	private val usersRes = realmRes.users()
 
 	/**
-	 * Creates an enabled user with [role] and its orthogonal attribute flags
+	 * Creates enabled user with [role] and its orthogonal attribute flags
 	 * @return User's Keycloak sub
 	 */
 	fun createUser(username: String, role: Role, isSpeaker: Boolean = false, canCheckByName: Boolean = false): UUID {
@@ -44,7 +44,7 @@ class KeycloakAdminService(
 		return sub
 	}
 
-	/** Replaces [role] and the flags of an existing user; the realm role is swapped, not added */
+	/** Replaces [role] and flags of existing user; realm role is swapped, not added */
 	fun updateUser(sub: UUID, role: Role, isSpeaker: Boolean, canCheckByName: Boolean) {
 		val userRes = userResource(sub)
 		userRes.update(userRes.toRepresentation().apply { attributes = keycloakedAttributes(isSpeaker, canCheckByName) })
@@ -54,12 +54,12 @@ class KeycloakAdminService(
 		realmRoles.add(listOf(realmRole(role)))
 	}
 
-	/** Kills every active session, so a refresh token left on a lost phone stops working */
+	/** Kills every active session, so refresh token left on lost phone stops working */
 	fun logout(sub: UUID) {
 		userResource(sub).logout()
 	}
 
-	/** Sets a fresh permanent password for the user */
+	/** Sets fresh permanent password for user */
 	fun setPassword(sub: UUID, password: String) {
 		val cred = CredentialRepresentation().apply {
 			type = CredentialRepresentation.PASSWORD
@@ -69,10 +69,10 @@ class KeycloakAdminService(
 		userResource(sub).resetPassword(cred)
 	}
 
-	/** Current username of the Keycloak user */
+	/** Current username of Keycloak user */
 	fun username(sub: UUID): String = userResource(sub).toRepresentation().username
 
-	/** Username, role and orthogonal flags of an arbitrary user, for info-desk detail views */
+	/** Username, role and orthogonal flags of arbitrary user, for info-desk detail views */
 	fun info(sub: UUID): KeycloakUserInfo {
 		val userRes = userResource(sub)
 		val rep = userRes.toRepresentation()
@@ -85,7 +85,7 @@ class KeycloakAdminService(
 		)
 	}
 
-	/** Deletes the Keycloak user */
+	/** Deletes Keycloak user */
 	fun deleteUser(sub: UUID) {
 		usersRes.delete(sub.toString()).close()
 	}

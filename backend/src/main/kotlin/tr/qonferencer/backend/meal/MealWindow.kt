@@ -11,7 +11,7 @@ import java.time.Instant
 /**
  * Meal serving window
  * @property id Window id
- * @property nameKey Translation key of the window name (breakfast, ...)
+ * @property nameKey Translation key of window name (breakfast, ...)
  * @property startsAt Serving start
  * @property endsAt Serving end
  */

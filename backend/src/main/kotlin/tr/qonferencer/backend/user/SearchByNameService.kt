@@ -36,7 +36,7 @@ class SearchByNameService(
 	}
 	
 	private companion object {
-		/** 0.5 still accepts a transposed pair of letters, 0.6 default doesn't ("Nvoak" → "Novak" is valid now) */
+		/** 0.5 still accepts transposed pair of letters, 0.6 default doesn't ("Nvoak" → "Novak" is valid now) */
 		const val SIMILARITY_THRESHOLD = .5
 	}
 }

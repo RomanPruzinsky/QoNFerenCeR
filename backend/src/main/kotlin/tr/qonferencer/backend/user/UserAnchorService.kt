@@ -7,7 +7,7 @@ import java.security.SecureRandom
 import java.util.UUID
 
 // TODO: explain anchor
-/** Sole owner of the app anchor's own fields: its `qrSecret` and its free-form `customData` */
+/** Sole owner of app anchor's own fields: its `qrSecret` and its free-form `customData` */
 @Service
 class UserAnchorService(
 	private val users: UserRepository,
@@ -21,21 +21,21 @@ class UserAnchorService(
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
 	}
 
-	/** [User.customData] as a map; an unreadable bag reads as empty */
+	/** [User.customData] as map; unreadable bag reads as empty */
 	@Suppress("UNCHECKED_CAST")
 	fun customData(user: User): CustomDataType =
 		runCatching { objectMapper.readValue(user.customData, Map::class.java) as CustomDataType }
 			.getOrDefault(emptyMap())
 
-	/** Replaces the whole [User.customData] bag and persists it */
+	/** Replaces whole [User.customData] bag and persists it */
 	fun storeCustomData(user: User, customData: CustomDataType) {
 		user.customData = objectMapper.writeValueAsString(customData)
 		users.save(user)
 	}
 
 	/**
-	 * Gives [user] a fresh scan secret, so every token built from the old one stops verifying
-	 * @return the new [User.qrSecretV]
+	 * Gives [user] fresh scan secret, so every token built from old one stops verifying
+	 * @return new [User.qrSecretV]
 	 */
 	fun rotateSecret(user: User): Short {
 		user.qrSecret = newSecret()
@@ -47,7 +47,7 @@ class UserAnchorService(
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
 	
 	private companion object {
-		/** Length of `qrSecret` in bytes, matching the HMAC-SHA256 block the scan token signs with */
+		/** Length of `qrSecret` in bytes, matching HMAC-SHA256 block scan token signs with */
 		const val SECRET_LENGTH = 32
 	}
 }

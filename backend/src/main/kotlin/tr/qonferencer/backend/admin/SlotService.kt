@@ -3,6 +3,7 @@ package tr.qonferencer.backend.admin
 import jakarta.persistence.EntityManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.common.badRequest
@@ -12,7 +13,6 @@ import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealSlotId
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.n8n.OutboundEvent
-import tr.qonferencer.backend.n8n.OutboundEvents
 import tr.qonferencer.backend.user.User
 import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserDeleteService
@@ -25,7 +25,7 @@ import tr.qonferencer.shared.dtos.UserMealEntryDto
 import java.security.SecureRandom
 import java.util.Base64
 
-/** Result of [SlotService.deleteUserSlot]: whether the Keycloak user was erased along with the app data */
+/** Result of [SlotService.deleteUserSlot]: whether Keycloak user was erased along with app data */
 enum class DeleteOutcome { FULL, KEYCLOAK_SURVIVED }
 
 /** Slot provisioning: Keycloak users, app anchors, meal reservations, login re-issue */
@@ -38,7 +38,7 @@ class SlotService(
 	private val reservations: MealReservationRepository,
 	private val userDelete: UserDeleteService,
 	private val entityManager: EntityManager,
-	private val events: OutboundEvents,
+	private val events: ApplicationEventPublisher,
 ) {
 	private val random = SecureRandom()
 
@@ -60,7 +60,7 @@ class SlotService(
 		req.meals.forEach {
 			reservations.save(MealReservation(MealSlotId(user.id, it.windowId), it.variantKey))
 		}
-		events.publish(OutboundEvent.SlotCreated(userId = user.id, username = username, userData = req))
+		events.publishEvent(OutboundEvent.SlotCreated(userId = user.id, username = username, userData = req))
 		return SlotProvisionedDto(
 			user = userDetail(user, req),
 			credentials = loginCredentials(user, username, password),
@@ -79,20 +79,20 @@ class SlotService(
 		req.meals.forEach {
 			reservations.save(MealReservation(MealSlotId(userId, it.windowId), it.variantKey))
 		}
-		events.publish(OutboundEvent.SlotUpdated(userId = userId, userData = req))
+		events.publishEvent(OutboundEvent.SlotUpdated(userId = userId, userData = req))
 		return userDetail(user, req)
 	}
 
-	/** Cuts a lost phone off: rotates the scan secret and kills every Keycloak session */
+	/** Cuts lost phone off: rotates scan secret and kills every Keycloak session */
 	@Transactional
 	fun revokeDevice(userId: Long) {
 		val user = findUser(userId)
 		val version = anchors.rotateSecret(user)
 		kc.logout(user.kcSub)
-		events.publish(OutboundEvent.SlotRevoked(userId = user.id, qrSecretV = version))
+		events.publishEvent(OutboundEvent.SlotRevoked(userId = user.id, qrSecretV = version))
 	}
 
-	/** Erases [userId] from the app database first, then from Keycloak; not transactional */
+	/** Erases [userId] from app database first, then from Keycloak; not transactional */
 	fun deleteUserSlot(userId: Long): DeleteOutcome {
 		val sub = findUser(userId).kcSub
 		userDelete.delete(userId)
@@ -101,17 +101,17 @@ class SlotService(
 		if (outcome == DeleteOutcome.KEYCLOAK_SURVIVED) {
 			log.warn("app data for $userId is gone, Keycloak user survives")
 		}
-		events.publish(OutboundEvent.SlotDeleted(userId = userId))
+		events.publishEvent(OutboundEvent.SlotDeleted(userId = userId))
 		return outcome
 	}
 
-	/** Re-issue a fresh password for the slot and return its login credentials, plus its scan secret */
+	/** Re-issue fresh password for slot and return its login credentials, plus its scan secret */
 	fun getLoginCredentials(userId: Long): LoginCredentialsDto {
 		val user = findUser(userId)
 		val password = UserPasswordGenerator.generate(random)
 		kc.setPassword(user.kcSub, password)
 		val username = kc.username(user.kcSub)
-		events.publish(OutboundEvent.SlotLoginIssued(userId = user.id, username = username))
+		events.publishEvent(OutboundEvent.SlotLoginIssued(userId = user.id, username = username))
 		return loginCredentials(user, username, password)
 	}
 	

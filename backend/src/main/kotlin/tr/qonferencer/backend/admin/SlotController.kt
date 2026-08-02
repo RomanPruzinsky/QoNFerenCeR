@@ -29,8 +29,7 @@ class SlotController(
 	@PutMapping(ApiPaths.Admin.UPDATE_USER)
 	fun update(@PathVariable userId: Long, @RequestBody req: ModifyableUserDataDto): UserDetailDto =
 		slotService.updateUserSlot(userId, req)
-
-	// TODO: rename to lostDevice endpoitn+function
+	
 	@PostMapping(ApiPaths.Admin.REVOKE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	fun revoke(@PathVariable userId: Long) = slotService.revokeDevice(userId)
