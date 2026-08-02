@@ -1,6 +1,7 @@
 package tr.qonferencer.backend.admin
 
 import jakarta.persistence.EntityManager
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -136,6 +137,6 @@ class SlotService(
 		(entityManager.createNativeQuery("SELECT nextval('slot_seq')").singleResult as Number).toLong()
 	
 	private companion object {
-		val log = LoggerFactory.getLogger(SlotService::class.java)
+		val log: Logger = LoggerFactory.getLogger(SlotService::class.java)
 	}
 }

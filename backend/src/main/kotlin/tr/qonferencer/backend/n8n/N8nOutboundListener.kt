@@ -1,5 +1,6 @@
 package tr.qonferencer.backend.n8n
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.scheduling.annotation.Async
@@ -50,6 +51,6 @@ class N8nOutboundListener(
 		/** Shared-secret header for n8n's Header Auth; no `X-` prefix per RFC 6648 */
 		const val TOKEN_HEADER = "QN-Token"
 		
-		val log = LoggerFactory.getLogger(N8nOutboundListener::class.java)
+		val log: Logger = LoggerFactory.getLogger(N8nOutboundListener::class.java)
 	}
 }
