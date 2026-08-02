@@ -54,7 +54,7 @@ qonferencer:
       path-prefix: ${N8N_PATH_PREFIX}
       event-id: ${EVENT_ID}
       auth-token: ${BE_N8N_COMMS__AUTH_TOKEN}
-      timeout-ms: ${N8N_TIMEOUT_MS:3000}
+      timeout-ms: ${N8N_TIMEOUT_MS}
 
 logging:
    level:

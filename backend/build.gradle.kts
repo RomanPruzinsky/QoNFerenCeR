@@ -74,6 +74,7 @@ tasks.withType<Test> {
 			"N8N_BASE_URL" to "http://localhost:5678/webhook",
 			"N8N_PATH_PREFIX" to "qonferencer_base",
 			"BE_N8N_COMMS__AUTH_TOKEN" to "",
+			"N8N_TIMEOUT_MS" to "3000",
 		),
 	)
 }

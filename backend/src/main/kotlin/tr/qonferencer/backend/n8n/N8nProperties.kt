@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated
  * @property baseUrl n8n webhook path
  * @property pathPrefix Path part shared by every workflow
  * @property eventId Conference identity
- * @property authToken Shared secret sent on every request; blank omits the header
+ * @property authToken Shared secret sent on every request
  * @property timeoutMs Connect and read timeout
  */
 @Validated
@@ -24,5 +24,5 @@ data class N8nProperties(
 	@field:Pattern(regexp = "[a-zA-Z][a-zA-Z0-9_]*")
 	val eventId: String,
 	val authToken: String,
-	val timeoutMs: Long = 3000,
+	val timeoutMs: Long,
 )

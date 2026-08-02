@@ -48,7 +48,7 @@ interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId>
 
 	/**
 	 * Inserts meal consumption entry. Tracks if inserted or skipped
-	 * @returns `1` on insert, `0` when slot already existed
+	 * @return `1` on insert, `0` when slot already existed
 	 * @see [consume]
 	 */
 	@Modifying

@@ -35,7 +35,7 @@ enum class DeleteOutcome {
 	KEYCLOAK_SURVIVED,
 }
 
-/** Slot modyfiing: Keycloak users, app anchors, meal reservations, login re-issue */
+/** Slot modifying: Keycloak users, app anchors, meal reservations, login re-issue */
 @Service
 class SlotService(
 	private val kc: KeycloakAdminService,

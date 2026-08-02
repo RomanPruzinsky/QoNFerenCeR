@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 
-/** Anchors firsst admin created by keycloak */
+/** Anchors first admin created by keycloak */
 @Component
 class BootstrapAdminAnchor(
 	private val kc: KeycloakAdminService,
