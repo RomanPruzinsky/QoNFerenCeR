@@ -11,44 +11,46 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient
 import java.time.Instant
 
-/** Ships [OutboundEvent]s to n8n and swallows the reply: no retry, no outbox, never fails a scan */
+/** Ships [OutboundEvent] to n8n and ignores reply */
 @Component
 class N8nOutboundListener(
 	private val n8nRestClient: RestClient,
 	private val properties: N8nProperties,
 ) {
-	/** Sends [event] after commit; `fallbackExecution` covers the callers without a transaction */
+	/** Sends [event] */
 	@Async(N8nConfig.N8N_EXECUTOR)
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
-	fun onEvent(event: OutboundEvent) {
+	fun sendMessageToN8n(event: OutboundEvent) {
 		if (!properties.enabled) return
+		
 		val envelope = N8nEnvelope(
+			conferenceId = properties.eventId,
 			schemaVersion = SCHEMA_VERSION,
+			timestamp = Instant.now(),
 			eventType = event.type,
-			ts = Instant.now(),
-			event = properties.eventId,
 			data = event,
 		)
+		
 		try {
 			n8nRestClient.post()
-				.uri("/{prefix}/{eventType}", properties.pathPrefix, event.type)
+				.uri("/${properties.pathPrefix}/${event.type}")
 				.contentType(MediaType.APPLICATION_JSON)
-				.apply { if (properties.authToken.isNotBlank()) header(TOKEN_HEADER, properties.authToken) }
+				.header(TOKEN_HEADER, properties.authToken)
 				.body(envelope)
 				.retrieve()
 				.toBodilessEntity()
 		} catch (notFound: HttpClientErrorException.NotFound) {
 			log.debug("no workflow listens on ${event.type}: ${notFound.message}")
-		} catch (failure: Exception) {
-			log.warn("n8n delivery of ${event.type} failed: ${failure.message}")
+		} catch (e: Exception) {
+			log.warn("n8n delivery of ${event.type} failed: ${e.message}")
 		}
 	}
 	
 	private companion object {
-		/** Bump only when the envelope stops being backwards compatible */
+		/** Upgrade only if [OutboundEvent] stops being backward compatible */
 		const val SCHEMA_VERSION = 1
 
-		/** Shared-secret header for n8n's Header Auth; no `X-` prefix per RFC 6648 */
+		/** Shared secret header for n8n's Header Auth */
 		const val TOKEN_HEADER = "QN-Token"
 		
 		val log: Logger = LoggerFactory.getLogger(N8nOutboundListener::class.java)

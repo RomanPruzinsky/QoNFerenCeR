@@ -60,7 +60,7 @@ class SlotService(
 		req.meals.forEach {
 			reservations.save(MealReservation(MealSlotId(user.id, it.windowId), it.variantKey))
 		}
-		events.publish(OutboundEvent.SlotCreated(userId = user.id, username = username, user = req))
+		events.publish(OutboundEvent.SlotCreated(userId = user.id, username = username, userData = req))
 		return SlotProvisionedDto(
 			user = userDetail(user, req),
 			credentials = loginCredentials(user, username, password),
@@ -79,7 +79,7 @@ class SlotService(
 		req.meals.forEach {
 			reservations.save(MealReservation(MealSlotId(userId, it.windowId), it.variantKey))
 		}
-		events.publish(OutboundEvent.SlotUpdated(userId = userId, user = req))
+		events.publish(OutboundEvent.SlotUpdated(userId = userId, userData = req))
 		return userDetail(user, req)
 	}
 
@@ -89,7 +89,7 @@ class SlotService(
 		val user = findUser(userId)
 		val version = anchors.rotateSecret(user)
 		kc.logout(user.kcSub)
-		events.publish(OutboundEvent.SlotRevoked(userId = user.id, fullName = user.fullName, qrSecretV = version))
+		events.publish(OutboundEvent.SlotRevoked(userId = user.id, qrSecretV = version))
 	}
 
 	/** Erases [userId] from the app database first, then from Keycloak; not transactional */
@@ -111,6 +111,7 @@ class SlotService(
 		val password = UserPasswordGenerator.generate(random)
 		kc.setPassword(user.kcSub, password)
 		val username = kc.username(user.kcSub)
+		events.publish(OutboundEvent.SlotLoginIssued(userId = user.id, username = username))
 		return loginCredentials(user, username, password)
 	}
 	

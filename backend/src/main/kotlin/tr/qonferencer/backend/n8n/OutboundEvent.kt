@@ -9,45 +9,50 @@ import tr.qonferencer.shared.enums.ScannerType
 
 /**
  * Loggable actions for n8n tracking 
- * @property type Webhook path segment
+ * @property type Webhook path part
  */
 sealed class OutboundEvent(
 	@get:JsonIgnore val type: String,
 ) {
 	/**
-	 * Somebody opened the app
-	 * @return User data or `null` if user wasn't logged in 
+	 * Somebody opened app
+	 * @param user Caller data or `null` if user wasn't logged in 
 	 */
 	data class AppLaunched(
 		val user: UserDetailDto?,
 	) : OutboundEvent("APP_LAUNCHED")
 
-	/** A slot was provisioned (Keycloak user + app anchor + first login) */
+	/** Slot created */
 	data class SlotCreated(
 		val userId: Long,
 		val username: String,
-		val user: ModifyableUserDataDto,
+		val userData: ModifyableUserDataDto,
 	) : OutboundEvent("SLOT_CREATED")
 
-	/** An attendee's details, role or meals changed */
+	/** Fresh password issued for slot */
+	data class SlotLoginIssued(
+		val userId: Long,
+		val username: String,
+	) : OutboundEvent("SLOT_LOGIN_ISSUED")
+
+	/** Attendee's details, role or meals changed */
 	data class SlotUpdated(
 		val userId: Long,
-		val user: ModifyableUserDataDto,
+		val userData: ModifyableUserDataDto,
 	) : OutboundEvent("SLOT_UPDATED")
 
-	/** A lost phone was cut off: scan secret rotated and sessions killed */
+	/** Scan secret rotated and sessions killed */
 	data class SlotRevoked(
 		val userId: Long,
-		val fullName: String,
 		val qrSecretV: Short,
 	) : OutboundEvent("SLOT_REVOKED")
 
-	/** An attendee was erased; nothing of theirs survives to be reported later */
+	/** User erased */
 	data class SlotDeleted(
 		val userId: Long,
 	) : OutboundEvent("SLOT_DELETED")
 
-	/** A meal was handed out */
+	/** Meal eaten */
 	data class MealApproved(
 		val userId: Long,
 		val meal: UserMealEntryDto,
@@ -55,7 +60,7 @@ sealed class OutboundEvent(
 		val scannerType: ScannerType,
 	) : OutboundEvent("MEAL_APPROVED")
 
-	/** A scan was refused; [reason] carries which verdict */
+	/** Scan refused, [reason] carries why */
 	data class MealDenied(
 		val userId: Long?,
 		val windowId: Long,

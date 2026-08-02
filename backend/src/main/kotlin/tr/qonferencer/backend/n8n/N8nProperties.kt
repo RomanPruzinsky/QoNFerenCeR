@@ -1,17 +1,18 @@
 package tr.qonferencer.backend.n8n
 
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.validation.annotation.Validated
 
 /**
  * Where outbound events go
- * @property enabled False means a backend without an n8n next to it stays silent
- * @property baseUrl Root of the organizer's n8n webhook endpoint
- * @property pathPrefix Path segment before the event name, shared by every workflow
- * @property eventId Conference identity stamped into every envelope
- * @property authToken Shared secret proving the event came from this backend; blank omits the header
- * @property timeoutMs Connect and read budget; a hanging n8n must not tie up a delivery thread
+ * @property enabled Whether outbound delivery is on
+ * @property baseUrl n8n webhook path
+ * @property pathPrefix Path part shared by every workflow
+ * @property eventId Conference identity
+ * @property authToken Shared secret sent on every request
+ * @property timeoutMs Connect and read timeout
  */
 @Validated
 @ConfigurationProperties(prefix = "qonferencer.n8n")
@@ -23,6 +24,7 @@ data class N8nProperties(
 	val pathPrefix: String,
 	@field:Pattern(regexp = "[a-zA-Z][a-zA-Z0-9_]*")
 	val eventId: String,
+	@field:NotBlank
 	val authToken: String,
-	val timeoutMs: Long = 3000,
+	val timeoutMs: Long,
 )
