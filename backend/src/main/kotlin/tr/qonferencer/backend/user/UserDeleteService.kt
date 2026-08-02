@@ -5,19 +5,18 @@ import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.meal.MealConsumptionRepository
 import tr.qonferencer.backend.meal.MealReservationRepository
 
-/** Erases everything one person left in the app database; own bean so `@Transactional` applies */
 @Service
 class UserDeleteService(
 	private val users: UserRepository,
-	private val reservations: MealReservationRepository,
-	private val consumptions: MealConsumptionRepository,
+	private val mealReservations: MealReservationRepository,
+	private val mealConsumptions: MealConsumptionRepository,
 ) {
-	/** Deletes the anchor of [userId] and everything pointing at it, in foreign-key order */
+	/** Deletes data of [userId] and everything pointing at it */
 	@Transactional
 	fun delete(userId: Long) {
-		consumptions.detachScanner(userId)
-		consumptions.deleteByIdUserId(userId)
-		reservations.deleteByIdUserId(userId)
+		mealConsumptions.detachScanner(userId)
+		mealConsumptions.deleteByIdUserId(userId)
+		mealReservations.deleteByIdUserId(userId)
 		users.deleteById(userId)
 	}
 }

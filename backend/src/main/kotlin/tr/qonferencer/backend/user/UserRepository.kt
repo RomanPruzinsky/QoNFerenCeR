@@ -12,7 +12,7 @@ interface UserRepository : JpaRepository<User, Long> {
 	
 	fun findByKcSub(kcSub: UUID): User?
 
-	/** Creates [User] or skips it if is already present by [kcSub]  */
+	/** Creates [User] or skips it if is already present  */
 	@Modifying
 	@Query(
 		value = """
@@ -29,7 +29,7 @@ interface UserRepository : JpaRepository<User, Long> {
 	)
 
 	/** 
-	 * Find user by name: 
+	 * Finds user by name: 
 	 * - `LIKE`: checks for substrings
 	 * - `word_similarity`: saferize typo 
 	 */
@@ -41,7 +41,10 @@ interface UserRepository : JpaRepository<User, Long> {
 	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double, pageable: Pageable): Page<User>
 	
 	private companion object {
+		/** Helper for SQL script, similarity eval query */
 		const val SIMILARITY = "word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))"
+
+		/** Helper for SQL script, name search query */
 		const val NAME_MATCH =
 			"lower(immutable_unaccent(full_name)) LIKE '%' || lower(immutable_unaccent(:query)) || '%' OR $SIMILARITY >= :threshold"
 	}

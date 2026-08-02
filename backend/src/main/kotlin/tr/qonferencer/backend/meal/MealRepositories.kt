@@ -19,7 +19,7 @@ interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId>
 	
 	fun deleteByIdUserId(userId: Long)
 
-	/** Clears [userId] from `scannedBy` without deleting the rows, which belong to other people */
+	/** Clears [userId] from `scannedBy` */
 	@Modifying
 	@Query(
 		value = "UPDATE meal_consumption SET scanned_by = NULL WHERE scanned_by = :userId",
@@ -27,11 +27,18 @@ interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId>
 	)
 	fun detachScanner(@Param("userId") userId: Long): Int
 
-	/** Records the consumption; false when the slot was already consumed */
+	/** 
+	 * Records consumption
+	 * @returns `true` on valid eating, `false` when slot was already consumed 
+	 */
 	fun consume(slot: MealSlotId, scannedBy: Long?, idempotencyKey: UUID): Boolean =
 		insertIfAbsent(slot.userId, slot.windowId, scannedBy, idempotencyKey) == 1
 
-	/** Backs [consume]; `@Modifying` allows only void/int/long as return type */
+	/**
+	 * Inserts meal consumption entry. Tracks if inserted or skipped
+	 * @returns `1` on insert, `0` when slot already existed
+	 * @see [consume]
+	 */
 	@Modifying
 	@Query(
 		value = """

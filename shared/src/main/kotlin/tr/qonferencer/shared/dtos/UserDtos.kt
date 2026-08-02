@@ -42,7 +42,7 @@ data class LoginCredentialsDto(
 	val qrSecret: String,
 )
 
-/** Response of [tr.qonferencer.shared.ApiPaths.Admin.ADD_USER]: the created slot plus its one-time login */
+/** User's data with credentials */
 data class SlotProvisionedDto(
 	val user: UserDetailDto,
 	val credentials: LoginCredentialsDto,
