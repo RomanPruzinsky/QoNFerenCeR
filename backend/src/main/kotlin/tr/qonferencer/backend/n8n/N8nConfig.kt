@@ -1,6 +1,7 @@
 package tr.qonferencer.backend.n8n
 
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,6 +15,7 @@ import java.time.Duration
 @Configuration
 @EnableAsync
 @EnableConfigurationProperties(N8nProperties::class)
+@ConditionalOnProperty(name = [N8nProperties.ENABLED_PROPERTY], havingValue = N8nProperties.ENABLED_VALUE)
 class N8nConfig {
 	
 	/** Sets up client that talks to n8n */

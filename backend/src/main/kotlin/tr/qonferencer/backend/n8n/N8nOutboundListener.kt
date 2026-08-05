@@ -2,6 +2,7 @@ package tr.qonferencer.backend.n8n
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.MediaType
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -13,6 +14,7 @@ import java.time.Instant
 
 /** Ships [OutboundEvent] to n8n and ignores reply */
 @Component
+@ConditionalOnProperty(name = [N8nProperties.ENABLED_PROPERTY], havingValue = N8nProperties.ENABLED_VALUE)
 class N8nOutboundListener(
 	private val n8nRestClient: RestClient,
 	private val properties: N8nProperties,
