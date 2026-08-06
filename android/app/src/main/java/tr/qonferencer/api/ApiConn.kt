@@ -10,47 +10,60 @@ import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import tr.qonferencer.BuildConfig
 import tr.qonferencer.QoNFerenCeRApp
-import tr.qonferencer.auth.AuthInterceptor
-import tr.qonferencer.auth.AuthRepository
-import tr.qonferencer.auth.AuthTokenHelper
+import tr.qonferencer.api.auth.AuthInterceptor
+import tr.qonferencer.api.auth.AuthRepository
+import tr.qonferencer.api.auth.AuthTokenHelper
 import tr.qonferencer.data.remote.KeycloakApi
 import tr.qonferencer.data.remote.QoNFerenCeRApiClient
 
-/** Plain client (no bearer) hits Keycloak; authed client adds [AuthInterceptor] for the backend. */
-private val objectMapper: ObjectMapper = ObjectMapper()
-	.registerKotlinModule()
-	.registerModule(JavaTimeModule())
-	.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+//////////////////////////////////////////////////
+//////////////////// HELPERS /////////////////////
 
-private val loggingInterceptor = HttpLoggingInterceptor().apply {
-	level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+/** Jackson's (de)serializer */
+private val objectMapper: ObjectMapper = ObjectMapper()
+	.registerKotlinModule() // Let Jackson know its kotlin (not java)
+	.registerModule(JavaTimeModule()) // Support for java.time types
+	.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) // Ignore unknown
+
+/** Logging requests/responses */
+private val logger = HttpLoggingInterceptor().apply {
+	level =
+		if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+		else HttpLoggingInterceptor.Level.NONE
 }
 
-val keycloakApi: KeycloakApi = Retrofit.Builder()
-	.baseUrl(BuildConfig.KEYCLOAK_BASE_URL)
-	.client(OkHttpClient.Builder().addInterceptor(loggingInterceptor).build())
+private fun buildRetrofit(baseUrl: String, client: OkHttpClient): Retrofit = Retrofit.Builder()
+	.baseUrl(baseUrl)
+	.client(client)
 	.addConverterFactory(JacksonConverterFactory.create(objectMapper))
 	.build()
-	.create(KeycloakApi::class.java)
 
-// lazy: QoNFerenCeRApp.tokenStore only exists once Application.onCreate() has run.
+/** Keycloak calls */
+private val keycloakApi: KeycloakApi = buildRetrofit(
+	BuildConfig.KEYCLOAK_BASE_URL,
+	OkHttpClient.Builder().addInterceptor(logger).build(),
+).create(KeycloakApi::class.java)
+
+/** Calls for **auth tokens** */
 private val authTokenHelper by lazy { AuthTokenHelper(QoNFerenCeRApp.tokenStore) }
 
-val authRepository: AuthRepository by lazy { AuthRepository(keycloakApi, authTokenHelper) }
-
+/** Bearer token manager */
 private val authedClient by lazy {
 	OkHttpClient.Builder()
 		.addInterceptor(AuthInterceptor(authTokenHelper, keycloakApi))
-		.addInterceptor(loggingInterceptor)
+		.addInterceptor(logger)
 		.build()
 }
 
+//////////////////// HELPERS /////////////////////
+//////////////////////////////////////////////////
+/////////////////// API ACCESS ///////////////////
+
+val authRepository: AuthRepository by lazy { AuthRepository(keycloakApi, authTokenHelper) }
+
 val QoNFerenCerApi: QoNFerenCeRApiClient by lazy {
-	QoNFerenCeRApiClient(
-		Retrofit.Builder()
-			.baseUrl(BuildConfig.BACKEND_BASE_URL)
-			.client(authedClient)
-			.addConverterFactory(JacksonConverterFactory.create(objectMapper))
-			.build(),
-	)
+	QoNFerenCeRApiClient(buildRetrofit(BuildConfig.BACKEND_BASE_URL, authedClient))
 }
+
+/////////////////// API ACCESS ///////////////////
+//////////////////////////////////////////////////
