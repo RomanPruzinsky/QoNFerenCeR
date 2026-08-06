@@ -23,7 +23,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun QonferencerTheme(
+fun QoNFerenCeRTheme(
 	darkTheme: Boolean = isSystemInDarkTheme(),
 	dynamicColor: Boolean = true,
 	content: @Composable () -> Unit,

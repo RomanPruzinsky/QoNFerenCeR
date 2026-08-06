@@ -28,7 +28,7 @@ object ScanToken {
 		val hmac: String,
 	)
 
-	/** Builds a fresh token for [userId], authenticated with [qrSecret], for the window containing [epochSeconds] */
+	/** Builds a fresh token for [userId], authenticated with [qrSecret], for window containing [epochSeconds] */
 	fun build(userId: Long, qrSecret: ByteArray, epochSeconds: Long): String {
 		val window = windowOf(epochSeconds)
 		return "$PREFIX:$window:$userId:${hmacOf(userId, window, qrSecret)}"

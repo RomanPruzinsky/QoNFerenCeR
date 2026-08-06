@@ -92,7 +92,7 @@ class UserDetailTest {
 	}
 	
 	private fun detail(userId: Long, role: Role, canCheckByName: Boolean = true) =
-		mockMvc.get(ApiPaths.USER_BY_ID.replace("{userId}", userId.toString())) {
+		mockMvc.get(ApiPaths.User.BY_ID.replace("{userId}", userId.toString())) {
 			with(
 				jwt().jwt {
 					it.subject(UUID.randomUUID().toString())

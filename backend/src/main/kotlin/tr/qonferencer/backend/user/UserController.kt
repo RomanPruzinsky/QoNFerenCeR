@@ -10,6 +10,6 @@ import tr.qonferencer.shared.dtos.UserDetailDto
 class UserController(
 	private val userDetailService: UserDetailService,
 ) {
-	@GetMapping(ApiPaths.USER_BY_ID)
+	@GetMapping(ApiPaths.User.BY_ID)
 	fun detail(@PathVariable userId: Long): UserDetailDto = userDetailService.detail(userId)
 }

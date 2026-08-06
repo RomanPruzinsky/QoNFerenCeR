@@ -35,7 +35,7 @@ class SecurityConfig(
 			.authorizeHttpRequests { reg ->
 				reg
 					.requestMatchers(
-						ApiPaths.SPLASH,
+						ApiPaths.Splash.ALL,
 						"${ApiPaths.CustomScreens.ROOT}/**",
 						"/actuator/health/**",
 					).permitAll()

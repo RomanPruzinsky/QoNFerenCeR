@@ -11,6 +11,6 @@ import tr.qonferencer.shared.dtos.MealScanResultDto
 class MealScanController(
 	private val scanService: MealScanService,
 ) {
-	@PostMapping(ApiPaths.MEAL_SCAN)
+	@PostMapping(ApiPaths.Meal.MEAL_SCAN)
 	fun scan(@RequestBody request: MealScanRequestDto): MealScanResultDto = scanService.scan(request)
 }

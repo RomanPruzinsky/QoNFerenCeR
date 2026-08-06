@@ -14,7 +14,7 @@ import tr.qonferencer.shared.dtos.UserDisplayDto
 class SearchByNameController(
 	private val searchService: SearchByNameService,
 ) {
-	@GetMapping(ApiPaths.SEARCH_BY_NAME)
+	@GetMapping(ApiPaths.User.BY_NAME)
 	fun search(
 		@RequestParam("searchFor") query: String,
 		@PageableDefault(size = DEFAULT_PAGING_SIZE) pageable: Pageable,

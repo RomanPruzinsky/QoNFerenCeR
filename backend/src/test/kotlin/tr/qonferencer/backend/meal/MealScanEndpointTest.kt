@@ -150,7 +150,7 @@ class MealScanEndpointTest {
 		}
 	}
 	
-	private fun scan(request: MealScanRequestDto, role: Role) = mockMvc.post(ApiPaths.MEAL_SCAN) {
+	private fun scan(request: MealScanRequestDto, role: Role) = mockMvc.post(ApiPaths.Meal.MEAL_SCAN) {
 		with(
 			jwt().jwt {
 				it.subject(scannerSub.toString())

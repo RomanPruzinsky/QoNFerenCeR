@@ -67,7 +67,7 @@ class DomainEventPublishingTest {
 	
 	@Test
 	fun `an anonymous launch carries no profile`() {
-		mockMvc.get(ApiPaths.SPLASH).andExpect { status { isOk() } }
+		mockMvc.get(ApiPaths.Splash.ALL).andExpect { status { isOk() } }
 
 		val event = published().single() as OutboundEvent.AppLaunched
 		assertEquals(null, event.user)
@@ -79,7 +79,7 @@ class DomainEventPublishingTest {
 		users.insertIfAbsent(sub, ByteArray(32), "Hungry Attendee")
 		val userId = users.findByKcSub(sub)!!.id
 
-		mockMvc.get(ApiPaths.SPLASH) {
+		mockMvc.get(ApiPaths.Splash.ALL) {
 			with(
 				jwt().jwt {
 					it.subject(sub.toString())
@@ -138,7 +138,7 @@ class DomainEventPublishingTest {
 	
 	private fun published(): List<OutboundEvent> = events.stream(OutboundEvent::class.java).toList()
 	
-	private fun scan(request: MealScanRequestDto) = mockMvc.post(ApiPaths.MEAL_SCAN) {
+	private fun scan(request: MealScanRequestDto) = mockMvc.post(ApiPaths.Meal.MEAL_SCAN) {
 		with(
 			jwt().jwt {
 				it.subject(scannerSub.toString())

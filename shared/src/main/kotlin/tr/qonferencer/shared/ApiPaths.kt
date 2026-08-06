@@ -4,10 +4,21 @@ package tr.qonferencer.shared
 object ApiPaths {
 	private const val BASE = "/api/v$API_VERSION"
 	
-	const val USER_BY_ID = "$BASE/users/{userId}"
+	object Splash {
+		private const val ROOT = "$BASE/splash"
+		const val ALL = "$ROOT/ALL"
+	}
+	
+	object User {
+		private const val ROOT = "$BASE/user"
+		
+		const val BY_ID = "$ROOT/{userId}"
+		const val BY_NAME = "$ROOT/by-name"
+	}
 	
 	object CustomScreens {
 		const val ROOT = "$BASE/custom-screens"
+		
 		const val BY_ID = "$ROOT/{id}"
 	}
 	
@@ -22,9 +33,9 @@ object ApiPaths {
 		const val REVOKE = "$ROOT/revoke/{userId}"
 	}
 	
-	const val SEARCH_BY_NAME = "$BASE/search-by-name"
-	
-	const val SPLASH = "$BASE/splash"
-	
-	const val MEAL_SCAN = "$BASE/meal-scan"
+	object Meal {
+		private const val ROOT = "$BASE/meal"
+		
+		const val MEAL_SCAN = "$ROOT/scan"
+	}
 }
