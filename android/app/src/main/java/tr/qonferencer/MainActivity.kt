@@ -11,8 +11,8 @@ import tr.qonferencer.api.QoNFerenCerApi
 import tr.qonferencer.screens.splash.SplashScreen
 import tr.qonferencer.screens.splash.SplashViewModel
 import tr.qonferencer.screens.splash.splashViewModelFactory
-import tr.qonferencer.state.DataState
 import tr.qonferencer.theme.QoNFerenCeRTheme
+import tr.qonferencer.trons.states.dataState.DataState
 
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {

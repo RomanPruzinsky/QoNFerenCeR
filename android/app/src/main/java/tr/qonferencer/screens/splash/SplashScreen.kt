@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import tr.qonferencer.api.QoNFerenCerApi
-import tr.qonferencer.state.DataState
+import tr.qonferencer.trons.states.dataState.DataState
 
 @Composable
 fun SplashScreen(
@@ -33,9 +33,9 @@ fun SplashScreen(
 		verticalArrangement = Arrangement.Center,
 	) {
 		when (val current = state) {
-			is DataState.Loading -> CircularProgressIndicator()
+			DataState.Waiting, DataState.Processing -> CircularProgressIndicator()
 			is DataState.Error -> {
-				Text("Failed to load: ${current.cause.message}")
+				Text("Failed to load: ${current.specification?.message}")
 				Button(onClick = viewModel::load) { Text("Retry") }
 			}
 			is DataState.Success -> Unit
