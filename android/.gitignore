@@ -10,6 +10,8 @@
 /.idea/gradle.xml
 /.idea/misc.xml
 /.idea/kotlinc.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/markdown.xml
 .DS_Store
 /build
 /captures
