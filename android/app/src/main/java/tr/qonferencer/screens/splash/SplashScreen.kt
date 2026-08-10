@@ -1,5 +1,6 @@
 package tr.qonferencer.screens.splash
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import tr.qonferencer.api.QoNFerenCerApi
+import tr.qonferencer.theme.colors
 import tr.qonferencer.trons.states.dataState.DataState
 
 @Composable
@@ -28,6 +30,7 @@ fun SplashScreen(
 	Column(
 		modifier = modifier
 			.fillMaxSize()
+			.background(colors.appBackground)
 			.padding(24.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Center,

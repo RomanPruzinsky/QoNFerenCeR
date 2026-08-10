@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,6 +37,7 @@ fun ScreensMenuHeader(modifier: Modifier = Modifier) {
 			.fillMaxWidth()
 			.defaultClip(Edge.BOTTOM, multiplier = 2F)
 			.background(currentRole.color)
+			.windowInsetsPadding(WindowInsets.statusBars)
 			.defaultLayoutPadding(),
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(defaultLayoutPadding),
@@ -54,7 +58,7 @@ fun ScreensMenuHeader(modifier: Modifier = Modifier) {
 				overflow = TextOverflow.Ellipsis,
 			)
 			Text(
-				text = currentRole.name.lowercase(),
+				text = "- " + currentRole.name.lowercase(),
 				style = typo.bodyMedium,
 				color = colors.text,
 			)

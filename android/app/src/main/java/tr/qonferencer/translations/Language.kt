@@ -1,6 +1,7 @@
 package tr.qonferencer.translations
 
 import androidx.compose.runtime.staticCompositionLocalOf
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,7 @@ data class TranslationState(
 	val translations: List<TranslationDto>,
 ) {
 	/** Fallback language ([LanguageDto.isDefault]) */
+	@get:JsonIgnore
 	val defaultLangCode: String? get() = languages.firstOrNull { it.isDefault }?.code
 
 	/**

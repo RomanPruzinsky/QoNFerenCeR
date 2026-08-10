@@ -27,6 +27,7 @@ fun ScreensMenuLayout(
 			allTargets.forEach { target ->
 				ScreensMenuItem(
 					target = target,
+					currentRole = currentRole,
 					isSelected = target == currentTarget,
 					onClick = { onSelect(target) },
 				)

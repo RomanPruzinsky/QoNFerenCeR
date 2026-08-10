@@ -10,13 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import tr.qonferencer.theme.colors
+import tr.qonferencer.shared.enums.Role
+import tr.qonferencer.theme.color
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.trons.theme.defaultClipSize
 
 @Composable
-fun ScreensMenuItem(target: NavTarget, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun ScreensMenuItem(
+	target: NavTarget,
+	currentRole: Role,
+	isSelected: Boolean,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+) {
 	NavigationDrawerItem(
 		label = {
 			Text(
@@ -31,7 +38,7 @@ fun ScreensMenuItem(target: NavTarget, isSelected: Boolean, onClick: () -> Unit,
 		icon = { Icon(imageVector = target.icon, contentDescription = "${target.icon}") },
 		shape = CircleShape.copy(CornerSize(defaultClipSize)),
 		colors = NavigationDrawerItemDefaults.colors(
-			selectedContainerColor = colors.selected,
+			selectedContainerColor = currentRole.color,
 			unselectedContainerColor = Color.Transparent,
 		),
 		modifier = modifier,
