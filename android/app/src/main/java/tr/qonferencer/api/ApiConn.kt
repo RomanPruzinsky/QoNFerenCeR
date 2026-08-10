@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,6 +16,7 @@ import tr.qonferencer.api.auth.AuthRepository
 import tr.qonferencer.api.auth.AuthTokenHelper
 import tr.qonferencer.data.remote.KeycloakApi
 import tr.qonferencer.data.remote.QoNFerenCeRApiClient
+import java.io.File
 
 //////////////////////////////////////////////////
 //////////////////// HELPERS /////////////////////
@@ -47,9 +49,13 @@ private val keycloakApi: KeycloakApi = buildRetrofit(
 /** Calls for **auth tokens** */
 private val authTokenHelper by lazy { AuthTokenHelper(QoNFerenCeRApp.tokenStore) }
 
+/** MB reserved for ETag */
+private const val HTTP_CACHE_MAX_FILE_SIZE = 5L * 1024 * 1024
+
 /** Bearer token manager */
 private val authedClient by lazy {
 	OkHttpClient.Builder()
+		.cache(Cache(File(QoNFerenCeRApp.appContext.cacheDir, "http"), HTTP_CACHE_MAX_FILE_SIZE))
 		.addInterceptor(AuthInterceptor(authTokenHelper, keycloakApi))
 		.addInterceptor(logger)
 		.build()
