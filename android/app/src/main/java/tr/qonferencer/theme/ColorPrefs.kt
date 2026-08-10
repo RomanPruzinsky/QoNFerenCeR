@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tr.qonferencer.data.local.PrefKey
 import tr.qonferencer.data.local.PrefsStorager
-import tr.qonferencer.theme.color.AppColorsOptions
 
 /** Manages user's selected [AppColorsOptions] */
 class ColorPrefs(

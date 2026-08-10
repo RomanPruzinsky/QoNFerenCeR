@@ -1,6 +1,10 @@
-package tr.qonferencer.theme.color
+package tr.qonferencer.theme.appColorsOptions
 
 import androidx.compose.ui.graphics.Color
+import tr.qonferencer.theme.AppColors
+import tr.qonferencer.theme.standardActionColors
+import tr.qonferencer.theme.standardRoleColors
+import tr.qonferencer.theme.standardScanResultColors
 
 val deepSeaAppColors = AppColors(
 	appBackground = Color(0xFF000510),

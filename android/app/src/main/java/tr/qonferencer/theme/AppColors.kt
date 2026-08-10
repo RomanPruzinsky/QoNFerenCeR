@@ -1,8 +1,27 @@
-package tr.qonferencer.theme.color
+package tr.qonferencer.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import tr.qonferencer.shared.enums.Role
+import tr.qonferencer.shared.enums.Role.ADMIN
+import tr.qonferencer.shared.enums.Role.ANONYM
+import tr.qonferencer.shared.enums.Role.LEADER
+import tr.qonferencer.shared.enums.Role.ORGANISER
+import tr.qonferencer.shared.enums.Role.VISITOR
+import tr.qonferencer.shared.enums.Role.VOLUNTEER
+import tr.qonferencer.theme.appColorsOptions.auroraAppColors
+import tr.qonferencer.theme.appColorsOptions.blackPinkAppColors
+import tr.qonferencer.theme.appColorsOptions.deepOrangeAppColors
+import tr.qonferencer.theme.appColorsOptions.deepSeaAppColors
+import tr.qonferencer.theme.appColorsOptions.forestGreenAppColors
+import tr.qonferencer.theme.appColorsOptions.midnightBlueAppColors
+import tr.qonferencer.theme.appColorsOptions.mochaCoffeeAppColors
+import tr.qonferencer.theme.appColorsOptions.nsBlueAppColors
+import tr.qonferencer.theme.appColorsOptions.sakuraNightAppColors
+import tr.qonferencer.theme.appColorsOptions.slateSteelAppColors
+import tr.qonferencer.theme.appColorsOptions.solarizedAppColors
+import tr.qonferencer.theme.appColorsOptions.trAppColors
 
 //////////////////////////////////
 ////////////// MAIN //////////////
@@ -65,6 +84,17 @@ data class RoleColors(
 	val organiser: Color,
 	val admin: Color,
 )
+
+/** Per [Role] coolor */
+val Role.color: Color
+	@Composable get() = when (this) {
+		ANONYM -> colors.level.anonym
+		VISITOR -> colors.level.visitor
+		VOLUNTEER -> colors.level.volunteer
+		LEADER -> colors.level.leader
+		ORGANISER -> colors.level.organiser
+		ADMIN -> colors.level.admin
+	}
 
 /** Per-[tr.qonferencer.shared.enums.MealScanResult] feedback colors */
 data class ScanResultColors(
