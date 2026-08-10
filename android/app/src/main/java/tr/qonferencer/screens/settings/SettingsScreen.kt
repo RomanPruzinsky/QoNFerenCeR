@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.defaultLayouts.CardLayout
 import tr.qonferencer.trons.defaultLayouts.PADS_NONE
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
@@ -52,7 +52,7 @@ fun SettingsCardLayout(introduction: String, modifier: Modifier = Modifier, body
 		) {
 			Text(
 				text = introduction,
-				style = MaterialTheme.typography.titleMedium,
+				style = typo.titleMedium,
 			)
 
 			body()

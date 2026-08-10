@@ -13,7 +13,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,6 +27,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import tr.qonferencer.theme.colors
 
 /** Basic animation for any element */
 fun Modifier.defaultAnimation() = this.then(
@@ -106,20 +106,17 @@ fun Modifier.longClickable(onLongClick: () -> Unit) =
  * @param color Color of border line
  */
 @Composable
-fun Modifier.defaultBorder(
-	should: Boolean = true,
-	size: Dp = defaultBorderSize,
-	color: Color = MaterialTheme.colorScheme.outline,
-) = this.optionable(
-	ifTrue = Modifier
-		.defaultClip()
-		.border(
-			width = size,
-			shape = CircleShape.copy(CornerSize(defaultClipSize)),
-			color = color,
-		),
-	cond = should,
-)
+fun Modifier.defaultBorder(should: Boolean = true, size: Dp = defaultBorderSize, color: Color = colors.element) =
+	this.optionable(
+		ifTrue = Modifier
+			.defaultClip()
+			.border(
+				width = size,
+				shape = CircleShape.copy(CornerSize(defaultClipSize)),
+				color = color,
+			),
+		cond = should,
+	)
 
 /**
  * Creates animated border
@@ -134,8 +131,8 @@ fun Modifier.defaultBorder(
 fun Modifier.antsBorder(
 	dashLength: Float = 30f,
 	gapLength: Float = 20f,
-	dashColor: Color = MaterialTheme.colorScheme.primary,
-	gapColor: Color = MaterialTheme.colorScheme.outline,
+	dashColor: Color = colors.selected,
+	gapColor: Color = colors.element,
 	width: Dp = 3.dp,
 	speed: Int = 800,
 ): Modifier {

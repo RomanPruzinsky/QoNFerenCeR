@@ -8,13 +8,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
+import tr.qonferencer.theme.colors
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultBorder
 import tr.qonferencer.trons.theme.defaultCardElevation
@@ -71,7 +71,7 @@ fun CardLayout(
 	Card(
 		shape = CircleShape.copy(CornerSize(defaultClipSize)),
 		elevation = CardDefaults.cardElevation(defaultCardElevation),
-		colors = CardDefaults.cardColors(containerColor = containerColor.takeOrElse { MaterialTheme.colorScheme.surface }),
+		colors = CardDefaults.cardColors(containerColor = containerColor.takeOrElse { colors.container }),
 		modifier = Modifier
 			.then(
 				if (outerPads != null) Modifier.specPadding(*outerPads)

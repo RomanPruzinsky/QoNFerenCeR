@@ -5,11 +5,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import tr.qonferencer.theme.typo
 
 /**
  * Display animated text (defaultly arrows) indicating opened/closed menu.
@@ -28,7 +28,7 @@ fun AnimatedArrows(
 	textModifier: Modifier = Modifier,
 	openedIndicator: String = AnimatedArrowsSay.ARROW_UP,
 	closedIndicator: String = AnimatedArrowsSay.ARROW_DOWN,
-	textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+	textStyle: TextStyle = typo.bodyMedium,
 ) {
 	Box(modifier = modifier) {
 		@Composable

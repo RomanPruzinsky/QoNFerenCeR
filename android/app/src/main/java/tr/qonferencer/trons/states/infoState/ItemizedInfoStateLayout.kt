@@ -1,10 +1,10 @@
 package tr.qonferencer.trons.states.infoState
 
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.states.StateIndicator
 import tr.qonferencer.trons.states.StateSay
 import tr.qonferencer.trons.states.errorIndicatorMessage
@@ -36,7 +36,7 @@ fun LazyListScope.itemizedInfoStateLayout(
 					StateIndicator(
 						text = StateSay.SUCCESS,
 						backgroundColor = backgroundColor,
-						textStyle = textStyle ?: MaterialTheme.typography.headlineMedium,
+						textStyle = textStyle ?: typo.headlineMedium,
 					)
 				}
 			}
@@ -47,7 +47,7 @@ fun LazyListScope.itemizedInfoStateLayout(
 				StateIndicator(
 					text = errorIndicatorMessage(state.specification),
 					backgroundColor = backgroundColor,
-					textStyle = textStyle ?: MaterialTheme.typography.headlineMedium,
+					textStyle = textStyle ?: typo.headlineMedium,
 				)
 			}
 		}
@@ -57,7 +57,7 @@ fun LazyListScope.itemizedInfoStateLayout(
 				StateIndicator(
 					text = StateSay.PROCESSING,
 					backgroundColor = backgroundColor,
-					textStyle = textStyle ?: MaterialTheme.typography.headlineMedium,
+					textStyle = textStyle ?: typo.headlineMedium,
 				)
 			}
 		}

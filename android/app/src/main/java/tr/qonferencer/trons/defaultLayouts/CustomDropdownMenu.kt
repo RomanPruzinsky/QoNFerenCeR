@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -13,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.ops.orEmptyIf
 import tr.qonferencer.trons.remembers.switch
 import tr.qonferencer.trons.theme.defaultBorder
@@ -42,7 +43,7 @@ fun CustomDropdownMenu(
 	arrowAtStart: Boolean,
 	modifier: Modifier = Modifier,
 	specialFont: List<FontFamily>? = null,
-	selectedColor: Color = MaterialTheme.colorScheme.primary,
+	selectedColor: Color = colors.selected,
 	additiveOnClickAction: () -> Unit = {},
 ) {
 	Column(
@@ -62,7 +63,7 @@ fun CustomDropdownMenu(
 				text = options[selected.value],
 				arrowAtStart = arrowAtStart,
 			),
-			textStyle = MaterialTheme.typography.labelMedium,
+			textStyle = typo.labelMedium,
 			textModifier = Modifier
 				.defaultClip()
 				.background(selectedColor)
@@ -80,9 +81,9 @@ fun CustomDropdownMenu(
 						Text(
 							text = option,
 							style = if (specialFont != null) {
-								MaterialTheme.typography.bodyMedium.copy(fontFamily = specialFont[index])
+								typo.bodyMedium.copy(fontFamily = specialFont[index])
 							} else {
-								MaterialTheme.typography.bodyMedium
+								typo.bodyMedium
 							},
 							modifier = Modifier
 								.defaultClip()

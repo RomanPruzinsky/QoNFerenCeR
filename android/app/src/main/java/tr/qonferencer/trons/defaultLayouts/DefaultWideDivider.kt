@@ -1,16 +1,17 @@
 package tr.qonferencer.trons.defaultLayouts
 
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import tr.qonferencer.theme.AppColors
+import tr.qonferencer.theme.colors
 import tr.qonferencer.trons.theme.defaultBorderSize
 
 /**
  * Defaultly styled [HorizontalDivider]
  *
  * Horizontal line with
- * - color as [MaterialTheme]'s outline color
+ * - color as [AppColors.element]
  * - thickness as [defaultBorderSize]
  *
  * @param modifier Optional [Modifier]
@@ -19,7 +20,7 @@ import tr.qonferencer.trons.theme.defaultBorderSize
 fun DefaultWideDivider(modifier: Modifier = Modifier) {
 	HorizontalDivider(
 		modifier = modifier,
-		color = MaterialTheme.colorScheme.outline,
+		color = colors.element,
 		thickness = defaultBorderSize,
 	)
 }

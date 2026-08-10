@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +16,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.remembers.remember0f
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultBorderSize
@@ -38,7 +39,7 @@ import tr.qonferencer.trons.theme.specPadding
 fun TransparentGroupBox(
 	indicatorText: String,
 	modifier: Modifier = Modifier,
-	textStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+	textStyle: TextStyle = typo.headlineSmall,
 	content: @Composable (ColumnScope.() -> Unit),
 ) {
 	val density = LocalDensity.current
@@ -47,7 +48,7 @@ fun TransparentGroupBox(
 	val cornerRadiusPx = with(density) { defaultClipSize.toPx() }
 	val borderWidthPx = with(density) { defaultBorderSize.toPx() }
 	val headerWidthDp = with(density) { headerWidthPx.floatValue.toDp() }
-	val borderColor = MaterialTheme.colorScheme.outline
+	val borderColor = colors.element
 	
 	Box(
 		modifier = modifier

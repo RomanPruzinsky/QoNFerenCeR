@@ -1,12 +1,12 @@
 package tr.qonferencer.trons.defaultLayouts
 
 import android.annotation.SuppressLint
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import tr.qonferencer.theme.colors
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
@@ -23,8 +23,8 @@ import tr.qonferencer.trons.theme.defaultLayoutPadding
 fun BasicSwitch(
 	checked: Boolean,
 	@SuppressLint("ModifierParameter") modifier: Modifier = Modifier.defaultLayoutPadding(Edge.HORIZONTAL),
-	colorOn: Color = MaterialTheme.colorScheme.primary,
-	colorOff: Color = MaterialTheme.colorScheme.surfaceVariant,
+	colorOn: Color = colors.selected,
+	colorOff: Color = colors.navigation,
 	action: (newBool: Boolean) -> Unit,
 ) {
 	Switch(

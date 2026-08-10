@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.remembers.remember0dp
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultAnimation
@@ -43,8 +44,8 @@ import tr.qonferencer.trons.theme.specPadding
 fun CartedGroupBox(
 	indicatorText: String,
 	modifier: Modifier = Modifier,
-	textStyle: TextStyle = MaterialTheme.typography.headlineSmall,
-	backgroundColor: Color = MaterialTheme.colorScheme.surface,
+	textStyle: TextStyle = typo.headlineSmall,
+	backgroundColor: Color = colors.container,
 	content: @Composable ColumnScope.() -> Unit,
 ) {
 	val headerWidth = remember0dp()

@@ -1,10 +1,11 @@
 package tr.qonferencer.trons.states.infoState
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import kotlinx.coroutines.flow.StateFlow
+import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.states.StateIndicator
 import tr.qonferencer.trons.states.StateSay
 import tr.qonferencer.trons.states.collectValue
@@ -22,8 +23,8 @@ import tr.qonferencer.trons.states.errorIndicatorMessage
 @Composable
 fun InfoStateLayout(
 	state: InfoState,
-	backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
-	textStyle: TextStyle = MaterialTheme.typography.headlineMedium,
+	backgroundColor: Color = colors.navigation,
+	textStyle: TextStyle = typo.headlineMedium,
 	bodyOnSuccess: @Composable (() -> Unit)? = null,
 	bodyOnWaiting: @Composable () -> Unit,
 ) {
@@ -73,8 +74,8 @@ fun InfoStateLayout(
 @Composable
 fun InfoStateLayout(
 	stateFlow: StateFlow<InfoState>,
-	backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
-	textStyle: TextStyle = MaterialTheme.typography.headlineMedium,
+	backgroundColor: Color = colors.navigation,
+	textStyle: TextStyle = typo.headlineMedium,
 	bodyOnSuccess: @Composable (() -> Unit)? = null,
 	bodyOnWaiting: @Composable () -> Unit,
 ) {

@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultAnimation
 import tr.qonferencer.trons.theme.defaultLayoutPadding
@@ -51,9 +52,9 @@ fun <T> ActionedLazyColumn(
 	bodyModifier: Modifier = Modifier,
 	key: ((index: Int, item: T) -> Any)? = null,
 	shouldSplit: Boolean = true,
-	itemBackgoundColor: @Composable (T?) -> Color = { MaterialTheme.colorScheme.surfaceVariant },
+	itemBackgoundColor: @Composable (T?) -> Color = { colors.navigation },
 	contentAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-	textStyle: TextStyle = MaterialTheme.typography.displayMedium,
+	textStyle: TextStyle = typo.displayMedium,
 	listState: LazyListState = rememberLazyListState(),
 	contentPadding: Boolean = false,
 	contentSpacing: Dp = defaultLayoutPadding,

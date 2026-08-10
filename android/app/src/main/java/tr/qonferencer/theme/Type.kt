@@ -1,6 +1,8 @@
 package tr.qonferencer.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -79,3 +81,7 @@ fun createTypography(color: Color, family: FontFamily, fontSizeEnlarger: Int): T
 		labelSmall = buildStyle(size = 14, weight = FontWeight.W500),
 	)
 }
+
+val typo
+	@Composable
+	get() = MaterialTheme.typography

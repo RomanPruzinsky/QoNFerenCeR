@@ -3,7 +3,6 @@ package tr.qonferencer.trons.defaultLayouts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -13,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
+import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultOTFPadding
 
@@ -40,7 +41,7 @@ fun DefaultOTF(
 	valueText: MutableState<String>,
 	labelText: String,
 	modifier: Modifier = Modifier,
-	textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+	textStyle: TextStyle = typo.labelMedium,
 	backgroundColor: Color = Color.Unspecified,
 	keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 	keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -50,8 +51,8 @@ fun DefaultOTF(
 	specialWholeFilter: (String) -> Boolean = { true },
 	action: (new: String, original: String) -> Unit = { _, _ -> },
 ) {
-	val usedBackgroundColor = backgroundColor.takeOrElse { MaterialTheme.colorScheme.surfaceVariant }
-	val otfColor = MaterialTheme.colorScheme.primary
+	val usedBackgroundColor = backgroundColor.takeOrElse { colors.navigation }
+	val otfColor = colors.selected
 
 	OutlinedTextField(
 		value = valueText.value,
