@@ -1,5 +1,6 @@
 package tr.qonferencer.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,19 +22,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import tr.qonferencer.QoNFerenCeRApp
-import tr.qonferencer.screens.customscreen.CustomScreenScreen
-import tr.qonferencer.shared.dtos.CustomScreenDto
+import tr.qonferencer.screens.customscreen.CustomScreenLayout
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
@@ -48,13 +46,15 @@ import tr.qonferencer.trons.theme.specPadding
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppLayout(modifier: Modifier = Modifier) {
-	val navController = rememberNavController()
+	val startTarget = NavTarget.Fixed(QoNFerenCeRDestinations.startDest)
+	var currentTarget by remember { mutableStateOf<NavTarget>(startTarget) }
 	val coroutineScope = rememberCoroutineScope()
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 	
 	val customScreens = QoNFerenCeRApp.customScreens.screens.collectValue()
-	val currentTarget = resolveTarget(navController.currentBackStackEntryAsState().value, customScreens)
 	val currentRole = UserDetailDto.roleOrAnonym(QoNFerenCeRApp.currentUser.details.collectValue())
+	
+	BackHandler(enabled = currentTarget != startTarget) { currentTarget = startTarget }
 	
 	ModalNavigationDrawer(
 		drawerContent = {
@@ -63,11 +63,7 @@ fun AppLayout(modifier: Modifier = Modifier) {
 				currentRole = currentRole,
 				customScreens = customScreens,
 				onSelect = { target ->
-					navController.navigate(target.route) {
-						popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-						launchSingleTop = true
-						restoreState = true
-					}
+					currentTarget = target
 					coroutineScope.launch { drawerState.close() }
 				},
 			)
@@ -116,32 +112,12 @@ fun AppLayout(modifier: Modifier = Modifier) {
 						.defaultClip()
 						.background(colors.appBackground),
 				) {
-					NavHost(
-						navController = navController,
-						startDestination = QoNFerenCeRDestinations.startDest.name,
-					) {
-						QoNFerenCeRDestinations.entries.forEach {
-							composable(it.name) { _ -> it.ProcessScreen() }
-						}
-						composable(NavTarget.CUSTOM_ROUTE) { entry ->
-							CustomScreenScreen(id = entry.arguments?.getString("id").orEmpty())
-						}
+					when (val target = currentTarget) {
+						is NavTarget.Fixed -> target.destination.ProcessScreen()
+						is NavTarget.Custom -> CustomScreenLayout(id = target.screen.id)
 					}
 				}
 			}
 		}
 	}
-}
-
-/** Resolves current back stack entry to [NavTarget], falling back to [QoNFerenCeRDestinations.startDest] */
-private fun resolveTarget(entry: NavBackStackEntry?, customScreens: List<CustomScreenDto>): NavTarget {
-	val route = entry?.destination?.route
-	QoNFerenCeRDestinations.entries.firstOrNull { it.name == route }?.let { return NavTarget.Fixed(it) }
-	
-	if (route == NavTarget.CUSTOM_ROUTE) {
-		val id = entry.arguments?.getString("id")
-		customScreens.firstOrNull { it.id == id }?.let { return NavTarget.Custom(it) }
-	}
-	
-	return NavTarget.Fixed(QoNFerenCeRDestinations.startDest)
 }

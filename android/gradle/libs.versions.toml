@@ -11,7 +11,6 @@ composeBom = "2026.06.01"
 ktlintGradle = "14.2.0"
 composeRulesKtlint = "0.6.3"
 coroutines = "1.11.0"
-navigationCompose = "2.9.8"
 datastore = "1.2.1"
 retrofit = "3.0.0"
 okhttp = "5.4.0"
@@ -20,7 +19,7 @@ coil = "3.5.0"
 camerax = "1.6.1"
 mlkitBarcode = "17.3.0"
 zxing = "3.5.4"
-securityCrypto = "1.1.0-alpha06"
+securityCrypto = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,7 +39,6 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
