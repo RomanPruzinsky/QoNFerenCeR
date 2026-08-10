@@ -1,0 +1,14 @@
+package tr.qonferencer.navigation
+
+import androidx.compose.runtime.Composable
+import tr.qonferencer.navigation.QoNFerenCeRDestinations.HOME
+import tr.qonferencer.navigation.QoNFerenCeRDestinations.SETTINGS
+import tr.qonferencer.screens.home.HomeScreen
+import tr.qonferencer.screens.settings.SettingsScreen
+
+/** Directs each [QoNFerenCeRDestinations] entry to its composable */
+@Composable
+fun QoNFerenCeRDestinations.ProcessScreen(): Unit = when (this) {
+	HOME -> HomeScreen()
+	SETTINGS -> SettingsScreen()
+}

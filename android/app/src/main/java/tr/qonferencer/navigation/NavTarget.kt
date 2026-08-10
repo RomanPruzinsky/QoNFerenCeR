@@ -28,7 +28,7 @@ sealed class NavTarget {
 	}
 
 	companion object {
-		/** Route registered for [Custom] targets in [NavHost][androidx.navigation.compose.NavHost] */
+		/** Route registered for [Custom] targets */
 		const val CUSTOM_ROUTE = "$CUSTOM_ROUTE_PREFIX{id}"
 	}
 }

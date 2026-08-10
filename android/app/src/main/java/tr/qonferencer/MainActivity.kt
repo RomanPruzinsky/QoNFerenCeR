@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
 import tr.qonferencer.api.QoNFerenCerApi
-import tr.qonferencer.navigation.NavGraph
+import tr.qonferencer.navigation.AppLayout
 import tr.qonferencer.screens.splash.SplashScreen
 import tr.qonferencer.screens.splash.SplashViewModel
 import tr.qonferencer.screens.splash.splashViewModelFactory
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
 				viewModel(factory = splashViewModelFactory(QoNFerenCerApi.splash))
 			
 			QoNFerenCeRTheme {
-				if (splashViewModel.splashState.collectValue().isSuccess()) NavGraph()
+				if (splashViewModel.splashState.collectValue().isSuccess()) AppLayout()
 				else SplashScreen()
 			}
 		}
