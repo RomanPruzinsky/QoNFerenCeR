@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val deepSeaThemeColors = ThemeColors(
+val deepSeaAppColors = AppColors(
 	appBackground = Color(0xFF000510),
 	container = Color(0xFF00122A),
 	element = Color(0xFF002244),

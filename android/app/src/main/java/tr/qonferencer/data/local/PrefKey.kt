@@ -6,7 +6,9 @@ enum class PrefKey(
 ) {
 	ACCESS_TOKEN(true),
 	REFRESH_TOKEN(true),
-	APP_THEME(false),
+	APP_COLORS(false),
 	APP_FONT_FAMILY(false),
 	APP_FONT_SIZE(false),
+	APP_LANGUAGE(false),
+	TRANSLATIONS(false),
 }

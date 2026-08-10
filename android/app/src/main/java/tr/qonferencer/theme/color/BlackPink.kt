@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val blackPinkThemeColors = ThemeColors(
+val blackPinkAppColors = AppColors(
 	appBackground = Color(0xFF000000),
 	container = Color(0xFF2D0219),
 	element = Color(0xFF4D022A),

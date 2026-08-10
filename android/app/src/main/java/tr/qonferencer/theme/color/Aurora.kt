@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val auroraThemeColors = ThemeColors(
+val auroraAppColors = AppColors(
 	appBackground = Color(0xFF020024),
 	container = Color(0xFF090979),
 	element = Color(0xFF003566),

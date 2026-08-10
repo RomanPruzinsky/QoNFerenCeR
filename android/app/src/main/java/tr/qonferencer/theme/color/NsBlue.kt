@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val nsBlueThemeColors = ThemeColors(
+val nsBlueAppColors = AppColors(
 	appBackground = Color(0xFF4DB8FF),
 	container = Color(0xFF2299FF),
 	element = Color(0xFF0084FF),

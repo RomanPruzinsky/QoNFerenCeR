@@ -13,7 +13,8 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import tr.qonferencer.QoNFerenCeRApp
-import tr.qonferencer.theme.color.LocalThemeColors
+import tr.qonferencer.theme.color.LocalAppColors
+import tr.qonferencer.translations.LocalLanguage
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.theme.setNavigationBarColor
 import tr.qonferencer.trons.theme.setStatusBarColor
@@ -50,7 +51,10 @@ fun QoNFerenCeRTheme(content: @Composable () -> Unit) {
 		}
 	}
 	
-	CompositionLocalProvider(LocalThemeColors provides currentColors) {
+	CompositionLocalProvider(
+		LocalAppColors provides currentColors,
+		LocalLanguage provides QoNFerenCeRApp.language.current.collectValue(),
+	) {
 		MaterialTheme(
 			colorScheme = colorScheme,
 			typography = typography,

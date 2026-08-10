@@ -5,22 +5,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tr.qonferencer.data.local.PrefKey
 import tr.qonferencer.data.local.PrefsStorager
-import tr.qonferencer.theme.color.AppColors
+import tr.qonferencer.theme.color.AppColorsOptions
 
-/** Manages user's selected [AppColors] */
+/** Manages user's selected [AppColorsOptions] */
 class ColorPrefs(
 	private val prefsStorager: PrefsStorager,
 ) {
 	private val _currentColors = MutableStateFlow(loadColors())
-	val currentColors: StateFlow<AppColors> = _currentColors.asStateFlow()
+	val currentColors: StateFlow<AppColorsOptions> = _currentColors.asStateFlow()
 
 	/** Selects [appColors] as current */
-	fun setColors(appColors: AppColors) {
-		prefsStorager.putString(PrefKey.APP_THEME, appColors.name)
+	fun setColors(appColors: AppColorsOptions) {
+		prefsStorager.putString(PrefKey.APP_COLORS, appColors.name)
 		_currentColors.value = appColors
 	}
 	
-	private fun loadColors(): AppColors = prefsStorager.getString(PrefKey.APP_THEME)
-		?.let { name -> AppColors.entries.firstOrNull { it.name == name } }
-		?: AppColors.NS_BLUE
+	private fun loadColors(): AppColorsOptions = prefsStorager.getString(PrefKey.APP_COLORS)
+		?.let { name -> AppColorsOptions.entries.firstOrNull { it.name == name } }
+		?: AppColorsOptions.NS_BLUE
 }

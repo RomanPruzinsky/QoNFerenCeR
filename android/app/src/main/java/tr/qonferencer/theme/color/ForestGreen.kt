@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val forestGreenThemeColors = ThemeColors(
+val forestGreenAppColors = AppColors(
 	appBackground = Color(0xFF000000),
 	container = Color(0xFF012A01),
 	element = Color(0xFF024F02),

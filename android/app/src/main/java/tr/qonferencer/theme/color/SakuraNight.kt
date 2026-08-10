@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val sakuraNightThemeColors = ThemeColors(
+val sakuraNightAppColors = AppColors(
 	appBackground = Color(0xFF1F0B10),
 	container = Color(0xFF4A1E29),
 	element = Color(0xFF7A2E41),

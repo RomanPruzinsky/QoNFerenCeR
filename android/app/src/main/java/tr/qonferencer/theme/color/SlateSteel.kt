@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val slateSteelThemeColors = ThemeColors(
+val slateSteelAppColors = AppColors(
 	appBackground = Color(0xFF1E293B),
 	container = Color(0xFF334155),
 	element = Color(0xFF475569),

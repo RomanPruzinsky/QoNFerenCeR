@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.flow.asStateFlow
+import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.data.remote.QoNFerenCeRApi
 import tr.qonferencer.shared.dtos.SplashDto
 import tr.qonferencer.trons.states.dataState.dataStatedAction
@@ -21,7 +22,7 @@ class SplashViewModel(
 	}
 
 	fun load() {
-		dataStatedAction(_splashState) { splashApi.all() }
+		dataStatedAction(_splashState) { splashApi.all().also { QoNFerenCeRApp.language.setNewData(it) } }
 	}
 }
 

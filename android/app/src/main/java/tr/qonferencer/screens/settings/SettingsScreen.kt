@@ -26,7 +26,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 		verticalArrangement = defaultSpacing,
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
-		ChangeThemeLayout()
+		ChangeAppColorsLayout()
+		ChangeLanguageLayout()
 	}
 }
 

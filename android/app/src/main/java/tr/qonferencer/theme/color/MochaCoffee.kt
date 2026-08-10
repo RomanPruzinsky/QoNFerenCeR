@@ -2,7 +2,7 @@ package tr.qonferencer.theme.color
 
 import androidx.compose.ui.graphics.Color
 
-val mochaCoffeeThemeColors = ThemeColors(
+val mochaCoffeeAppColors = AppColors(
 	appBackground = Color(0xFF110A08),
 	container = Color(0xFF2D1B14),
 	element = Color(0xFF4E342E),

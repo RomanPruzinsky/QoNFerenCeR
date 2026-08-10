@@ -9,7 +9,10 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('screen.home.title',   'en', 'Home'),
 	('screen.agenda.title', 'en', 'Agenda'),
 	('home.welcome',        'en', 'Welcome to the conference'),
-	('meal.lunch1.name',    'en', 'Lunch — Day 1')
+	('meal.lunch1.name',    'en', 'Lunch — Day 1'),
+	-- app chrome (system labels — also translation-keyed, not compiled resources)
+	('settings.appColors.intro', 'en', 'App colors'),
+	('settings.language.intro',  'en', 'Language')
 ON CONFLICT (key, lang_code) DO NOTHING;
 
 -- Meal window (reservations are imported per-attendee, not seeded here).

@@ -8,27 +8,27 @@ import androidx.compose.ui.graphics.Color
 ////////////// MAIN //////////////
 
 /** Selectable app palette, persisted by `ThemePrefs` */
-enum class AppColors(
-	val colors: ThemeColors,
+enum class AppColorsOptions(
+	val colors: AppColors,
 ) {
-	NS_BLUE(nsBlueThemeColors),
-	MIDNIGHT_BLUE(midnightBlueThemeColors),
-	SLATE_STEEL(slateSteelThemeColors),
-	SAKURA_NIGHT(sakuraNightThemeColors),
+	NS_BLUE(nsBlueAppColors),
+	MIDNIGHT_BLUE(midnightBlueAppColors),
+	SLATE_STEEL(slateSteelAppColors),
+	SAKURA_NIGHT(sakuraNightAppColors),
 	
-	AURORA(auroraThemeColors),
-	MOCHA_COFFEE(mochaCoffeeThemeColors),
-	DEEP_SEA(deepSeaThemeColors),
+	AURORA(auroraAppColors),
+	MOCHA_COFFEE(mochaCoffeeAppColors),
+	DEEP_SEA(deepSeaAppColors),
 	
-	BLACK_PINK(blackPinkThemeColors),
-	DEEP_ORANGE(deepOrangeThemeColors),
-	TR(trThemeColors),
-	SOLARIZED(solarizedThemeColors),
-	FOREST_GREEN(forestGreenThemeColors),
+	BLACK_PINK(blackPinkAppColors),
+	DEEP_ORANGE(deepOrangeAppColors),
+	TR(trAppColors),
+	SOLARIZED(solarizedAppColors),
+	FOREST_GREEN(forestGreenAppColors),
 }
 
-/** Full color palette of one [AppColors] */
-data class ThemeColors(
+/** Full color palette of one [AppColorsOptions] */
+data class AppColors(
 	val appBackground: Color,
 	val container: Color,
 	val element: Color,
@@ -45,12 +45,12 @@ data class ThemeColors(
 )
 
 /** Current theme's colors, provided by `QoNFerenCeRTheme` */
-val LocalThemeColors = staticCompositionLocalOf<ThemeColors> { nsBlueThemeColors }
+val LocalAppColors = staticCompositionLocalOf<AppColors> { nsBlueAppColors }
 
-/** Shortcut for current [ThemeColors], provided by `QoNFerenCeRTheme` */
-val colors: ThemeColors
+/** Shortcut for current [AppColors], provided by `QoNFerenCeRTheme` */
+val colors: AppColors
 	@Composable
-	get() = LocalThemeColors.current
+	get() = LocalAppColors.current
 
 ////////////// MAIN //////////////
 //////////////////////////////////
@@ -74,7 +74,7 @@ data class ScanResultColors(
 	val notRegisteredPortion: Color,
 )
 
-/** Generic action colors, same across every [AppColors] */
+/** Generic action colors, same across every [AppColorsOptions] */
 data class ActionColors(
 	val approve: Color,
 	val delete: Color,
