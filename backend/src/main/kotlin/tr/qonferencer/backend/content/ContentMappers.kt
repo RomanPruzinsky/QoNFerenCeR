@@ -8,4 +8,4 @@ fun Language.toDto() = LanguageDto(code, name, isDefault)
 
 fun Translation.toDto() = TranslationDto(id.key, id.langCode, text)
 
-fun CustomScreen.toDto() = CustomScreenDto(id, titleKey)
+fun CustomScreen.toDto() = CustomScreenDto(id, titleKey, icon)

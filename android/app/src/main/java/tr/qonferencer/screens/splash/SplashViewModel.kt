@@ -20,9 +20,15 @@ class SplashViewModel(
 	init {
 		load()
 	}
-
+	
 	fun load() {
-		dataStatedAction(_splashState) { splashApi.all().also { QoNFerenCeRApp.language.setNewData(it) } }
+		dataStatedAction(_splashState) {
+			splashApi.all().also {
+				QoNFerenCeRApp.language.setNewData(it)
+				QoNFerenCeRApp.currentUser.setDetails(it.me)
+				QoNFerenCeRApp.customScreens.setScreens(it.customScreens)
+			}
+		}
 	}
 }
 

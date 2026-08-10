@@ -16,6 +16,7 @@ import tr.qonferencer.shared.enums.Role
  * @property id Screen id
  * @property titleKey Key to match for title translations
  * @property minRole Minimum [Role] to see this screen
+ * @property icon Key into client's icon options
  * @property body Displayed list of [CustomElement]
  */
 @Entity
@@ -32,6 +33,9 @@ class CustomScreen(
 	@Enumerated(EnumType.STRING)
 	@Column(name = "min_role", nullable = false)
 	var minRole: Role,
+	
+	@Column(name = "icon", nullable = false)
+	var icon: String,
 	
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(name = "body", nullable = false, columnDefinition = "jsonb")

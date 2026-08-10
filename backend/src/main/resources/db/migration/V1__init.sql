@@ -45,6 +45,7 @@ CREATE TABLE custom_screen (
 	id        VARCHAR(64)  PRIMARY KEY,
 	title_key VARCHAR(128) NOT NULL,							-- translation key
 	min_role  VARCHAR(16)  NOT NULL DEFAULT 'VISITOR',	-- min role to see
+	icon      VARCHAR(32)  NOT NULL DEFAULT 'help',		-- key into client's icon options
 	body      JSONB        NOT NULL DEFAULT '[]'			-- elements, render order = array order
 );
 

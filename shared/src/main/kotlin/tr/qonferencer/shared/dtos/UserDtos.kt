@@ -12,7 +12,12 @@ data class UserDetailDto(
 	val canCheckByName: Boolean,
 	val meals: List<UserMealEntryDto> = emptyList(),
 	val customData: CustomDataType = emptyMap(),
-)
+) {
+	companion object {
+		/** @return [user]'s [role], or [Role.ANONYM] when [user] is `null` (nobody logged in) */
+		fun roleOrAnonym(user: UserDetailDto?): Role = user?.role ?: Role.ANONYM
+	}
+}
 
 /**
  * Simple data of user searched by name
