@@ -20,44 +20,56 @@ val eventId = envValue("EVENT_ID").also {
 	}
 }
 
-val generateLauncherIcon = tasks.register("generateLauncherIcon") {
-	description = "Generate app's icon from config/logo.png"
+val generateLogoAssets = tasks.register("generateLogoAssets") {
+	description = "Generate app's launcher icon + in-app logo drawable from config/logo.png"
 
 	val logo = rootDir.resolve("../config/logo.png")
-	val outFile = file("src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png")
+	val iconOutFile = file("src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png")
+	val drawableOutFile = file("src/main/res/drawable-nodpi/logo.png")
 
 	inputs.file(logo)
-	outputs.file(outFile)
+	outputs.file(iconOutFile)
+	outputs.file(drawableOutFile)
 
 	doLast {
-		val canvasSize = 432 // adaptive-icon layer: 108dp canvas @ xxxhdpi (4x)
-		val safeZone = 282 // mask-safe area: 66dp circle @ xxxhdpi (~4x) — content outside may get cropped
+		fun scaledCopy(source: BufferedImage, maxDimension: Int): BufferedImage {
+			val scale = minOf(1.0, maxDimension.toDouble() / maxOf(source.width, source.height))
+			val width = (source.width * scale).toInt()
+			val height = (source.height * scale).toInt()
+			val copy = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+			val graphics = copy.createGraphics()
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+			graphics.drawImage(source, 0, 0, width, height, null)
+			graphics.dispose()
+			return copy
+		}
 
 		val source = ImageIO.read(logo) ?: throw GradleException("Could not read $logo as an image")
-		val scale = minOf(safeZone.toDouble() / source.width, safeZone.toDouble() / source.height)
-		val scaledWidth = (source.width * scale).toInt()
-		val scaledHeight = (source.height * scale).toInt()
 
+		val logoDrawableMaxDimension = 512
+		val canvasSize = 432 // adaptive-icon layer: 108dp canvas @ xxxhdpi (4x)
+		val safeZone = 282 // mask-safe area: 66dp circle @ xxxhdpi (~4x) — content outside may get cropped
+		
+		val scaledLogo = scaledCopy(source, safeZone)
 		val canvas = BufferedImage(canvasSize, canvasSize, BufferedImage.TYPE_INT_ARGB)
-		val graphics = canvas.createGraphics()
-		graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-		graphics.drawImage(
-			source,
-			(canvasSize - scaledWidth) / 2,
-			(canvasSize - scaledHeight) / 2,
-			scaledWidth,
-			scaledHeight,
+		val canvasGraphics = canvas.createGraphics()
+		canvasGraphics.drawImage(
+			scaledLogo,
+			(canvasSize - scaledLogo.width) / 2,
+			(canvasSize - scaledLogo.height) / 2,
 			null,
 		)
-		graphics.dispose()
+		canvasGraphics.dispose()
+		iconOutFile.parentFile.mkdirs()
+		ImageIO.write(canvas, "png", iconOutFile)
 
-		outFile.parentFile.mkdirs()
-		ImageIO.write(canvas, "png", outFile)
+		drawableOutFile.parentFile.mkdirs()
+		ImageIO.write(scaledCopy(source, logoDrawableMaxDimension), "png", drawableOutFile)
 	}
 }
 
-tasks.named("preBuild") { dependsOn(generateLauncherIcon) }
+tasks.named("preBuild") { dependsOn(generateLogoAssets) }
 
 android {
 	namespace = "tr.qonferencer"

@@ -1,9 +1,9 @@
 package tr.qonferencer.navigation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,8 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import tr.qonferencer.QoNFerenCeRApp
+import tr.qonferencer.R
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
@@ -32,7 +35,8 @@ import tr.qonferencer.trons.theme.defaultLayoutPadding
 fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 	val userDetails = QoNFerenCeRApp.currentUser.details.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(userDetails)
-	
+
+	//TODO: not programmed by me
 	Row(
 		modifier = modifier
 			.fillMaxWidth()
@@ -44,13 +48,16 @@ fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(defaultLayoutPadding),
 	) {
-		Box(
+		Image(
+			painter = painterResource(R.drawable.logo),
+			contentDescription = null,
+			contentScale = ContentScale.Crop,
 			modifier = Modifier
 				.size(defaultClipSize * 3)
 				.defaultClip()
 				.background(colors.container),
 		)
-		
+
 		Column {
 			Text(
 				text = userDetails?.fullName ?: dynamicTranslation("app.name"),
