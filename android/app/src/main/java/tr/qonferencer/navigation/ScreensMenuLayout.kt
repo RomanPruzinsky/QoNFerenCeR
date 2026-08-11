@@ -17,12 +17,18 @@ fun ScreensMenuLayout(
 	modifier: Modifier = Modifier,
 ) {
 	val allTargets =
-		QoNFerenCeRDestinations.entries.filter { currentRole.atLeast(it.minRole) }.map(NavTarget::Fixed) +
+		QoNFerenCeRDestinations.entries
+			.filter { currentRole.atLeast(it.minRole) }
+			.filter {
+				if (it != QoNFerenCeRDestinations.LOGIN) true
+				else currentRole == Role.ANONYM
+			}
+			.map(NavTarget::Fixed) +
 			customScreens.map(NavTarget::Custom)
-	
+
 	ModalDrawerSheet(modifier = modifier, drawerContainerColor = colors.navigation) {
 		ScreensMenuHeader() //TODO: clickable to /me destination
-		
+
 		ScrollableColumn {
 			allTargets.forEach { target ->
 				ScreensMenuItem(
