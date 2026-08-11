@@ -1,6 +1,7 @@
 package tr.qonferencer.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,7 @@ import tr.qonferencer.trons.theme.defaultClipSize
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun ScreensMenuHeader(modifier: Modifier = Modifier) {
+fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 	val userDetails = QoNFerenCeRApp.currentUser.details.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(userDetails)
 	
@@ -37,6 +38,7 @@ fun ScreensMenuHeader(modifier: Modifier = Modifier) {
 			.fillMaxWidth()
 			.defaultClip(Edge.BOTTOM, multiplier = 2F)
 			.background(currentRole.color)
+			.clickable(onClick = onClick)
 			.windowInsetsPadding(WindowInsets.statusBars)
 			.defaultLayoutPadding(),
 		verticalAlignment = Alignment.CenterVertically,

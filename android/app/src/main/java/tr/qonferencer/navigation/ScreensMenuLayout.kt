@@ -19,6 +19,7 @@ fun ScreensMenuLayout(
 	val allTargets =
 		QoNFerenCeRDestinations.entries
 			.filter { currentRole.atLeast(it.minRole) }
+			.filter { it != QoNFerenCeRDestinations.MY_PROFILE }
 			.filter {
 				if (it != QoNFerenCeRDestinations.LOGIN) true
 				else currentRole == Role.ANONYM
@@ -27,7 +28,7 @@ fun ScreensMenuLayout(
 			customScreens.map(NavTarget::Custom)
 
 	ModalDrawerSheet(modifier = modifier, drawerContainerColor = colors.navigation) {
-		ScreensMenuHeader() //TODO: clickable to /me destination
+		ScreensMenuHeader { onSelect(NavTarget.Fixed(QoNFerenCeRDestinations.MY_PROFILE)) }
 
 		ScrollableColumn {
 			allTargets.forEach { target ->
