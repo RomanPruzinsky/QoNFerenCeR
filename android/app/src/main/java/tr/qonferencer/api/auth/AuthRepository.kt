@@ -12,7 +12,7 @@ class AuthRepository(
 	private val tokenStore: AuthTokenHelper,
 ) {
 	fun isLoggedIn(): Boolean = tokenStore.isLoggedIn()
-	
+
 	suspend fun login(username: String, password: String) {
 		val token = keycloakApi.token(
 			BuildConfig.KEYCLOAK_REALM,
@@ -26,7 +26,7 @@ class AuthRepository(
 		tokenStore.updateTokens(token.accessToken, token.refreshToken)
 		tokenStore.updateMealSecret(userApi.mealSecret(MealSecretRequestDto(password)).mealSecret)
 	}
-	
+
 	suspend fun logout() {
 		tokenStore.refreshToken()?.let { refreshToken ->
 			runCatching {
