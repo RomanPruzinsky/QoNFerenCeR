@@ -2,6 +2,7 @@ package tr.qonferencer.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import tr.qonferencer.shared.enums.Role
@@ -18,6 +19,7 @@ enum class QoNFerenCeRDestinations(
 	val icon: ImageVector,
 ) {
 	HOME(Role.ANONYM, "nav.home", Icons.Default.Home),
+	LOGIN(Role.ANONYM, "nav.login", Icons.Default.QrCode),
 	SETTINGS(Role.ANONYM, "nav.settings", Icons.Default.Settings),
 	;
 

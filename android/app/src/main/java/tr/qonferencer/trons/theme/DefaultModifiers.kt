@@ -106,7 +106,7 @@ fun Modifier.longClickable(onLongClick: () -> Unit) =
  * @param color Color of border line
  */
 @Composable
-fun Modifier.defaultBorder(should: Boolean = true, size: Dp = defaultBorderSize, color: Color = colors.element) =
+fun Modifier.defaultBorder(should: Boolean = true, size: Dp = defaultBorderSize, color: Color = colors.text) =
 	this.optionable(
 		ifTrue = Modifier
 			.defaultClip()
@@ -144,37 +144,39 @@ fun Modifier.antsBorder(
 			animation = tween(speed, easing = LinearEasing),
 		),
 	)
-
-	return this.defaultClip().drawWithContent {
-		drawContent()
-		val strokePx = width.toPx()
-		val halfStroke = strokePx / 2f
-		val radius = CornerRadius(defaultClipSize.toPx())
-		val topLeft = Offset(halfStroke, halfStroke)
-		val rectSize = Size(size.width - strokePx, size.height - strokePx)
-
-		drawRoundRect(
-			color = gapColor,
-			topLeft = topLeft,
-			size = rectSize,
-			cornerRadius = radius,
-			style = Stroke(width = strokePx),
-		)
-
-		drawRoundRect(
-			color = dashColor,
-			topLeft = topLeft,
-			size = rectSize,
-			cornerRadius = radius,
-			style = Stroke(
-				width = strokePx,
-				pathEffect = PathEffect.dashPathEffect(
-					floatArrayOf(dashLength, gapLength),
-					phase,
+	
+	return this
+		.defaultClip()
+		.drawWithContent {
+			drawContent()
+			val strokePx = width.toPx()
+			val halfStroke = strokePx / 2f
+			val radius = CornerRadius(defaultClipSize.toPx())
+			val topLeft = Offset(halfStroke, halfStroke)
+			val rectSize = Size(size.width - strokePx, size.height - strokePx)
+			
+			drawRoundRect(
+				color = gapColor,
+				topLeft = topLeft,
+				size = rectSize,
+				cornerRadius = radius,
+				style = Stroke(width = strokePx),
+			)
+			
+			drawRoundRect(
+				color = dashColor,
+				topLeft = topLeft,
+				size = rectSize,
+				cornerRadius = radius,
+				style = Stroke(
+					width = strokePx,
+					pathEffect = PathEffect.dashPathEffect(
+						floatArrayOf(dashLength, gapLength),
+						phase,
+					),
 				),
-			),
-		)
-	}
+			)
+		}
 }
 
 //////////// BORDER ////////////////

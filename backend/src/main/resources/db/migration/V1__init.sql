@@ -9,13 +9,13 @@ CREATE FUNCTION immutable_unaccent(TEXT) RETURNS TEXT
 
 -- Conference attendee, holds what Keycloak can't
 CREATE TABLE app_user (
-	id          BIGINT      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	kc_sub      UUID        NOT NULL UNIQUE,			-- User's Keycloak identity
-	qr_secret   BYTEA       NOT NULL,					-- HMAC secret for QR/NFC tokens
-	qr_secret_v SMALLINT    NOT NULL DEFAULT 0,		-- Version of used qr_secret
-	full_name   TEXT        NOT NULL,					-- Always required, so it is a column and not a custom_data key
-	custom_data JSONB       NOT NULL DEFAULT '{}',	-- Custom data
-	created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+	id            BIGINT      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	kc_sub        UUID        NOT NULL UNIQUE,			-- User's Keycloak identity
+	meal_secret   BYTEA       NOT NULL,				-- HMAC secret for QR/NFC/barcode meal-scan tokens
+	meal_secret_v SMALLINT    NOT NULL DEFAULT 0,		-- Version of used meal_secret
+	full_name     TEXT        NOT NULL,				-- Always required, so it is a column and not a custom_data key
+	custom_data   JSONB       NOT NULL DEFAULT '{}',	-- Custom data
+	created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- Info-desk lookup over the folded name; indexes the expression instead of storing a second copy

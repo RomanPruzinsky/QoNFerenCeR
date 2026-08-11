@@ -28,10 +28,10 @@ object ScanToken {
 		val hmac: String,
 	)
 
-	/** Builds a fresh token for [userId], authenticated with [qrSecret], for window containing [epochSeconds] */
-	fun build(userId: Long, qrSecret: ByteArray, epochSeconds: Long): String {
+	/** Builds a fresh token for [userId], authenticated with [mealSecret], for window containing [epochSeconds] */
+	fun build(userId: Long, mealSecret: ByteArray, epochSeconds: Long): String {
 		val window = windowOf(epochSeconds)
-		return "$PREFIX:$window:$userId:${hmacOf(userId, window, qrSecret)}"
+		return "$PREFIX:$window:$userId:${hmacOf(userId, window, mealSecret)}"
 	}
 
 	/**
@@ -49,17 +49,17 @@ object ScanToken {
 		return Parsed(userId, window, hmac)
 	}
 
-	/** Whether [parsed] is authentic for [qrSecret] and still within [WINDOW_TOLERANCE] of [epochSeconds] */
-	fun matches(parsed: Parsed, qrSecret: ByteArray, epochSeconds: Long): Boolean {
+	/** Whether [parsed] is authentic for [mealSecret] and still within [WINDOW_TOLERANCE] of [epochSeconds] */
+	fun matches(parsed: Parsed, mealSecret: ByteArray, epochSeconds: Long): Boolean {
 		if (abs(windowOf(epochSeconds) - parsed.window) > WINDOW_TOLERANCE) return false
-		val expected = hmacOf(parsed.userId, parsed.window, qrSecret)
+		val expected = hmacOf(parsed.userId, parsed.window, mealSecret)
 		return MessageDigest.isEqual(expected.toByteArray(), parsed.hmac.toByteArray())
 	}
 	
 	private fun windowOf(epochSeconds: Long): Long = epochSeconds.floorDiv(WINDOW_SECONDS)
 	
-	private fun hmacOf(userId: Long, window: Long, qrSecret: ByteArray): String {
-		val mac = Mac.getInstance(HMAC_ALGORITHM).apply { init(SecretKeySpec(qrSecret, HMAC_ALGORITHM)) }
+	private fun hmacOf(userId: Long, window: Long, mealSecret: ByteArray): String {
+		val mac = Mac.getInstance(HMAC_ALGORITHM).apply { init(SecretKeySpec(mealSecret, HMAC_ALGORITHM)) }
 		val digest = mac.doFinal("$window:$userId".toByteArray(Charsets.UTF_8))
 		return HexFormat.of().formatHex(digest)
 	}

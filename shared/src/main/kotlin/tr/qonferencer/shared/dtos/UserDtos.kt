@@ -44,7 +44,7 @@ data class ModifyableUserDataDto(
 data class LoginCredentialsDto(
 	val username: String,
 	val password: String,
-	val qrSecret: String,
+	val mealSecret: String,
 )
 
 /** User's data with credentials */
