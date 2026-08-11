@@ -14,8 +14,8 @@ import java.util.UUID
 /**
  * Conference attendee, holds what `Keycloak` can't
  * @property kcSub User's `Keycloak` identity
- * @property qrSecret HMAC secret for **QR/NFC** tokens
- * @property qrSecretV Version of used [qrSecret]
+ * @property mealSecret HMAC secret for **QR/NFC** tokens
+ * @property mealSecretV Version of used [mealSecret]
  * @property fullName Attendee's name
  * @property customData Custom data
  * @property createdAt When was user created
@@ -31,11 +31,11 @@ class User(
 	@Column(name = "kc_sub", nullable = false, unique = true)
 	var kcSub: UUID,
 	
-	@Column(name = "qr_secret", nullable = false)
-	var qrSecret: ByteArray,
+	@Column(name = "meal_secret", nullable = false)
+	var mealSecret: ByteArray,
 	
-	@Column(name = "qr_secret_v", nullable = false)
-	var qrSecretV: Short = 0,
+	@Column(name = "meal_secret_v", nullable = false)
+	var mealSecretV: Short = 0,
 	
 	@Column(name = "full_name", nullable = false)
 	var fullName: String,

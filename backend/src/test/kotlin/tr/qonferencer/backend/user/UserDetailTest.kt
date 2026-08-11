@@ -52,7 +52,7 @@ class UserDetailTest {
 			jsonPath("$.fullName") { value("Jana Kováčová") }
 			jsonPath("$.role") { value("VOLUNTEER") }
 			jsonPath("$.isSpeaker") { value(true) }
-			jsonPath("$.qrSecret") { doesNotExist() }
+			jsonPath("$.mealSecret") { doesNotExist() }
 		}
 	}
 	

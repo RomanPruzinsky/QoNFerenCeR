@@ -3,6 +3,7 @@ package tr.qonferencer.api
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -16,6 +17,7 @@ import tr.qonferencer.api.auth.AuthRepository
 import tr.qonferencer.api.auth.AuthTokenHelper
 import tr.qonferencer.data.remote.KeycloakApi
 import tr.qonferencer.data.remote.QoNFerenCeRApiClient
+import tr.qonferencer.shared.dtos.LoginCredentialsDto
 import java.io.File
 
 //////////////////////////////////////////////////
@@ -65,11 +67,15 @@ private val authedClient by lazy {
 //////////////////////////////////////////////////
 /////////////////// API ACCESS ///////////////////
 
-val authRepository: AuthRepository by lazy { AuthRepository(keycloakApi, authTokenHelper) }
+val authRepository: AuthRepository by lazy { AuthRepository(keycloakApi, QoNFerenCerApi.user, authTokenHelper) }
 
 val QoNFerenCerApi: QoNFerenCeRApiClient by lazy {
 	QoNFerenCeRApiClient(buildRetrofit(BuildConfig.BACKEND_BASE_URL, authedClient))
 }
+
+/** @return Decoded login-QR/NFC payload, or `null` if [json] isn't a valid [LoginCredentialsDto] */
+fun parseLoginCredentials(json: String): LoginCredentialsDto? =
+	runCatching { objectMapper.readValue<LoginCredentialsDto>(json) }.getOrNull()
 
 /////////////////// API ACCESS ///////////////////
 //////////////////////////////////////////////////

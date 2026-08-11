@@ -63,7 +63,7 @@ class ContentEndpointTest {
 			jsonPath("$.me.fullName") { value("Jana Kováčová") }
 			jsonPath("$.me.role") { value("VOLUNTEER") }
 			jsonPath("$.me.isSpeaker") { value(true) }
-			jsonPath("$.me.qrSecret") { doesNotExist() }
+			jsonPath("$.me.mealSecret") { doesNotExist() }
 		}
 	}
 	

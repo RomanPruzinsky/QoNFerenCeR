@@ -16,15 +16,15 @@ interface UserRepository : JpaRepository<User, Long> {
 	@Modifying
 	@Query(
 		value = """
-			INSERT INTO app_user (kc_sub, qr_secret, qr_secret_v, full_name, custom_data, created_at)
-			VALUES (:kcSub, :qrSecret, 0, :fullName, CAST(:customData AS jsonb), now())
+			INSERT INTO app_user (kc_sub, meal_secret, meal_secret_v, full_name, custom_data, created_at)
+			VALUES (:kcSub, :mealSecret, 0, :fullName, CAST(:customData AS jsonb), now())
 			ON CONFLICT (kc_sub) DO NOTHING
 		""",
 		nativeQuery = true,
 	)
 	fun insertIfAbsent(
 		@Param("kcSub") kcSub: UUID,
-		@Param("qrSecret") qrSecret: ByteArray,
+		@Param("mealSecret") mealSecret: ByteArray,
 		@Param("fullName") fullName: String,
 		@Param("customData") customData: String = "{}",
 	)

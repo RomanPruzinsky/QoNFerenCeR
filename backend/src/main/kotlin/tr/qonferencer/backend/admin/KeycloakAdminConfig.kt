@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration
  **/
 @Configuration
 class KeycloakAdminConfig(
-	@Value($$"${qonferencer.keycloak.admin.server-url}") private val serverUrl: String,
-	@Value($$"${qonferencer.keycloak.admin.realm}") private val realm: String,
+	@Value($$"${qonferencer.keycloak.server-url}") private val serverUrl: String,
+	@Value($$"${qonferencer.keycloak.realm}") private val realm: String,
 	@Value($$"${qonferencer.keycloak.admin.client-id}") private val clientId: String,
 	@Value($$"${qonferencer.keycloak.admin.client-secret}") private val clientSecret: String,
 ) {

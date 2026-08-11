@@ -67,7 +67,7 @@ class MealScanService(
 	private fun verify(token: String, scannerType: ScannerType, now: Instant = Instant.now()): Long? = when (scannerType) {
 		ScannerType.QR, ScannerType.NFC -> {
 			val parsed = ScanToken.parse(token) ?: return null
-			val secret = users.findById(parsed.userId).orElse(null)?.qrSecret ?: return null
+			val secret = users.findById(parsed.userId).orElse(null)?.mealSecret ?: return null
 			if (!ScanToken.matches(parsed, secret, now.epochSecond)) return null
 			parsed.userId
 		}

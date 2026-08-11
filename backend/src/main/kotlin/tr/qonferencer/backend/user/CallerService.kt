@@ -14,14 +14,15 @@ class CallerService(
 	private val users: UserRepository,
 ) {
 	fun userOrNull(): User? = jwtOrNull()?.let { users.findByKcSub(UUID.fromString(it.subject)) }
-	fun requireUserId(): Long = (
-		users.findByKcSub(UUID.fromString(jwt().subject))
-			?: throw notFound("User doesn't exist")
-		).id
-	
+	fun requireUser(): User = userOrNull() ?: throw notFound("User doesn't exist")
+	fun requireUserId(): Long = requireUser().id
+
 	fun role(): Role = jwtOrNull()?.let { Role.highestAvailable(it.processKeycloakRoles()) } ?: Role.ANONYM
 	fun isSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false
 	fun canCheckByName(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckByName") ?: false
+
+	/** Keycloak's `slot_NNN` login name, from the standard `preferred_username` claim */
+	fun username(): String = jwt().getClaim("preferred_username")
 
 // /////////////////// PUBLIC /////////////////////
 // ////////////////////////////////////////////////

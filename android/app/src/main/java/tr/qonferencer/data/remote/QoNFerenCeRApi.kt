@@ -14,6 +14,8 @@ import tr.qonferencer.shared.dtos.CustomElement
 import tr.qonferencer.shared.dtos.LoginCredentialsDto
 import tr.qonferencer.shared.dtos.MealScanRequestDto
 import tr.qonferencer.shared.dtos.MealScanResultDto
+import tr.qonferencer.shared.dtos.MealSecretDto
+import tr.qonferencer.shared.dtos.MealSecretRequestDto
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.PageDto
 import tr.qonferencer.shared.dtos.SlotProvisionedDto
@@ -39,6 +41,9 @@ interface QoNFerenCeRApi {
 			@Query("page") page: Int?,
 			@Query("size") size: Int?,
 		): PageDto<UserDisplayDto>
+		
+		@POST(ApiPaths.User.MEAL_SECRET)
+		suspend fun mealSecret(@Body request: MealSecretRequestDto): MealSecretDto
 	}
 	
 	interface CustomScreens {

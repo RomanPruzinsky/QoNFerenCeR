@@ -21,7 +21,7 @@ data class KeycloakUserInfo(
 @Service
 class KeycloakAdminService(
 	keycloak: Keycloak,
-	@Value($$"${qonferencer.keycloak.admin.realm}") realm: String,
+	@Value($$"${qonferencer.keycloak.realm}") realm: String,
 ) {
 	private val realmRes = keycloak.realm(realm)
 	private val usersRes = realmRes.users()

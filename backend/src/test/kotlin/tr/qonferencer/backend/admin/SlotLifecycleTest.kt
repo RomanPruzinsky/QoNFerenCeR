@@ -75,26 +75,15 @@ class SlotLifecycleTest {
 	}
 	
 	@Test
-	fun `issuing login also hands back the current scan secret, base64-encoded`() {
-		val userId = newUser("Roman Pružinský")
-		val user = users.findById(userId).orElseThrow()
-		Mockito.`when`(keycloak.username(user.kcSub)).thenReturn("slot_007")
-		
-		val credentials = slots.getLoginCredentials(userId)
-		
-		assertEquals(Base64.getEncoder().encodeToString(user.qrSecret), credentials.qrSecret)
-	}
-	
-	@Test
 	fun `revoke rotates the scan secret and counts the rotation`() {
 		val userId = newUser("Peter Novák")
-		val before = users.findById(userId).orElseThrow().qrSecret.copyOf()
+		val before = users.findById(userId).orElseThrow().mealSecret.copyOf()
 		
 		slots.revokeDevice(userId)
 		
 		val after = users.findById(userId).orElseThrow()
-		assertFalse(before.contentEquals(after.qrSecret), "secret must not survive a revoke")
-		assertEquals(1, after.qrSecretV.toInt())
+		assertFalse(before.contentEquals(after.mealSecret), "secret must not survive a revoke")
+		assertEquals(1, after.mealSecretV.toInt())
 	}
 	
 	@Test

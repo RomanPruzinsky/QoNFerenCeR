@@ -12,6 +12,7 @@
 /.idea/kotlinc.xml
 /.idea/deploymentTargetSelector.xml
 /.idea/markdown.xml
+/.idea/codeStyles
 .DS_Store
 /build
 /captures

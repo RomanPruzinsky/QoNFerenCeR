@@ -14,6 +14,7 @@ object ApiPaths {
 
 		const val BY_ID = "$ROOT/{userId}"
 		const val BY_NAME = "$ROOT/by-name"
+		const val MEAL_SECRET = "$ROOT/meal-secret"
 	}
 
 	object CustomScreens {

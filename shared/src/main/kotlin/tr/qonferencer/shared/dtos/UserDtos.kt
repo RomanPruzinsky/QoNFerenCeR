@@ -44,11 +44,19 @@ data class ModifyableUserDataDto(
 data class LoginCredentialsDto(
 	val username: String,
 	val password: String,
-	val mealSecret: String,
 )
 
 /** User's data with credentials */
 data class SlotProvisionedDto(
 	val user: UserDetailDto,
 	val credentials: LoginCredentialsDto,
+)
+
+/** Re-proves the caller's own password to release [MealSecretDto] */
+data class MealSecretRequestDto(
+	val password: String,
+)
+
+data class MealSecretDto(
+	val mealSecret: String,
 )

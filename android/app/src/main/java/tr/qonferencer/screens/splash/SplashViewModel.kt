@@ -16,11 +16,10 @@ class SplashViewModel(
 	private val _splashState = initDataState<SplashDto>()
 	val splashState = _splashState.asStateFlow()
 
-	//TODO: not programmed by me
 	init {
 		load()
 	}
-	
+
 	fun load() {
 		dataStatedAction(_splashState) {
 			splashApi.all().also {

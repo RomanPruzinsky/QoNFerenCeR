@@ -24,7 +24,6 @@ import tr.qonferencer.shared.dtos.SlotProvisionedDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.shared.dtos.UserMealEntryDto
 import java.security.SecureRandom
-import java.util.Base64
 
 /** Result of [SlotService.deleteUserSlot] */
 enum class DeleteOutcome {
@@ -71,7 +70,7 @@ class SlotService(
 		events.publishEvent(OutboundEvent.SlotCreated(userId = user.id, username = username, userData = req))
 		return SlotProvisionedDto(
 			user = userDetail(user, req),
-			credentials = loginCredentials(user, username, password),
+			credentials = loginCredentials(username, password),
 		)
 	}
 
@@ -99,7 +98,7 @@ class SlotService(
 		val user = findUser(userId)
 		val newVersion = anchors.rotateSecret(user)
 		kc.logout(user.kcSub)
-		events.publishEvent(OutboundEvent.SlotRevoked(userId = user.id, qrSecretV = newVersion))
+		events.publishEvent(OutboundEvent.SlotRevoked(userId = user.id, mealSecretV = newVersion))
 	}
 
 	/** Deletes user from app DB and Keycloak; */
@@ -128,7 +127,7 @@ class SlotService(
 		kc.setPassword(user.kcSub, password)
 		
 		events.publishEvent(OutboundEvent.SlotLoginIssued(userId = user.id, username = username))
-		return loginCredentials(user, username, password)
+		return loginCredentials(username, password)
 	}
 
 	/** @return Next free slot number */
@@ -155,10 +154,9 @@ class SlotService(
 		reservations.saveAll(meals.map { MealReservation(MealSlotId(userId, it.windowId), it.variantKey) })
 	}
 	
-	private fun loginCredentials(user: User, username: String, password: String) = LoginCredentialsDto(
+	private fun loginCredentials(username: String, password: String) = LoginCredentialsDto(
 		username = username,
 		password = password,
-		qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
 	)
 	
 	private fun userDetail(user: User, mod: ModifyableUserDataDto) = UserDetailDto(

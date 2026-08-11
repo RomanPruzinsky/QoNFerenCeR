@@ -14,6 +14,8 @@ class AuthTokenHelper(
 	fun accessToken(): String? = prefs.getString(PrefKey.ACCESS_TOKEN)
 	
 	fun isLoggedIn(): Boolean = accessToken() != null
+	
+	fun mealSecret(): String? = prefs.getString(PrefKey.MEAL_SECRET)
 
 //////////////////////// GET ////////////////////////
 ////////////////////////////////////////////////////
@@ -25,6 +27,8 @@ class AuthTokenHelper(
 		if (refresh != null) prefs.putString(PrefKey.REFRESH_TOKEN, refresh)
 		else prefs.remove(PrefKey.REFRESH_TOKEN)
 	}
+	
+	fun updateMealSecret(secret: String) = prefs.putString(PrefKey.MEAL_SECRET, secret)
 	
 	fun clearTokens() = prefs.clearEncrypted()
 

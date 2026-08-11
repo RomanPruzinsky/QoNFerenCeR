@@ -2,10 +2,13 @@ package tr.qonferencer.api.auth
 
 import tr.qonferencer.BuildConfig
 import tr.qonferencer.data.remote.KeycloakApi
+import tr.qonferencer.data.remote.QoNFerenCeRApi
+import tr.qonferencer.shared.dtos.MealSecretRequestDto
 
 /** Keycloak's login/logout */
 class AuthRepository(
 	private val keycloakApi: KeycloakApi,
+	private val userApi: QoNFerenCeRApi.User,
 	private val tokenStore: AuthTokenHelper,
 ) {
 	fun isLoggedIn(): Boolean = tokenStore.isLoggedIn()
@@ -21,6 +24,7 @@ class AuthRepository(
 			),
 		)
 		tokenStore.updateTokens(token.accessToken, token.refreshToken)
+		tokenStore.updateMealSecret(userApi.mealSecret(MealSecretRequestDto(password)).mealSecret)
 	}
 	
 	suspend fun logout() {
