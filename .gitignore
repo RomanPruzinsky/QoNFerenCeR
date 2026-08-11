@@ -3,8 +3,3 @@
 
 # Local AI context (not part of the repo)
 /CLAUDE.md
-
-# Secrets — real values live in config/ (committed template: config/QoNFerenCeR.env)
-# TODO: maybe before release publish?
-/config/env.env
-/config/.env

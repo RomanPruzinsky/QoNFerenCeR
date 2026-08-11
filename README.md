@@ -30,6 +30,7 @@ Points to the `scripts/git-hooks/` folder, enabling a **pre-commit** hook that a
 Manual steps before running / deploying:
 
 - Git hooks (once) - see [Getting started](#getting-started).
-- **Secrets (`config/env.env`)** — copy the template and fill real values.
+- **Secrets (`config/QoNFerenCeR.env`)** — tracked with dev values; edit real deploy values
+  locally, never commit them.
 - **`config/`** — single place for all per-event custom files (icon, …). The organizer puts
   everything here; the build/deploy reads only from `config/`.

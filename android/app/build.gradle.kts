@@ -1,3 +1,7 @@
+import java.awt.RenderingHints
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.compose)
@@ -16,29 +20,68 @@ val eventId = envValue("EVENT_ID").also {
 	}
 }
 
+val generateLauncherIcon = tasks.register("generateLauncherIcon") {
+	description = "Generate app's icon from config/logo.png"
+
+	val logo = rootDir.resolve("../config/logo.png")
+	val outFile = file("src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png")
+
+	inputs.file(logo)
+	outputs.file(outFile)
+
+	doLast {
+		val canvasSize = 432 // adaptive-icon layer: 108dp canvas @ xxxhdpi (4x)
+		val safeZone = 282 // mask-safe area: 66dp circle @ xxxhdpi (~4x) — content outside may get cropped
+
+		val source = ImageIO.read(logo) ?: throw GradleException("Could not read $logo as an image")
+		val scale = minOf(safeZone.toDouble() / source.width, safeZone.toDouble() / source.height)
+		val scaledWidth = (source.width * scale).toInt()
+		val scaledHeight = (source.height * scale).toInt()
+
+		val canvas = BufferedImage(canvasSize, canvasSize, BufferedImage.TYPE_INT_ARGB)
+		val graphics = canvas.createGraphics()
+		graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+		graphics.drawImage(
+			source,
+			(canvasSize - scaledWidth) / 2,
+			(canvasSize - scaledHeight) / 2,
+			scaledWidth,
+			scaledHeight,
+			null,
+		)
+		graphics.dispose()
+
+		outFile.parentFile.mkdirs()
+		ImageIO.write(canvas, "png", outFile)
+	}
+}
+
+tasks.named("preBuild") { dependsOn(generateLauncherIcon) }
+
 android {
 	namespace = "tr.qonferencer"
 	compileSdk {
 		version = release(37)
 	}
-	
+
 	defaultConfig {
 		applicationId = "tr.qonferencer.$eventId"
 		minSdk = 29
 		targetSdk = 37
 		versionCode = 1
 		versionName = "1.0"
-		
+
 		buildConfigField("String", "BACKEND_BASE_URL", "\"${envValue("BACKEND_BASE_URL")}\"")
 		buildConfigField("String", "KEYCLOAK_BASE_URL", "\"${envValue("KEYCLOAK_BASE_URL")}\"")
 
 		// realm/client id match deploy/keycloak/realm-export.json, not per-environment.
 		buildConfigField("String", "KEYCLOAK_REALM", "\"qonferencer\"")
 		buildConfigField("String", "KEYCLOAK_CLIENT_ID", "\"qonferencer-android\"")
-		
+
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
-	
+
 	buildTypes {
 		release {
 			isMinifyEnabled = true
@@ -95,7 +138,7 @@ dependencies {
 	implementation(libs.androidx.camera.view)
 	implementation(libs.mlkit.barcode.scanning)
 	implementation(libs.zxing.core)
-	
+
 	testImplementation(libs.junit)
 	androidTestImplementation(libs.androidx.junit)
 	androidTestImplementation(libs.androidx.espresso.core)
