@@ -6,8 +6,8 @@ import androidx.compose.ui.text.TextStyle
 import kotlinx.coroutines.flow.StateFlow
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
+import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.states.StateIndicator
-import tr.qonferencer.trons.states.StateSay
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.states.errorIndicatorMessage
 
@@ -43,7 +43,7 @@ fun <T> DataStateLayout(
 
 		DataState.Processing -> {
 			StateIndicator(
-				text = StateSay.PROCESSING,
+				text = DefaultSay.PROCESSING,
 				backgroundColor = backgroundColor,
 				textStyle = textStyle,
 			)
@@ -53,7 +53,7 @@ fun <T> DataStateLayout(
 			if (bodyOnWaiting != null) bodyOnWaiting()
 			else {
 				StateIndicator(
-					text = StateSay.WAITING,
+					text = DefaultSay.WAITING,
 					backgroundColor = backgroundColor,
 					textStyle = textStyle,
 				)

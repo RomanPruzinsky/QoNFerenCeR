@@ -12,11 +12,10 @@ import tr.qonferencer.trons.theme.defaultLayoutPadding
  * ```
  * ... SPACER ...
  * ```
- * @param multiplier Multiplier of [defaultLayoutPadding]
  */
 @Composable
-fun DefaultWideSpacer(modifier: Modifier = Modifier, multiplier: Float = 1F) {
-	Spacer(modifier.width(defaultLayoutPadding * multiplier))
+fun DefaultWideSpacer(multiplier: Int = 1) {
+	Spacer(Modifier.width(defaultLayoutPadding * multiplier))
 }
 
 /**
@@ -26,9 +25,8 @@ fun DefaultWideSpacer(modifier: Modifier = Modifier, multiplier: Float = 1F) {
  * SPACER
  * ...
  * ```
- * @param multiplier Multiplier of [defaultLayoutPadding]
  */
 @Composable
-fun DefaultHeightSpacer(modifier: Modifier = Modifier, multiplier: Float = 1F) {
-	Spacer(modifier.height(defaultLayoutPadding * multiplier))
+fun DefaultHeightSpacer(multiplier: Int = 1) {
+	Spacer(Modifier.height(defaultLayoutPadding * multiplier))
 }

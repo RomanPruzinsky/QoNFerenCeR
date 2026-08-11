@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import tr.qonferencer.theme.typo
+import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.states.StateIndicator
-import tr.qonferencer.trons.states.StateSay
 import tr.qonferencer.trons.states.errorIndicatorMessage
 
 /**
@@ -45,7 +45,7 @@ fun <T> LazyListScope.itemizedDataStateLayout(
 		DataState.Processing -> {
 			item {
 				StateIndicator(
-					text = StateSay.PROCESSING,
+					text = DefaultSay.PROCESSING,
 					backgroundColor = backgroundColor,
 					textStyle = textStyle ?: typo.headlineMedium,
 				)
@@ -58,7 +58,7 @@ fun <T> LazyListScope.itemizedDataStateLayout(
 			} else {
 				item {
 					StateIndicator(
-						text = StateSay.WAITING,
+						text = DefaultSay.WAITING,
 						backgroundColor = backgroundColor,
 						textStyle = textStyle ?: typo.headlineMedium,
 					)

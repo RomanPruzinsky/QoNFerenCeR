@@ -6,8 +6,8 @@ import androidx.compose.ui.text.TextStyle
 import kotlinx.coroutines.flow.StateFlow
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
+import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.states.StateIndicator
-import tr.qonferencer.trons.states.StateSay
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.states.errorIndicatorMessage
 
@@ -33,7 +33,7 @@ fun InfoStateLayout(
 			if (bodyOnSuccess != null) bodyOnSuccess()
 			else {
 				StateIndicator(
-					text = StateSay.SUCCESS,
+					text = DefaultSay.SUCCESS,
 					backgroundColor = backgroundColor,
 					textStyle = textStyle,
 				)
@@ -50,7 +50,7 @@ fun InfoStateLayout(
 
 		InfoState.Processing -> {
 			StateIndicator(
-				text = StateSay.PROCESSING,
+				text = DefaultSay.PROCESSING,
 				backgroundColor = backgroundColor,
 				textStyle = textStyle,
 			)

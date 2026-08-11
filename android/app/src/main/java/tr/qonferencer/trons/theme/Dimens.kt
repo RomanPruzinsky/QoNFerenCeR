@@ -13,6 +13,8 @@ val defaultTextVerticalPadding = 5.dp
 val defaultOtfHorizontalPadding = 15.dp
 val defaultOtfVerticalPadding = 7.dp
 
+val defaultIconSize = 24.dp
+
 val defaultBorderSize = 1.dp
 val strenghtenedBorderSize = defaultBorderSize * 3
 

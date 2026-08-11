@@ -1,10 +1,11 @@
 package tr.qonferencer.trons.states
 
 import androidx.compose.runtime.Composable
+import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.miscs.ENDL
 
 /** Default message to be printed if no exception message provided */
-var errorMessage: String = StateSay.ERROR
+var errorMessage: String = DefaultSay.ERROR
 
 /**
  * Error message
@@ -20,9 +21,9 @@ fun getError(specificClass: Exception? = null): String = specificClass?.javaClas
 } ?: errorMessage
 
 /**
- * String with [StateSay.ERROR] and [e] message
+ * String with [DefaultSay.ERROR] and [e] message
  * @param e Exception to get info from
  * @see [getError]
  */
 @Composable
-fun errorIndicatorMessage(e: Exception? = null) = StateSay.ERROR + ENDL + getError(e)
+fun errorIndicatorMessage(e: Exception? = null) = DefaultSay.ERROR + ENDL + getError(e)
