@@ -2,14 +2,13 @@ package tr.qonferencer.shared.scan
 
 import tr.qonferencer.shared.scan.ScanToken.WINDOW_TOLERANCE
 import java.security.MessageDigest
-import java.util.HexFormat
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.abs
 
 /** Rotating token `Q1:<window>:<userId>:<hmac>` */
 object ScanToken {
-	
+
 	/** Token rotation time */
 	const val WINDOW_SECONDS = 30L
 
@@ -17,7 +16,7 @@ object ScanToken {
 	const val WINDOW_TOLERANCE = 1L
 
 	/** Compatibility version of token */
-	private const val TOKEN_VERSION = 1
+	const val TOKEN_VERSION = 1
 	private const val PREFIX = "Q$TOKEN_VERSION"
 	private const val HMAC_ALGORITHM = "HmacSHA256"
 
@@ -41,11 +40,11 @@ object ScanToken {
 	fun parse(token: String): Parsed? {
 		val parts = token.split(':')
 		if (parts.size != 4 || parts[0] != PREFIX) return null
-		
+
 		val (_, windowPart, userIdPart, hmac) = parts
 		val window = windowPart.toLongOrNull() ?: return null
 		val userId = userIdPart.toLongOrNull() ?: return null
-		
+
 		return Parsed(userId, window, hmac)
 	}
 
@@ -55,12 +54,12 @@ object ScanToken {
 		val expected = hmacOf(parsed.userId, parsed.window, mealSecret)
 		return MessageDigest.isEqual(expected.toByteArray(), parsed.hmac.toByteArray())
 	}
-	
+
 	private fun windowOf(epochSeconds: Long): Long = epochSeconds.floorDiv(WINDOW_SECONDS)
-	
+
 	private fun hmacOf(userId: Long, window: Long, mealSecret: ByteArray): String {
 		val mac = Mac.getInstance(HMAC_ALGORITHM).apply { init(SecretKeySpec(mealSecret, HMAC_ALGORITHM)) }
 		val digest = mac.doFinal("$window:$userId".toByteArray(Charsets.UTF_8))
-		return HexFormat.of().formatHex(digest)
+		return digest.joinToString("") { "%02x".format(it) }
 	}
 }

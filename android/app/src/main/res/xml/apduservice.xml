@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+	android:description="@string/qonferencer_nfc_card"
+	android:requireDeviceUnlock="true">
+	<aid-group
+		android:category="other"
+		android:description="@string/qonferencer_aid_group">
+		<!-- AID "QoNFerenCeR" (F0 51 6F 4E 46 65 72 65 6E 43 65 52) -->
+		<aid-filter android:name="F0516F4E466572656E436552" />
+	</aid-group>
+</host-apdu-service>
