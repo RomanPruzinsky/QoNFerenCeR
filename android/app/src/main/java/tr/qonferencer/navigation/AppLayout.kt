@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import kotlinx.coroutines.launch
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.screens.customscreen.CustomScreenLayout
 import tr.qonferencer.shared.dtos.UserDetailDto
+import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
@@ -55,6 +57,10 @@ fun AppLayout(modifier: Modifier = Modifier) {
 	val currentRole = UserDetailDto.roleOrAnonym(QoNFerenCeRApp.currentUser.details.collectValue())
 
 	BackHandler(enabled = currentTarget != startTarget) { currentTarget = startTarget }
+
+	LaunchedEffect(currentRole) {
+		if (currentRole == Role.ANONYM) currentTarget = startTarget // Logged out
+	}
 
 	ModalNavigationDrawer(
 		drawerContent = {

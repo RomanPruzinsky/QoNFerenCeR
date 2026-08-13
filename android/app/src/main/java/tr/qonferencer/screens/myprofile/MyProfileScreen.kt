@@ -14,18 +14,23 @@ import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import kotlinx.coroutines.launch
 import tr.qonferencer.QoNFerenCeRApp
+import tr.qonferencer.api.authRepository
 import tr.qonferencer.nfc.emitNfc
 import tr.qonferencer.nfc.rememberIsNfcHceSupported
 import tr.qonferencer.qr.QrCodeDialog
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.CardLayout
 import tr.qonferencer.trons.defaultLayouts.CartedGroupBox
 import tr.qonferencer.trons.defaultLayouts.DefaultHeightSpacer
+import tr.qonferencer.trons.defaultLayouts.PADS_NONE
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.defaultLayouts.defaultSpacing
 import tr.qonferencer.trons.miscs.DefaultSay
@@ -40,8 +45,9 @@ import tr.qonferencer.trons.theme.defaultTextPadding
 @Composable
 fun MyProfileScreen(modifier: Modifier = Modifier) {
 	val token = emitNfc()!!
-	val user = QoNFerenCeRApp.currentUser.details.collectValue()!!
+	val user = QoNFerenCeRApp.currentUser.details.collectValue() ?: return
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
+	val coroutineScope = rememberCoroutineScope()
 
 	ScrollableColumn(
 		modifier = modifier
@@ -103,6 +109,20 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
 				)
 			}
 		}
+
+		DefaultHeightSpacer(2)
+
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.End,
+		) {
+			LogoutButton {
+				coroutineScope.launch {
+					authRepository.logout()
+					QoNFerenCeRApp.currentUser.setDetails(null)
+				}
+			}
+		}
 	}
 }
 
@@ -114,6 +134,27 @@ private fun ProfileRow(label: String, value: String, modifier: Modifier = Modifi
 	) {
 		Text(text = label, style = typo.bodySmall, textAlign = TextAlign.Start)
 		Text(text = value, style = typo.bodyLarge, textAlign = TextAlign.End)
+	}
+}
+
+/**
+ * Logs out and clears session
+ * @param onClick Performs logout
+ */
+@Composable
+private fun LogoutButton(onClick: () -> Unit) {
+	CardLayout(
+		borderize = true,
+		innerPads = PADS_NONE,
+		containerColor = colors.clickable,
+	) {
+		Text(
+			text = dynamicTranslation("user.detail.logout"),
+			style = typo.labelLarge,
+			modifier = Modifier
+				.clickable(onClick = onClick)
+				.defaultTextPadding(),
+		)
 	}
 }
 

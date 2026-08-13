@@ -23,8 +23,8 @@ class AuthRepository(
 				"password" to password,
 			),
 		)
-		val mealSecret = userApi.mealSecret(MealSecretRequestDto(password)).mealSecret
 		tokenStore.updateTokens(token.accessToken, token.refreshToken)
+		val mealSecret = userApi.mealSecret(MealSecretRequestDto(password)).mealSecret
 		tokenStore.updateMealSecret(mealSecret)
 	}
 

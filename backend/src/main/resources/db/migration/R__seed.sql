@@ -2,23 +2,96 @@
 -- Idempotent (re-runs whenever this file's checksum changes).
 
 INSERT INTO language (code, name, is_default) VALUES
-	('en', 'English', true)
+	('en', 'English', true),
+	('sk', 'Slovenčina', false)
 ON CONFLICT (code) DO NOTHING;
 
+-- Keys dropped from docs/translations.md — purge on every repeatable-migration re-run,
+-- since INSERT ... ON CONFLICT below can't remove rows a prior run already seeded.
+DELETE FROM translation WHERE key IN (
+	'screen.home.title', 'screen.agenda.title', 'settings.appColors.intro', 'settings.language.intro',
+	'home.welcome'
+);
+
+-- Kept in sync with docs/translations.md — edit that file, then reapply here.
 INSERT INTO translation (key, lang_code, text) VALUES
-	('screen.home.title',   'en', 'Home'),
-	('screen.agenda.title', 'en', 'Agenda'),
-	('home.welcome',        'en', 'Welcome to the conference'),
+	('destination.custom.home',   'en', 'Home'),
+	('destination.custom.agenda', 'en', 'Agenda'),
 	('meal.lunch1.name',     'en', 'Lunch — Day 1'),
 	('meal.dinner1.name',    'en', 'Dinner — Day 1'),
 	('meal.breakfast2.name', 'en', 'Breakfast — Day 2'),
 	('meal.lunch2.name',     'en', 'Lunch — Day 2'),
 	('meal.dinner2.name',    'en', 'Dinner — Day 2'),
 	('meal.variant.standard', 'en', 'Standard'),
+	('settings.appColors',  'en', 'App colors'),
+	('settings.language',   'en', 'Language'),
+	('settings.fontFamily', 'en', 'Font family'),
+	('settings.fontSize',   'en', 'Text size'),
+	('user.detail.logout',  'en', 'Logout'),
 	-- app chrome (system labels — also translation-keyed, not compiled resources)
-	('settings.appColors.intro', 'en', 'App colors'),
-	('settings.language.intro',  'en', 'Language')
-ON CONFLICT (key, lang_code) DO NOTHING;
+	('destination.home',      'en', 'Home'),
+	('destination.login',     'en', 'Login'),
+	('destination.settings',  'en', 'Settings'),
+	('destination.myProfile', 'en', 'My profile'),
+	('destination.aboutApp',  'en', 'About App'),
+	('app.name',            'en', 'QoNFerenCeR demo'),
+	('aboutApp.licence',    'en', 'licences'),
+	('aboutApp.github',     'en', 'Github'),
+	('aboutApp.appVersion', 'en', 'version'),
+	('aboutApp.developerContact', 'en', 'Contact to developer'),
+	('misc.copied',               'en', 'copied'),
+	('login.cameraDenied', 'en', 'no camera permission'),
+	('login.grantCamera',  'en', 'allow camera'),
+	('login.useManual',    'en', 'type manually'),
+	('login.username',     'en', 'username'),
+	('login.password',     'en', 'password'),
+	('login.submit',       'en', 'submit'),
+	('login.useCamera',    'en', 'scan code'),
+	('user.detail.role',            'en', 'role'),
+	('user.detail.userId',          'en', 'user id'),
+	('user.detail.isSpeaker',       'en', 'guest'),
+	('user.detail.canCheckByName',  'en', 'can check others'),
+	('user.detail.emittingNfc',     'en', 'emitting NFC'),
+	('user.detail.mealsIntro',      'en', 'ordered meals'),
+	-- sk
+	('destination.custom.home',   'sk', 'Domov'),
+	('destination.custom.agenda', 'sk', 'Program'),
+	('meal.lunch1.name',     'sk', 'Obed — deň 1'),
+	('meal.dinner1.name',    'sk', 'Večera — deň 1'),
+	('meal.breakfast2.name', 'sk', 'Raňajky — deň 2'),
+	('meal.lunch2.name',     'sk', 'Obed — deň 2'),
+	('meal.dinner2.name',    'sk', 'Večera — deň 2'),
+	('meal.variant.standard', 'sk', 'Štandardná'),
+	('settings.appColors',  'sk', 'Farby aplikácie'),
+	('settings.language',   'sk', 'Jazyk'),
+	('settings.fontFamily', 'sk', 'Rodina písma'),
+	('settings.fontSize',   'sk', 'Veľkosť textu'),
+	('user.detail.logout',  'sk', 'Odhlásiť sa'),
+	('destination.home',      'sk', 'Domov'),
+	('destination.login',     'sk', 'Prihlásenie'),
+	('destination.settings',  'sk', 'Nastavenia'),
+	('destination.myProfile', 'sk', 'Môj profil'),
+	('destination.aboutApp',  'sk', 'O aplikácii'),
+	('app.name',            'sk', 'QoNFerenCeR demo'),
+	('aboutApp.licence',    'sk', 'licencie'),
+	('aboutApp.github',     'sk', 'Github'),
+	('aboutApp.appVersion', 'sk', 'verzia'),
+	('aboutApp.developerContact', 'sk', 'Kontakt na vývojára'),
+	('misc.copied',               'sk', 'skopírované'),
+	('login.cameraDenied', 'sk', 'chýba povolenie kamery'),
+	('login.grantCamera',  'sk', 'povoliť kameru'),
+	('login.useManual',    'sk', 'zadať ručne'),
+	('login.username',     'sk', 'používateľské meno'),
+	('login.password',     'sk', 'heslo'),
+	('login.submit',       'sk', 'potvrdiť'),
+	('login.useCamera',    'sk', 'naskenovať kód'),
+	('user.detail.role',            'sk', 'rola'),
+	('user.detail.userId',          'sk', 'ID používateľa'),
+	('user.detail.isSpeaker',       'sk', 'hosť'),
+	('user.detail.canCheckByName',  'sk', 'môže kontrolovať ostatných'),
+	('user.detail.emittingNfc',     'sk', 'vysiela NFC'),
+	('user.detail.mealsIntro',      'sk', 'objednané jedlá')
+ON CONFLICT (key, lang_code) DO UPDATE SET text = EXCLUDED.text;
 
 -- Meal windows (reservations are imported per-attendee, not seeded here).
 -- No explicit id: GENERATED ALWAYS AS IDENTITY rejects one anyway.
@@ -57,10 +130,14 @@ WHERE u.full_name = 'First Admin'
 ON CONFLICT (user_id, window_id) DO NOTHING;
 
 INSERT INTO custom_screen (id, title_key, min_role, icon, body) VALUES
-	('home', 'screen.home.title', 'ANONYM', 'home', '[
-		{"type":"TEXT","source":{"kind":"REF","key":"home.welcome"},"size":"LARGE"}
+	('home', 'destination.custom.home', 'ANONYM', 'home', '[
+		{"type":"TEXT","source":{"kind":"REF","key":"destination.custom.home"},"size":"LARGE"}
 	]'::jsonb),
-	('agenda', 'screen.agenda.title', 'VISITOR', 'schedule', '[
-		{"type":"TEXT","source":{"kind":"REF","key":"screen.agenda.title"},"size":"MEDIUM"}
+	('agenda', 'destination.custom.agenda', 'VISITOR', 'schedule', '[
+		{"type":"TEXT","source":{"kind":"REF","key":"destination.custom.agenda"},"size":"MEDIUM"}
 	]'::jsonb)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+	title_key = EXCLUDED.title_key,
+	min_role  = EXCLUDED.min_role,
+	icon      = EXCLUDED.icon,
+	body      = EXCLUDED.body;

@@ -28,7 +28,11 @@ fun ScreensMenuLayout(
 			customScreens.map(NavTarget::Custom)
 
 	ModalDrawerSheet(modifier = modifier, drawerContainerColor = colors.navigation) {
-		ScreensMenuHeader { onSelect(NavTarget.Fixed(QoNFerenCeRDestinations.MY_PROFILE)) }
+		ScreensMenuHeader {
+			if (currentRole.atLeast(QoNFerenCeRDestinations.MY_PROFILE.minRole)) {
+				onSelect(NavTarget.Fixed(QoNFerenCeRDestinations.MY_PROFILE))
+			}
+		}
 
 		ScrollableColumn {
 			allTargets.forEach { target ->
