@@ -13,6 +13,7 @@ object DefaultSay {
 	const val ERROR = "🚨❌💥"
 
 	const val OFFLINE = "📡💥🛜"
+	const val REFRESH = "⟳\uD83D\uDD01⟲"
 
 	const val YES = "✅"
 	const val NO = "❌"

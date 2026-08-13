@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,7 +39,7 @@ import tr.qonferencer.trons.theme.defaultLayoutPadding
 fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 	val userDetails = QoNFerenCeRApp.currentUser.details.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(userDetails)
-	val textBlockHeight = remember0dp()
+	var textBlockHeight by remember0dp()
 	val localDensity = LocalDensity.current
 
 	Row(
@@ -57,14 +59,14 @@ fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 			contentDescription = null,
 			contentScale = ContentScale.Inside,
 			modifier = Modifier
-				.size(textBlockHeight.value)
+				.size(textBlockHeight)
 				.defaultClip()
 				.background(colors.container),
 		)
 
 		Column(
 			modifier = Modifier
-				.onGloballyPositioned { textBlockHeight.value = with(localDensity) { it.size.height.toDp() } },
+				.onGloballyPositioned { textBlockHeight = with(localDensity) { it.size.height.toDp() } },
 		) {
 			Text(
 				text = userDetails?.fullName ?: dynamicTranslation("app.name"),

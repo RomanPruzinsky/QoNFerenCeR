@@ -2,6 +2,7 @@ package tr.qonferencer.screens.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,10 +34,14 @@ import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.defaultLayouts.DefaultHeightSpacer
+import tr.qonferencer.trons.defaultLayouts.defaultSpacing
+import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.miscs.DoNothing
+import tr.qonferencer.trons.miscs.ENDL
 import tr.qonferencer.trons.miscs.getEventId
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.states.dataState.DataState
+import tr.qonferencer.trons.theme.defaultBorder
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultClipSize
 import tr.qonferencer.trons.theme.defaultLayoutPadding
@@ -84,8 +88,27 @@ fun SplashScreen(viewModel: SplashViewModel = viewModel(factory = splashViewMode
 
 				is DataState.Success -> DoNothing // Will automatically switch
 				is DataState.Error -> {
-					Text("Failed to load: ${current.specification?.message}")
-					Button(onClick = viewModel::load) { Text("Retry") }
+					Column(
+						modifier = Modifier
+							.defaultBorder()
+							.defaultLayoutPadding(),
+						horizontalAlignment = Alignment.CenterHorizontally,
+						verticalArrangement = defaultSpacing,
+					) {
+						Text(
+							text = DefaultSay.ERROR + ENDL + current.specification?.message,
+							style = typo.bodyMedium,
+						)
+						Text(
+							text = DefaultSay.REFRESH,
+							style = typo.labelLarge,
+							modifier = Modifier
+								.defaultClip()
+								.clickable { viewModel.load() }
+								.background(colors.clickable)
+								.defaultTextPadding(),
+						)
+					}
 				}
 			}
 

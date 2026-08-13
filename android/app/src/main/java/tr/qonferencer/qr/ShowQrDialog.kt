@@ -3,7 +3,6 @@ package tr.qonferencer.qr
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -45,7 +44,7 @@ private fun String.toQrImageBitmap(): ImageBitmap {
 
 /** If [opened]: shows [DialogFullWidth] with [qrData] as QR code and [intro] as additional text */
 @Composable
-fun QrCodeDialog(opened: MutableState<Boolean>, qrData: String, intro: String? = null) {
+fun ShowQrDialog(opened: MutableState<Boolean>, qrData: String, intro: String? = null) {
 	if (!opened.value) return
 	KeepScreenOn()
 	MaximizeBrightness()

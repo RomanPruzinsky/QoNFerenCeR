@@ -23,7 +23,7 @@ import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.api.authRepository
 import tr.qonferencer.nfc.emitNfc
 import tr.qonferencer.nfc.rememberIsNfcHceSupported
-import tr.qonferencer.qr.QrCodeDialog
+import tr.qonferencer.qr.ShowQrDialog
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
@@ -87,7 +87,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
 			ShowQrButton { showQr.value = true }
 		}
 
-		QrCodeDialog(opened = showQr, qrData = token)
+		ShowQrDialog(opened = showQr, qrData = token)
 
 		CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
 			if (user.meals.isEmpty()) Text(text = DefaultSay.EMPTY, style = typo.bodyMedium)

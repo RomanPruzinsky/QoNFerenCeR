@@ -26,7 +26,7 @@ import tr.qonferencer.trons.theme.defaultTextPadding
 fun StateIndicator(
 	text: String,
 	modifier: Modifier = Modifier,
-	backgroundColor: Color = Color.Unspecified,
+	backgroundColor: Color = colors.element,
 	textStyle: TextStyle = typo.headlineMedium,
 ) {
 	Text(

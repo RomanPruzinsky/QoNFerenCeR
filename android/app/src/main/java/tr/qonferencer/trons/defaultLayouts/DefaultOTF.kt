@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
+import tr.qonferencer.trons.theme.DEFAULT_HIDDEN_ALPHA
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultOTFPadding
 
@@ -42,7 +43,7 @@ fun DefaultOTF(
 	labelText: String,
 	modifier: Modifier = Modifier,
 	textStyle: TextStyle = typo.labelMedium,
-	backgroundColor: Color = Color.Unspecified,
+	backgroundColor: Color = colors.element,
 	keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 	keyboardActions: KeyboardActions = KeyboardActions.Default,
 	bannees: CharSequence? = null,
@@ -52,7 +53,7 @@ fun DefaultOTF(
 	action: (new: String, original: String) -> Unit = { _, _ -> },
 ) {
 	val usedBackgroundColor = backgroundColor.takeOrElse { colors.navigation }
-	val otfColor = colors.selected
+	val otfColor = colors.text.copy(alpha = DEFAULT_HIDDEN_ALPHA)
 
 	OutlinedTextField(
 		value = valueText.value,
