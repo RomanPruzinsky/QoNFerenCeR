@@ -14,14 +14,13 @@ import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.nfc.emitNfc
 import tr.qonferencer.nfc.rememberIsNfcHceSupported
+import tr.qonferencer.qr.QrCodeDialog
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
@@ -40,7 +39,7 @@ import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
 fun MyProfileScreen(modifier: Modifier = Modifier) {
-	emitNfc()
+	val token = emitNfc()!!
 	val user = QoNFerenCeRApp.currentUser.details.collectValue()!!
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 
@@ -64,7 +63,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
 		ProfileRow(dynamicTranslation("user.detail.isSpeaker"), DefaultSay.yesOrNo(user.isSpeaker))
 		ProfileRow(dynamicTranslation("user.detail.canCheckByName"), DefaultSay.yesOrNo(user.canCheckByName))
 
-		var showQr by rememberFalse()
+		val showQr = rememberFalse()
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			verticalAlignment = Alignment.CenterVertically,
@@ -79,8 +78,10 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
 				} else Spacer(Modifier.fillMaxWidth())
 			}
 
-			ShowQrButton { showQr = true }
+			ShowQrButton { showQr.value = true }
 		}
+
+		QrCodeDialog(opened = showQr, qrData = token)
 
 		CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
 			if (user.meals.isEmpty()) Text(text = DefaultSay.EMPTY, style = typo.bodyMedium)

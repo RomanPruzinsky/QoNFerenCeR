@@ -23,8 +23,9 @@ class AuthRepository(
 				"password" to password,
 			),
 		)
+		val mealSecret = userApi.mealSecret(MealSecretRequestDto(password)).mealSecret
 		tokenStore.updateTokens(token.accessToken, token.refreshToken)
-		tokenStore.updateMealSecret(userApi.mealSecret(MealSecretRequestDto(password)).mealSecret)
+		tokenStore.updateMealSecret(mealSecret)
 	}
 
 	suspend fun logout() {

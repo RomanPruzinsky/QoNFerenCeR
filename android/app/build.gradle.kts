@@ -149,7 +149,7 @@ dependencies {
 	implementation(libs.androidx.camera.lifecycle)
 	implementation(libs.androidx.camera.view)
 	implementation(libs.mlkit.barcode.scanning)
-	implementation(libs.zxing.core)
+	implementation(libs.qrcode.kotlin)
 
 	testImplementation(libs.junit)
 	androidTestImplementation(libs.androidx.junit)

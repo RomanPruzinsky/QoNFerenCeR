@@ -18,7 +18,7 @@ jackson = "2.22.1"
 coil = "3.5.0"
 camerax = "1.6.1"
 mlkitBarcode = "17.3.0"
-zxing = "3.5.4"
+qrcodeKotlin = "4.5.0"
 securityCrypto = "1.1.0"
 
 [libraries]
@@ -57,7 +57,7 @@ androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycl
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
 mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcode" }
 shared = { module = "tr.qonferencer:shared" }
-zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
+qrcode-kotlin = { group = "io.github.g0dkar", name = "qrcode-kotlin", version.ref = "qrcodeKotlin" }
 compose-rules-ktlint = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "composeRulesKtlint" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
