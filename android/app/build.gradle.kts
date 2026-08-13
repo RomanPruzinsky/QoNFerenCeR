@@ -6,6 +6,7 @@ plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.compose)
 	alias(libs.plugins.ktlint)
+	alias(libs.plugins.oss.licenses)
 }
 
 val envLines = rootDir.resolve("../config/QoNFerenCeR.env").readLines()
@@ -150,6 +151,7 @@ dependencies {
 	implementation(libs.androidx.camera.view)
 	implementation(libs.mlkit.barcode.scanning)
 	implementation(libs.qrcode.kotlin)
+	implementation(libs.play.services.oss.licenses)
 
 	testImplementation(libs.junit)
 	androidTestImplementation(libs.androidx.junit)

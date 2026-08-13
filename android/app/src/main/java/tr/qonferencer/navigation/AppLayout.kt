@@ -50,12 +50,12 @@ fun AppLayout(modifier: Modifier = Modifier) {
 	var currentTarget by remember { mutableStateOf<NavTarget>(startTarget) }
 	val coroutineScope = rememberCoroutineScope()
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-	
+
 	val customScreens = QoNFerenCeRApp.customScreens.screens.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(QoNFerenCeRApp.currentUser.details.collectValue())
-	
+
 	BackHandler(enabled = currentTarget != startTarget) { currentTarget = startTarget }
-	
+
 	ModalNavigationDrawer(
 		drawerContent = {
 			ScreensMenuLayout(
@@ -86,7 +86,7 @@ fun AppLayout(modifier: Modifier = Modifier) {
 					colors = TopAppBarDefaults.topAppBarColors(containerColor = currentRole.color),
 					navigationIcon = {
 						IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
-							Icon(Icons.Default.Menu, contentDescription = dynamicTranslation("nav.menu"))
+							Icon(Icons.Default.Menu, contentDescription = "navigation menu")
 						}
 					},
 				)
@@ -104,7 +104,7 @@ fun AppLayout(modifier: Modifier = Modifier) {
 						.height(defaultClipSize)
 						.background(currentRole.color),
 				)
-				
+
 				Box(
 					modifier = Modifier
 						.padding(paddingValues)

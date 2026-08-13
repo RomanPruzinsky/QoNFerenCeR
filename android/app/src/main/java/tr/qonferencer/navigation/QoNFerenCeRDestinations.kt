@@ -2,6 +2,7 @@ package tr.qonferencer.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Settings
@@ -19,10 +20,11 @@ enum class QoNFerenCeRDestinations(
 	val titleKey: String,
 	val icon: ImageVector,
 ) {
-	HOME(Role.ANONYM, "nav.home", Icons.Default.Home),
-	LOGIN(Role.ANONYM, "nav.login", Icons.Default.QrCode),
-	SETTINGS(Role.ANONYM, "nav.settings", Icons.Default.Settings),
-	MY_PROFILE(Role.VISITOR, "nav.myProfile", Icons.Default.Person),
+	HOME(Role.ANONYM, "destination.home", Icons.Default.Home),
+	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
+	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
+	MY_PROFILE(Role.VISITOR, "destination.myProfile", Icons.Default.Person),
+	ABOUT_APP(Role.ANONYM, "destination.aboutApp", Icons.Default.Info),
 	;
 
 	companion object {
