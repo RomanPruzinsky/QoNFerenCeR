@@ -26,16 +26,18 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 		verticalArrangement = defaultSpacing,
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
-		ChangeAppColorsLayout()
 		ChangeLanguageLayout()
+		ChangeFontFamilyLayout()
+		ChangeFontSizeLayout()
+		ChangeAppColorsLayout()
 	}
 }
 
 /**
- * Settings entry: [introduction] label on start, [body] control on end
- * @param introduction Label describing the setting
+ * Settings entry: [introduction] text on start, [body] control on end
+ * @param introduction text describing setting
  * @param modifier Parent modifier
- * @param body Interactive control for the setting
+ * @param body Interactive control for setting
  */
 @Composable
 fun SettingsCardLayout(introduction: String, modifier: Modifier = Modifier, body: @Composable RowScope.() -> Unit) {

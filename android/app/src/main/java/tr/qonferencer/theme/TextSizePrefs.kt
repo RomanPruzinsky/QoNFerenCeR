@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import tr.qonferencer.data.local.PrefKey
 import tr.qonferencer.data.local.PrefsStorager
 
-/** Manages user's selected font size enlargement, clamped to [FontSizeEnlarger.MIN]..[FontSizeEnlarger.MAX] */
+/** Manages user's selected font size enlargement */
 class TextSizePrefs(
 	private val prefsStorager: PrefsStorager,
 ) {
 	private val _currentEnlargement = MutableStateFlow(loadEnlargement())
 	val currentEnlargement: StateFlow<Int> = _currentEnlargement.asStateFlow()
 
-	/** Selects [enlargement] as current, clamped to allowed range */
+	/** Selects [enlargement] as current, trimmed to [FontSizeEnlarger.MIN]..[FontSizeEnlarger.MAX] */
 	fun setEnlargement(enlargement: Int) {
 		val safeValue = enlargement.coerceIn(FontSizeEnlarger.MIN, FontSizeEnlarger.MAX)
 		prefsStorager.putInt(PrefKey.APP_FONT_SIZE, safeValue)

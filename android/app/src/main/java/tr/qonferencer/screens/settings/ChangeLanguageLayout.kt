@@ -13,7 +13,7 @@ import tr.qonferencer.trons.states.collectValue
 
 @Composable
 fun ChangeLanguageLayout() {
-	SettingsCardLayout(dynamicTranslation("settings.language.intro")) {
+	SettingsCardLayout(dynamicTranslation("settings.language")) {
 		val availableLanguages = QoNFerenCeRApp.language.options.collectValue().languages
 		val isSelectionExpanded = rememberFalse()
 		val selectedIndex = remember {
