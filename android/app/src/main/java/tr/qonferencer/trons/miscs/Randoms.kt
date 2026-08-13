@@ -6,13 +6,13 @@ import kotlin.random.Random
 val randomGenerator: Random = Random.Default
 
 /**
- * Gets the next random `Int` from the random number generator in the specified range.
+ * Gets next random `Int` from random number generator in specified range.
  *
- * Generates an `Int` random value uniformly distributed between the specified [from] (inclusive) and [until] (exclusive) bounds.
+ * Generates `Int` random value uniformly distributed between specified [from] (inclusive) and [until] (exclusive) bounds.
  *
  * @throws IllegalArgumentException if [from] is greater than or equal to [until].
  */
 fun getRandomInt(from: Int, until: Int) = randomGenerator.nextInt(from, until)
 
-/** Gets the next random [Boolean] value */
+/** Gets next random [Boolean] value */
 fun getRandomBool() = randomGenerator.nextBoolean()

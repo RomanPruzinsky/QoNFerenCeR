@@ -5,13 +5,13 @@ import kotlinx.coroutines.flow.StateFlow
 
 /*
  * Unified state-check extensions over [StateBase], covering both DataState and InfoState
- * via marker interfaces. Replaces the previously-duplicated dataStateCheck.kt and
+ * via marker interfaces. Replaces previously-duplicated dataStateCheck.kt and
  * InfoStateCheck.kt files.
  *
  * Receiver types:
  *  - StateBase                  — direct check on a state value
- *  - StateFlow<StateBase>   — checks .value on the flow
- *  - StateFlow<StateBase>   — keepsX collects the flow as composable state
+ *  - StateFlow<StateBase>   — checks .value on flow
+ *  - StateFlow<StateBase>   — keepsX collects flow as composable state
  */
 
 //////////////////////////////////////
@@ -23,10 +23,10 @@ fun StateBase.isWaiting() = this is StateBase.Waiting
 /** Whether this state is NOT [StateBase.Waiting] */
 fun StateBase.isNotWaiting() = !isWaiting()
 
-/** Whether the flow's current value is [StateBase.Waiting] */
+/** Whether flow's current value is [StateBase.Waiting] */
 fun StateFlow<StateBase>.isWaiting() = this.value.isWaiting()
 
-/** Whether the flow's current value is NOT [StateBase.Waiting] */
+/** Whether flow's current value is NOT [StateBase.Waiting] */
 fun StateFlow<StateBase>.isNotWaiting() = !this.isWaiting()
 
 /** Composable check — recomposes when flow emits */
@@ -43,10 +43,10 @@ fun StateBase.isProcessing() = this is StateBase.Processing
 /** Whether this state is NOT [StateBase.Processing] */
 fun StateBase.isNotProcessing() = !isProcessing()
 
-/** Whether the flow's current value is [StateBase.Processing] */
+/** Whether flow's current value is [StateBase.Processing] */
 fun StateFlow<StateBase>.isProcessing() = this.value.isProcessing()
 
-/** Whether the flow's current value is NOT [StateBase.Processing] */
+/** Whether flow's current value is NOT [StateBase.Processing] */
 fun StateFlow<StateBase>.isNotProcessing() = !this.isProcessing()
 
 /** Composable check — recomposes when flow emits */
@@ -63,10 +63,10 @@ fun StateBase.isError() = this is StateBase.Error
 /** Whether this state is NOT [StateBase.Error] */
 fun StateBase.isNotError() = !isError()
 
-/** Whether the flow's current value is [StateBase.Error] */
+/** Whether flow's current value is [StateBase.Error] */
 fun StateFlow<StateBase>.isError() = this.value.isError()
 
-/** Whether the flow's current value is NOT [StateBase.Error] */
+/** Whether flow's current value is NOT [StateBase.Error] */
 fun StateFlow<StateBase>.isNotError() = !this.isError()
 
 /** Composable check — recomposes when flow emits */
@@ -83,10 +83,10 @@ fun StateBase.isSuccess() = this is StateBase.Success
 /** Whether this state is NOT [StateBase.Success] */
 fun StateBase.isNotSuccess() = !isSuccess()
 
-/** Whether the flow's current value is [StateBase.Success] */
+/** Whether flow's current value is [StateBase.Success] */
 fun StateFlow<StateBase>.isSuccess() = this.value.isSuccess()
 
-/** Whether the flow's current value is NOT [StateBase.Success] */
+/** Whether flow's current value is NOT [StateBase.Success] */
 fun StateFlow<StateBase>.isNotSuccess() = !this.isSuccess()
 
 /** Composable check — recomposes when flow emits */

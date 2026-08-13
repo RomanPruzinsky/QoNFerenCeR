@@ -118,8 +118,8 @@ private fun ProfileRow(label: String, value: String, modifier: Modifier = Modifi
 }
 
 /**
- * Opens the login-key QR dialog
- * @param onClick Shows the dialog
+ * Opens login-key QR dialog
+ * @param onClick Shows dialog
  */
 @Composable
 private fun ShowQrButton(onClick: () -> Unit) {

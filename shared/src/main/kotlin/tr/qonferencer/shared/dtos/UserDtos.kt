@@ -52,7 +52,7 @@ data class SlotProvisionedDto(
 	val credentials: LoginCredentialsDto,
 )
 
-/** Re-proves the caller's own password to release [MealSecretDto] */
+/** Re-proves caller's own password to release [MealSecretDto] */
 data class MealSecretRequestDto(
 	val password: String,
 )

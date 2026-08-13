@@ -10,7 +10,7 @@ import tr.qonferencer.trons.states.infoState.InfoState
  * work uniformly over both state families.
  *
  * Not `sealed` so [DataState] / [InfoState] (in their own packages) can implement
- * the inner markers — Kotlin restricts sealed-type subclasses to the same package.
+ * inner markers — Kotlin restricts sealed-type subclasses to same package.
  */
 interface StateBase {
 	/** Marker for "no work has started" — see [DataState.Waiting] / [InfoState.Waiting] */
