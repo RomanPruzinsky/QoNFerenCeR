@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import tr.qonferencer.QoNFerenCeRApp
@@ -25,18 +27,19 @@ import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.remembers.remember0dp
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultClip
-import tr.qonferencer.trons.theme.defaultClipSize
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
 fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 	val userDetails = QoNFerenCeRApp.currentUser.details.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(userDetails)
+	val textBlockHeight = remember0dp()
+	val localDensity = LocalDensity.current
 
-	//TODO: not programmed by me
 	Row(
 		modifier = modifier
 			.fillMaxWidth()
@@ -44,21 +47,25 @@ fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
 			.background(currentRole.color)
 			.clickable(onClick = onClick)
 			.windowInsetsPadding(WindowInsets.statusBars)
-			.defaultLayoutPadding(),
+			.defaultLayoutPadding()
+			.defaultLayoutPadding(Edge.VERTICAL),
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(defaultLayoutPadding),
 	) {
 		Image(
 			painter = painterResource(R.drawable.logo),
 			contentDescription = null,
-			contentScale = ContentScale.Crop,
+			contentScale = ContentScale.Inside,
 			modifier = Modifier
-				.size(defaultClipSize * 3)
+				.size(textBlockHeight.value)
 				.defaultClip()
 				.background(colors.container),
 		)
 
-		Column {
+		Column(
+			modifier = Modifier
+				.onGloballyPositioned { textBlockHeight.value = with(localDensity) { it.size.height.toDp() } },
+		) {
 			Text(
 				text = userDetails?.fullName ?: dynamicTranslation("app.name"),
 				style = typo.headlineMedium,
