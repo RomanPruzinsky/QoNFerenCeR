@@ -42,6 +42,7 @@ import tr.qonferencer.trons.theme.defaultTextPadding
 fun MyProfileScreen(modifier: Modifier = Modifier) {
 	emitNfc()
 	val user = QoNFerenCeRApp.currentUser.details.collectValue()!!
+	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 
 	ScrollableColumn(
 		modifier = modifier
@@ -81,26 +82,24 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
 			ShowQrButton { showQr = true }
 		}
 
-		CartedGroupBox(indicatorText = dynamicTranslation("user.detail.meals")) {
+		CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
 			if (user.meals.isEmpty()) Text(text = DefaultSay.EMPTY, style = typo.bodyMedium)
 			else {
 				user.meals.forEach { meal ->
 					ProfileRow(
-						"${dynamicTranslation("myProfile.mealWindow")} #${meal.windowId}",
-						dynamicTranslation(meal.variantKey),
+						label = dynamicTranslation(mealWindows.first { it.id == meal.windowId }.nameKey),
+						value = dynamicTranslation(meal.variantKey),
 					)
 				}
 			}
 		}
 
 		if (user.customData.isNotEmpty()) {
-			CartedGroupBox(indicatorText = dynamicTranslation("user.detail.customData")) {
-				user.customData.forEach { (key, value) ->
-					ProfileRow(
-						label = key,
-						value = value?.toString().orNullIf { it?.isBlank() ?: true } ?: "-",
-					)
-				}
+			user.customData.forEach { (key, value) ->
+				ProfileRow(
+					label = key,
+					value = value?.toString().orNullIf { it?.isBlank() ?: true } ?: "-",
+				)
 			}
 		}
 	}
@@ -112,7 +111,7 @@ private fun ProfileRow(label: String, value: String, modifier: Modifier = Modifi
 		modifier = modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.SpaceBetween,
 	) {
-		Text(text = label, style = typo.titleSmall)
+		Text(text = label, style = typo.bodySmall, textAlign = TextAlign.Start)
 		Text(text = value, style = typo.bodyLarge, textAlign = TextAlign.End)
 	}
 }

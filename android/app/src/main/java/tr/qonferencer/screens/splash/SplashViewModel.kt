@@ -26,6 +26,7 @@ class SplashViewModel(
 				QoNFerenCeRApp.language.setNewData(it)
 				QoNFerenCeRApp.currentUser.setDetails(it.me)
 				QoNFerenCeRApp.customScreens.setScreens(it.customScreens)
+				QoNFerenCeRApp.mealWindows.setWindows(it.mealWindows)
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import tr.qonferencer.theme.ThemePrefs
 import tr.qonferencer.translations.Language
 import tr.qonferencer.user.CurrentUser
 import tr.qonferencer.user.CustomScreens
+import tr.qonferencer.user.MealWindows
 
 class QoNFerenCeRApp : Application() {
 	companion object {
@@ -16,6 +17,7 @@ class QoNFerenCeRApp : Application() {
 		lateinit var language: Language
 		lateinit var currentUser: CurrentUser
 		lateinit var customScreens: CustomScreens
+		lateinit var mealWindows: MealWindows
 	}
 
 	override fun onCreate() {
@@ -26,5 +28,6 @@ class QoNFerenCeRApp : Application() {
 		language = Language(tokenStore)
 		currentUser = CurrentUser()
 		customScreens = CustomScreens()
+		mealWindows = MealWindows()
 	}
 }
