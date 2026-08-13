@@ -24,7 +24,9 @@ class AuthRepository(
 			),
 		)
 		tokenStore.updateTokens(token.accessToken, token.refreshToken)
-		val mealSecret = userApi.mealSecret(MealSecretRequestDto(password)).mealSecret
+		val mealSecret = runCatching { userApi.mealSecret(MealSecretRequestDto(password)).mealSecret }
+			.onFailure { tokenStore.clearTokens() }
+			.getOrThrow()
 		tokenStore.updateMealSecret(mealSecret)
 	}
 
