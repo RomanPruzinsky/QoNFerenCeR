@@ -15,3 +15,6 @@ fun getVersionCode(c: Context) = c.packageManager.getPackageInfo(c.packageName, 
  * @return Version name or null
  */
 fun getVersionName(c: Context): String? = c.packageManager.getPackageInfo(c.packageName, 0).versionName
+
+/** @return Event id from `build.gradle.kts:app` applicationId (`tr.qonferencer.$eventId`) */
+fun getEventId(c: Context): String = c.packageName.substringAfterLast('.')
