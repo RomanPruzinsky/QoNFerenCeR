@@ -18,6 +18,7 @@ data class UserDetailDto(
 		fun roleOrAnonym(user: UserDetailDto?): Role = user?.role ?: Role.ANONYM
 	}
 }
+//TODO: rename canCheckByName -> canCheckUsers
 
 /**
  * Simple data of user searched by name

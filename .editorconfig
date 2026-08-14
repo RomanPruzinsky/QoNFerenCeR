@@ -23,6 +23,7 @@ ktlint_standard_multiline-if-else = disabled
 ktlint_class_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than = 1
 ktlint_compose_lambda-param-event-trailing = disabled
 ktlint_compose_modifier-missing-check = disabled
+ktlint_compose_multiple-emitters-check = disabled
 ktlint_compose_mutable-state-param-check = disabled
 ktlint_compose_vm-injection-check = disabled
 compose_allowed_composition_locals = LocalAppColors,LocalLanguage

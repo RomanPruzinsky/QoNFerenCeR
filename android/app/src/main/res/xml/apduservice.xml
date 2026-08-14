@@ -5,7 +5,6 @@
 	<aid-group
 		android:category="other"
 		android:description="@string/qonferencer_aid_group">
-		<!-- AID "QoNFerenCeR" (F0 51 6F 4E 46 65 72 65 6E 43 65 52) -->
-		<aid-filter android:name="F0516F4E466572656E436552" />
+		<aid-filter android:name="@string/qonferencer_aid" />
 	</aid-group>
 </host-apdu-service>
