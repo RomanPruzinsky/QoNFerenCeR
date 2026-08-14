@@ -2,6 +2,7 @@ package tr.qonferencer.screens.login
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Keyboard
@@ -26,7 +27,6 @@ import tr.qonferencer.screens.splash.SplashViewModel
 import tr.qonferencer.screens.splash.splashViewModelFactory
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
-import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.states.errorIndicatorMessage
 import tr.qonferencer.trons.states.infoState.InfoState
 import tr.qonferencer.trons.states.infoState.OnError
@@ -60,10 +60,13 @@ fun LoginScreen() {
 
 	BackHandler { selected = null }
 
-	ScrollableColumn(
+	Column(
 		modifier = Modifier
 			.fillMaxSize()
-			.defaultLayoutPadding(),
+			.then(
+				if (selected == LoginMethod.QR) Modifier
+				else Modifier.defaultLayoutPadding(),
+			),
 		verticalArrangement = Arrangement.SpaceEvenly,
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
