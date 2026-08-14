@@ -61,6 +61,15 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('user.detail.canCheckByName',  'en', 'can check others'),
 	('user.detail.emittingNfc',     'en', 'emitting NFC'),
 	('user.detail.mealsIntro',      'en', 'ordered meals'),
+	('destination.userCheck',        'en', 'User check'),
+	('userCheck.by.intro',           'en', 'check user with'),
+	('userCheck.by.qr',              'en', 'QR code'),
+	('userCheck.by.nfc',             'en', 'NFC'),
+	('userCheck.by.manual',          'en', 'manual'),
+	('userCheck.manual.searchLabel', 'en', 'search by name'),
+	('userCheck.manual.submit',      'en', 'submit'),
+	('userCheck.detail.fullName',    'en', 'full name'),
+	('userCheck.detail.save',        'en', 'save'),
 	-- sk
 	('destination.custom.home',   'sk', 'Domov'),
 	('destination.custom.agenda', 'sk', 'Program'),
@@ -102,7 +111,16 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('user.detail.isSpeaker',       'sk', 'hosť'),
 	('user.detail.canCheckByName',  'sk', 'môže kontrolovať ostatných'),
 	('user.detail.emittingNfc',     'sk', 'vysiela NFC'),
-	('user.detail.mealsIntro',      'sk', 'objednané jedlá')
+	('user.detail.mealsIntro',      'sk', 'objednané jedlá'),
+	('destination.userCheck',        'sk', 'Kontrola používateľa'),
+	('userCheck.by.intro',           'sk', 'skontrolovať používateľa cez'),
+	('userCheck.by.qr',              'sk', 'QR kód'),
+	('userCheck.by.nfc',             'sk', 'NFC'),
+	('userCheck.by.manual',          'sk', 'ručne'),
+	('userCheck.manual.searchLabel', 'sk', 'hľadať podľa mena'),
+	('userCheck.manual.submit',      'sk', 'potvrdiť'),
+	('userCheck.detail.fullName',    'sk', 'celé meno'),
+	('userCheck.detail.save',        'sk', 'uložiť')
 ON CONFLICT (key, lang_code) DO UPDATE SET text = EXCLUDED.text;
 
 -- Meal windows (reservations are imported per-attendee, not seeded here).

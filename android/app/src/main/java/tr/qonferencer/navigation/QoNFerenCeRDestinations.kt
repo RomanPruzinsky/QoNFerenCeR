@@ -1,6 +1,7 @@
 package tr.qonferencer.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
@@ -25,6 +26,7 @@ enum class QoNFerenCeRDestinations(
 	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
 	MY_PROFILE(Role.VISITOR, "destination.myProfile", Icons.Default.Person),
 	ABOUT_APP(Role.ANONYM, "destination.aboutApp", Icons.Default.Info),
+	USER_CHECK(Role.ORGANISER, "destination.userCheck", Icons.Default.Badge),
 	;
 
 	companion object {

@@ -54,7 +54,8 @@ fun AppLayout(modifier: Modifier = Modifier) {
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
 	val customScreens = QoNFerenCeRApp.customScreens.screens.collectValue()
-	val currentRole = UserDetailDto.roleOrAnonym(QoNFerenCeRApp.currentUser.details.collectValue())
+	val currentUser = QoNFerenCeRApp.currentUser.details.collectValue()
+	val currentRole = UserDetailDto.roleOrAnonym(currentUser)
 
 	BackHandler(enabled = currentTarget != startTarget) { currentTarget = startTarget }
 
@@ -67,6 +68,7 @@ fun AppLayout(modifier: Modifier = Modifier) {
 			ScreensMenuLayout(
 				currentTarget = currentTarget,
 				currentRole = currentRole,
+				canCheckByName = currentUser?.canCheckByName == true,
 				customScreens = customScreens,
 				onSelect = { target ->
 					currentTarget = target

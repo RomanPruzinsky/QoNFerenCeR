@@ -12,19 +12,26 @@ import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 fun ScreensMenuLayout(
 	currentTarget: NavTarget,
 	currentRole: Role,
+	canCheckByName: Boolean,
 	customScreens: List<CustomScreenDto>,
 	onSelect: (NavTarget) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val allTargets =
 		QoNFerenCeRDestinations.entries
+			.asSequence()
 			.filter { currentRole.atLeast(it.minRole) }
 			.filter { it != QoNFerenCeRDestinations.MY_PROFILE }
 			.filter {
 				if (it != QoNFerenCeRDestinations.LOGIN) true
 				else currentRole == Role.ANONYM
 			}
-			.map(NavTarget::Fixed) +
+			.filter {
+				if (it != QoNFerenCeRDestinations.USER_CHECK) true
+				else currentRole == Role.ADMIN || canCheckByName
+			}
+			.map(NavTarget::Fixed)
+			.toList() +
 			customScreens.map(NavTarget::Custom)
 
 	ModalDrawerSheet(modifier = modifier, drawerContainerColor = colors.navigation) {
