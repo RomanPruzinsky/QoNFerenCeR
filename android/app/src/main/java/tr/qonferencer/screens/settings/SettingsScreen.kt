@@ -18,9 +18,9 @@ import tr.qonferencer.trons.theme.defaultBorder
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen() {
 	ScrollableColumn(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxSize()
 			.defaultLayoutPadding(),
 		verticalArrangement = defaultSpacing,
@@ -36,13 +36,12 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 /**
  * Settings entry: [introduction] text on start, [body] control on end
  * @param introduction text describing setting
- * @param modifier Parent modifier
  * @param body Interactive control for setting
  */
 @Composable
-fun SettingsCardLayout(introduction: String, modifier: Modifier = Modifier, body: @Composable RowScope.() -> Unit) {
+fun SettingsCardLayout(introduction: String, body: @Composable RowScope.() -> Unit) {
 	CardLayout(
-		modifier = modifier.defaultBorder(),
+		modifier = Modifier.defaultBorder(),
 		innerPads = PADS_NONE,
 	) {
 		Row(

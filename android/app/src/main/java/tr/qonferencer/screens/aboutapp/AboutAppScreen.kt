@@ -9,9 +9,9 @@ import tr.qonferencer.trons.defaultLayouts.defaultSpacing
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun AboutAppScreen(modifier: Modifier = Modifier) {
+fun AboutAppScreen() {
 	ScrollableColumn(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxSize()
 			.defaultLayoutPadding(),
 		verticalArrangement = defaultSpacing,

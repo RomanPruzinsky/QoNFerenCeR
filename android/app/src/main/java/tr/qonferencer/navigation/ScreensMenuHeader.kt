@@ -36,14 +36,14 @@ import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun ScreensMenuHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun ScreensMenuHeader(onClick: () -> Unit) {
 	val userDetails = QoNFerenCeRApp.currentUser.details.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(userDetails)
 	var textBlockHeight by remember0dp()
 	val localDensity = LocalDensity.current
 
 	Row(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxWidth()
 			.defaultClip(Edge.BOTTOM, multiplier = 2F)
 			.background(currentRole.color)

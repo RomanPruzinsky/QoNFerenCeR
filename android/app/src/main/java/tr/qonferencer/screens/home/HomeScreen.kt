@@ -7,9 +7,9 @@ import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen() {
 	ScrollableColumn(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxSize()
 			.defaultLayoutPadding(),
 	) {

@@ -18,19 +18,18 @@ import tr.qonferencer.theme.typo
  * @param openedIndicator String representing opened state.
  * @param closedIndicator String representing closed state.
  * @param textStyle [TextStyle] applied to indicator text.
- * @param modifier [Modifier] applied to parent.
  * @param textModifier [Modifier] applied to indicator text.
  */
+@Suppress("ktlint:compose:modifier-naming")
 @Composable
 fun AnimatedArrows(
 	isOpen: Boolean,
-	modifier: Modifier = Modifier,
 	textModifier: Modifier = Modifier,
 	openedIndicator: String = AnimatedArrowsSay.ARROW_UP,
 	closedIndicator: String = AnimatedArrowsSay.ARROW_DOWN,
 	textStyle: TextStyle = typo.bodyMedium,
 ) {
-	Box(modifier = modifier) {
+	Box {
 		@Composable
 		fun AnimatedVisibilityText(should: Boolean) {
 			Row {

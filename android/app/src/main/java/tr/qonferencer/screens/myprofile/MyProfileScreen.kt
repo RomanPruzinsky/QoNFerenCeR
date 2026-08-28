@@ -43,14 +43,14 @@ import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
-fun MyProfileScreen(modifier: Modifier = Modifier) {
+fun MyProfileScreen() {
 	val token = emitNfc()!!
 	val user = QoNFerenCeRApp.currentUser.details.collectValue() ?: return
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 	val coroutineScope = rememberCoroutineScope()
 
 	ScrollableColumn(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxSize()
 			.defaultLayoutPadding(),
 		verticalArrangement = defaultSpacing,
@@ -127,9 +127,9 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ProfileRow(label: String, value: String, modifier: Modifier = Modifier) {
+private fun ProfileRow(label: String, value: String) {
 	Row(
-		modifier = modifier.fillMaxWidth(),
+		modifier = Modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.SpaceBetween,
 	) {
 		Text(text = label, style = typo.bodySmall, textAlign = TextAlign.Start)

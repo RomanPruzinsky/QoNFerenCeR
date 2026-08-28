@@ -28,7 +28,6 @@ import tr.qonferencer.trons.theme.halfDefaultLayoutPadding
  * @param selected Selected item index
  * @param expanded Whether menu is expanded
  * @param arrowAtStart Whether arrow is at start or end of text
- * @param modifier Parent modifier
  * @param specialFont Whether to show [options] in special font
  * @param selectedColor Background of selected item's toggle
  * @param additiveOnClickAction Action executed on click, on top of updating [selected]/[expanded]
@@ -41,13 +40,11 @@ fun CustomDropdownMenu(
 	selected: MutableState<Int>,
 	expanded: MutableState<Boolean>,
 	arrowAtStart: Boolean,
-	modifier: Modifier = Modifier,
 	specialFont: List<FontFamily>? = null,
 	selectedColor: Color = colors.selected,
 	additiveOnClickAction: () -> Unit = {},
 ) {
 	Column(
-		modifier = modifier,
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.spacedBy(halfDefaultLayoutPadding),
 	) {

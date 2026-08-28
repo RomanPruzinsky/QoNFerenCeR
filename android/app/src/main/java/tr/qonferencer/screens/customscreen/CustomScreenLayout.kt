@@ -9,9 +9,9 @@ import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun CustomScreenLayout(id: String, modifier: Modifier = Modifier) {
+fun CustomScreenLayout(id: String) {
 	ScrollableColumn(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxSize()
 			.defaultLayoutPadding(),
 	) {

@@ -3,7 +3,6 @@ package tr.qonferencer.navigation
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import tr.qonferencer.shared.dtos.CustomScreenDto
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
@@ -16,13 +15,12 @@ fun ScreensMenuLayout(
 	canCheckByName: Boolean,
 	customScreens: List<CustomScreenDto>,
 	onSelect: (NavTarget) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	val allTargets = remember(currentRole, canCheckByName, customScreens) {
 		getValidScreenEntries(currentRole, canCheckByName, customScreens)
 	}
-	
-	ModalDrawerSheet(modifier = modifier, drawerContainerColor = colors.navigation) {
+
+	ModalDrawerSheet(drawerContainerColor = colors.navigation) {
 		ScreensMenuHeader {
 			if (currentRole.atLeast(QoNFerenCeRDestinations.MY_PROFILE.minRole)) {
 				onSelect(NavTarget.Fixed(QoNFerenCeRDestinations.MY_PROFILE))

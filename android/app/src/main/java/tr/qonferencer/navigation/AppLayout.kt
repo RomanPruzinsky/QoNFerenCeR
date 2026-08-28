@@ -47,7 +47,7 @@ import tr.qonferencer.trons.theme.specPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppLayout(modifier: Modifier = Modifier) {
+fun AppLayout() {
 	val startTarget = NavTarget.Fixed(QoNFerenCeRDestinations.startDest)
 	var currentTarget by remember { mutableStateOf<NavTarget>(startTarget) }
 	val coroutineScope = rememberCoroutineScope()
@@ -77,7 +77,6 @@ fun AppLayout(modifier: Modifier = Modifier) {
 			)
 		},
 		drawerState = drawerState,
-		modifier = modifier,
 	) {
 		Scaffold(
 			contentWindowInsets = WindowInsets.systemBars,

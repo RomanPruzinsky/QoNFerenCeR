@@ -18,7 +18,6 @@ import tr.qonferencer.trons.theme.specPadding
 /**
  * Box with [icon] in [alignment] corner
  *
- * @param modifier Modifier applied to whole element
  * @param shouldPaddingate Whether to apply [halfDefaultLayoutPadding] to [icon]
  * @param icon Icon to display
  * @param alignment Where to place [icon] within Box
@@ -27,14 +26,13 @@ import tr.qonferencer.trons.theme.specPadding
  */
 @Composable
 fun IconIndicator(
-	modifier: Modifier = Modifier,
 	shouldPaddingate: Boolean = false,
 	icon: ImageVector = Icons.Default.ContentCopy,
 	alignment: Alignment = Alignment.TopEnd,
 	tint: Color = colors.text,
 	content: @Composable () -> Unit,
 ) {
-	Box(modifier = modifier) {
+	Box {
 		content()
 
 		Icon(
