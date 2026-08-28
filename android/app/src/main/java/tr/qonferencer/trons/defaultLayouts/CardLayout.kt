@@ -3,7 +3,6 @@ package tr.qonferencer.trons.defaultLayouts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
@@ -12,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
 import tr.qonferencer.theme.colors
 import tr.qonferencer.trons.theme.Edge
@@ -63,7 +61,7 @@ fun CardLayout(
 	outerPads: Array<Pair<Edge, Dp>>? = PADS_NONE,
 	innerPads: Array<Pair<Edge, Dp>>? = PADS_DEFAULT,
 	borderize: Boolean = false,
-	containerColor: Color = Color.Unspecified,
+	containerColor: Color = colors.container,
 	contentHorizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
 	contentVerticalArrangement: Arrangement.Vertical = Arrangement.Top,
 	body: @Composable ColumnScope.() -> Unit,
@@ -71,7 +69,7 @@ fun CardLayout(
 	Card(
 		shape = CircleShape.copy(CornerSize(defaultClipSize)),
 		elevation = CardDefaults.cardElevation(defaultCardElevation),
-		colors = CardDefaults.cardColors(containerColor = containerColor.takeOrElse { colors.container }),
+		colors = CardDefaults.cardColors(containerColor = containerColor),
 		modifier = Modifier
 			.then(
 				if (outerPads != null) Modifier.specPadding(*outerPads)
@@ -91,48 +89,5 @@ fun CardLayout(
 		) {
 			body()
 		}
-	}
-}
-
-/**
- * ## Call [CardLayout] as item
- *
- * Display content inside defaultly-styled [Card]
- *
- * Body is stored inside [Column]
- *
- * @param modifier [Modifier] applied to parent
- * @param outerPads Optional array of [Pair]<[Edge], [Dp]> for padding around [Card]
- * @param innerPads Optional array of [Pair]<[Edge], [Dp]> for padding of [Card]'s body
- * @param borderize Bool indicating whether to apply [defaultBorder]
- * @param columnModifier [Modifier] applied to internal [Column] holding body
- * @param containerColor [Color] for [Card] background
- * @param contentHorizontalAlignment Horizontal alignment of [Column] holding body
- * @param contentVerticalArrangement Vertical arrangement of [Column] holding body
- * @param body [Card]'s content
- */
-fun LazyListScope.cardLayoutItem(
-	modifier: Modifier = Modifier,
-	outerPads: Array<Pair<Edge, Dp>>? = PADS_NONE,
-	innerPads: Array<Pair<Edge, Dp>>? = PADS_DEFAULT,
-	borderize: Boolean = false,
-	columnModifier: Modifier = Modifier,
-	containerColor: Color = Color.Unspecified,
-	contentHorizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-	contentVerticalArrangement: Arrangement.Vertical = Arrangement.Top,
-	body: @Composable ColumnScope.() -> Unit,
-) {
-	item {
-		CardLayout(
-			modifier = modifier,
-			outerPads = outerPads,
-			innerPads = innerPads,
-			borderize = borderize,
-			columnModifier = columnModifier,
-			containerColor = containerColor,
-			contentHorizontalAlignment = contentHorizontalAlignment,
-			contentVerticalArrangement = contentVerticalArrangement,
-			body = body,
-		)
 	}
 }

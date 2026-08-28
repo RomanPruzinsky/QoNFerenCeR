@@ -5,7 +5,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
@@ -28,7 +27,7 @@ fun StateIndicator(text: String, backgroundColor: Color = colors.element, textSt
 		style = textStyle,
 		modifier = Modifier
 			.defaultClip()
-			.background(backgroundColor.takeOrElse { colors.navigation })
+			.background(backgroundColor)
 			.defaultTextPadding(),
 	)
 }

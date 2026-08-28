@@ -31,7 +31,7 @@ fun ScreensMenuItem(
 				style = typo.headlineMedium,
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,
-				color = customColor ?: Color.Unspecified,
+				color = customColor ?: typo.headlineMedium.color,
 			)
 		},
 		selected = isSelected,

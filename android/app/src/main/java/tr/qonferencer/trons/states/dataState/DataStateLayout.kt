@@ -1,5 +1,6 @@
 package tr.qonferencer.trons.states.dataState
 
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -42,11 +43,7 @@ fun <T> DataStateLayout(
 		}
 
 		DataState.Processing -> {
-			StateIndicator(
-				text = DefaultSay.PROCESSING,
-				backgroundColor = backgroundColor,
-				textStyle = textStyle,
-			)
+			CircularProgressIndicator()
 		}
 
 		DataState.Waiting -> {
