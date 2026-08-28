@@ -39,3 +39,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Local dev-only fixtures (not part of the repo) ###
+src/main/kotlin/tr/qonferencer/backend/devseed/

@@ -64,7 +64,7 @@ data class AppColors(
 )
 
 /** Current theme's colors, provided by `QoNFerenCeRTheme` */
-val LocalAppColors = staticCompositionLocalOf<AppColors> { nsBlueAppColors }
+val LocalAppColors = staticCompositionLocalOf { nsBlueAppColors }
 
 /** Shortcut for current [AppColors], provided by `QoNFerenCeRTheme` */
 val colors: AppColors

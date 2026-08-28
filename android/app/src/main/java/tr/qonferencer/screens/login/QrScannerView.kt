@@ -75,7 +75,3 @@ fun QrScannerView(onDecode: (String) -> Unit) {
 		factory = { PreviewView(it).apply { controller = cameraController } },
 	)
 }
-
-//TODO: test
-
-//TODO: enum for scan "QR/BAR"

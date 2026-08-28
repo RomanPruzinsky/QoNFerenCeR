@@ -32,6 +32,6 @@ class LoginViewModel(
 	}
 }
 
-internal fun loginViewModelFactory(authRepository: AuthRepository) = viewModelFactory {
+fun loginViewModelFactory(authRepository: AuthRepository) = viewModelFactory {
 	initializer { LoginViewModel(authRepository) }
 }

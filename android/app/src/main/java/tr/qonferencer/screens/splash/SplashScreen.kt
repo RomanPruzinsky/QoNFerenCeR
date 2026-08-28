@@ -36,7 +36,6 @@ import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.defaultLayouts.DefaultHeightSpacer
 import tr.qonferencer.trons.defaultLayouts.defaultSpacing
 import tr.qonferencer.trons.miscs.DefaultSay
-import tr.qonferencer.trons.miscs.DoNothing
 import tr.qonferencer.trons.miscs.ENDL
 import tr.qonferencer.trons.miscs.getEventId
 import tr.qonferencer.trons.states.collectValue
@@ -86,7 +85,7 @@ fun SplashScreen(viewModel: SplashViewModel = viewModel(factory = splashViewMode
 							.aspectRatio(1F),
 					)
 
-				is DataState.Success -> DoNothing // Will automatically switch
+				is DataState.Success -> Unit // Will automatically switch
 				is DataState.Error -> {
 					Column(
 						modifier = Modifier

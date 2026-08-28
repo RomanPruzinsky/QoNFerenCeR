@@ -32,6 +32,6 @@ class SplashViewModel(
 	}
 }
 
-internal fun splashViewModelFactory(splashApi: QoNFerenCeRApi.Splash) = viewModelFactory {
+fun splashViewModelFactory(splashApi: QoNFerenCeRApi.Splash) = viewModelFactory {
 	initializer { SplashViewModel(splashApi) }
 }
