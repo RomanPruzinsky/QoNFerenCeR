@@ -129,7 +129,10 @@ fun SplashScreen(viewModel: SplashViewModel = viewModel(factory = splashViewMode
 }
 
 @Composable
-private fun BoxScope.CornerColorBox(color: Color, alignment: Alignment) {
+private fun BoxScope.CornerColorBox(
+	color: Color,
+	alignment: Alignment,
+) {
 	Box(
 		modifier = Modifier
 			.fillMaxWidth()

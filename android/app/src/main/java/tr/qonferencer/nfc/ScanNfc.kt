@@ -24,9 +24,9 @@ fun ScanNfc(onDecode: (String) -> Unit) {
 
 		var hasDecoded = false
 		val callback = NfcAdapter.ReaderCallback { tag ->
-			if (!hasDecoded) readToken(tag, selectAidApdu)?.let {
+			if (!hasDecoded) {
 				hasDecoded = true
-				onDecode(it)
+				onDecode(readToken(tag, selectAidApdu) ?: "")
 			}
 		}
 
@@ -41,7 +41,10 @@ fun ScanNfc(onDecode: (String) -> Unit) {
 }
 
 /** @return Current token read from [tag], or `null` if unreadable */
-private fun readToken(tag: Tag, selectAidApdu: ByteArray): String? {
+private fun readToken(
+	tag: Tag,
+	selectAidApdu: ByteArray,
+): String? {
 	val isoDep = IsoDep.get(tag) ?: return null
 	return runCatching {
 		isoDep.use {

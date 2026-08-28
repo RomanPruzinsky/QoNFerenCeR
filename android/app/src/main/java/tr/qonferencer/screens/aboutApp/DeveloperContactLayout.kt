@@ -1,4 +1,4 @@
-package tr.qonferencer.screens.aboutapp
+package tr.qonferencer.screens.aboutApp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable

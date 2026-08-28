@@ -1,4 +1,4 @@
-package tr.qonferencer.screens.keyinputmethod
+package tr.qonferencer.screens.keyInputMethod
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -23,7 +23,10 @@ import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
-fun KeyInputMethodPicker(introKey: String, onSelect: (KeyInputMethod) -> Unit) {
+fun KeyInputMethodPicker(
+	introKey: String,
+	onSelect: (KeyInputMethod) -> Unit,
+) {
 	Text(
 		text = dynamicTranslation(introKey) + ":",
 		style = typo.bodyLarge,

@@ -21,7 +21,11 @@ import tr.qonferencer.trons.theme.defaultTextPadding
  * @param textStyle [TextStyle] of [text]
  */
 @Composable
-fun StateIndicator(text: String, backgroundColor: Color = colors.element, textStyle: TextStyle = typo.headlineMedium) {
+fun StateIndicator(
+	text: String,
+	backgroundColor: Color = colors.element,
+	textStyle: TextStyle = typo.headlineMedium,
+) {
 	Text(
 		text = text,
 		style = textStyle,

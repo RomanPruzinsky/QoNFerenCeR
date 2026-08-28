@@ -34,7 +34,10 @@ data class TranslationState(
 	 * @param key Translation key
 	 * @param langCode Language to resolve [key] in
 	 */
-	fun translate(key: String, langCode: String?): String {
+	fun translate(
+		key: String,
+		langCode: String?,
+	): String {
 		fun textIn(lang: String?) = translations.firstOrNull { it.key == key && it.langCode == lang }?.text
 		return textIn(langCode) ?: textIn(defaultLangCode) ?: key
 	}

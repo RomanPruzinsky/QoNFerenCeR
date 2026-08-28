@@ -114,6 +114,9 @@ private fun getOrientedArrow(directionUp: Boolean) =
  * @return Arrow oriented by [directionUp] with [text] ordered by [arrowAtStart]
  * @see [getOrientedArrow]
  */
-private fun getTextForCustomDropdownMenuTopValue(directionUp: Boolean, arrowAtStart: Boolean, text: String) =
-	"${getOrientedArrow(directionUp)}| ".orEmptyIf(!arrowAtStart) + text +
-		" |${getOrientedArrow(directionUp)}".orEmptyIf(arrowAtStart)
+private fun getTextForCustomDropdownMenuTopValue(
+	directionUp: Boolean,
+	arrowAtStart: Boolean,
+	text: String,
+) = "${getOrientedArrow(directionUp)}| ".orEmptyIf(!arrowAtStart) + text +
+	" |${getOrientedArrow(directionUp)}".orEmptyIf(arrowAtStart)

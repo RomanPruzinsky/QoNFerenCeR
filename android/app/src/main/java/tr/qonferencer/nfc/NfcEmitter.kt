@@ -12,7 +12,10 @@ object NfcEmitter {
 
 	val isActive: Boolean get() = session != null
 
-	fun start(id: Any, tokenSupplier: () -> String?) {
+	fun start(
+		id: Any,
+		tokenSupplier: () -> String?,
+	) {
 		session = Session(id, tokenSupplier)
 	}
 

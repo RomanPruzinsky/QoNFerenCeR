@@ -1,4 +1,4 @@
-package tr.qonferencer.screens.myprofile
+package tr.qonferencer.screens.myProfile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,7 +48,7 @@ fun MyProfileScreen() {
 	val user = QoNFerenCeRApp.currentUser.details.collectValue() ?: return
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 	val coroutineScope = rememberCoroutineScope()
-
+	
 	ScrollableColumn(
 		modifier = Modifier
 			.fillMaxSize()
@@ -60,15 +60,15 @@ fun MyProfileScreen() {
 			text = user.fullName,
 			style = typo.displayLarge,
 		)
-
+		
 		DefaultHeightSpacer(2)
-
+		
 		ProfileRow(dynamicTranslation("user.detail.role"), user.role.name)
 		ProfileRow(dynamicTranslation("user.detail.userId"), user.userId.toString())
-
+		
 		ProfileRow(dynamicTranslation("user.detail.isSpeaker"), DefaultSay.yesOrNo(user.isSpeaker))
 		ProfileRow(dynamicTranslation("user.detail.canCheckByName"), DefaultSay.yesOrNo(user.canCheckByName))
-
+		
 		val showQr = rememberFalse()
 		Row(
 			modifier = Modifier.fillMaxWidth(),
@@ -83,12 +83,12 @@ fun MyProfileScreen() {
 					)
 				} else Spacer(Modifier.fillMaxWidth())
 			}
-
+			
 			ShowQrButton { showQr.value = true }
 		}
-
+		
 		ShowQrDialog(opened = showQr, qrData = token)
-
+		
 		CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
 			if (user.meals.isEmpty()) Text(text = DefaultSay.EMPTY, style = typo.bodyMedium)
 			else {
@@ -100,7 +100,7 @@ fun MyProfileScreen() {
 				}
 			}
 		}
-
+		
 		if (user.customData.isNotEmpty()) {
 			user.customData.forEach { (key, value) ->
 				ProfileRow(
@@ -109,9 +109,9 @@ fun MyProfileScreen() {
 				)
 			}
 		}
-
+		
 		DefaultHeightSpacer(2)
-
+		
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.End,
@@ -127,7 +127,10 @@ fun MyProfileScreen() {
 }
 
 @Composable
-private fun ProfileRow(label: String, value: String) {
+private fun ProfileRow(
+	label: String,
+	value: String,
+) {
 	Row(
 		modifier = Modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.SpaceBetween,
@@ -173,6 +176,6 @@ private fun ShowQrButton(onClick: () -> Unit) {
 			.background(colors.clickable)
 			.clickable(onClick = onClick)
 			.defaultTextPadding(2F)
-			.size(defaultIconSize * 2F),
+			.size(defaultIconSize),
 	)
 }

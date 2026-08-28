@@ -13,7 +13,10 @@ class AuthRepository(
 ) {
 	fun isLoggedIn(): Boolean = tokenStore.isLoggedIn()
 
-	suspend fun login(username: String, password: String) {
+	suspend fun login(
+		username: String,
+		password: String,
+	) {
 		val token = keycloakApi.token(
 			BuildConfig.KEYCLOAK_REALM,
 			mapOf(

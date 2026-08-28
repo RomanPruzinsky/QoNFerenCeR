@@ -39,7 +39,10 @@ fun SettingsScreen() {
  * @param body Interactive control for setting
  */
 @Composable
-fun SettingsCardLayout(introduction: String, body: @Composable RowScope.() -> Unit) {
+fun SettingsCardLayout(
+	introduction: String,
+	body: @Composable RowScope.() -> Unit,
+) {
 	CardLayout(
 		modifier = Modifier.defaultBorder(),
 		innerPads = PADS_NONE,

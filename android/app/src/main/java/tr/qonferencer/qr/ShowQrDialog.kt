@@ -44,7 +44,11 @@ private fun String.toQrImageBitmap(): ImageBitmap {
 
 /** If [opened]: shows [DialogFullWidth] with [qrData] as QR code and [intro] as additional text */
 @Composable
-fun ShowQrDialog(opened: MutableState<Boolean>, qrData: String, intro: String? = null) {
+fun ShowQrDialog(
+	opened: MutableState<Boolean>,
+	qrData: String,
+	intro: String? = null,
+) {
 	if (!opened.value) return
 	KeepScreenOn()
 	MaximizeBrightness()

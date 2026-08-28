@@ -39,7 +39,6 @@ interface QoNFerenCeRApi {
 		suspend fun searchByName(
 			@Query("searchFor") searchFor: String,
 			@Query("page") page: Int?,
-			@Query("size") size: Int?,
 		): PageDto<UserDisplayDto>
 		
 		@POST(ApiPaths.User.MEAL_SECRET)
@@ -56,7 +55,10 @@ interface QoNFerenCeRApi {
 		suspend fun addUser(@Body request: ModifyableUserDataDto): SlotProvisionedDto
 		
 		@PUT(ApiPaths.Admin.UPDATE_USER)
-		suspend fun updateUser(@Path("userId") userId: Long, @Body request: ModifyableUserDataDto): UserDetailDto
+		suspend fun updateUser(
+			@Path("userId") userId: Long,
+			@Body request: ModifyableUserDataDto,
+		): UserDetailDto
 		
 		@POST(ApiPaths.Admin.LOGIN)
 		suspend fun login(@Path("userId") userId: Long): LoginCredentialsDto

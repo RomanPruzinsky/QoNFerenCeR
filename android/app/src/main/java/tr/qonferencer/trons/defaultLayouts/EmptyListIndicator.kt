@@ -22,7 +22,10 @@ private const val EMPTY_LIST_TEXT = "🤔⚠️🧐"
  * @param textStyle [TextStyle] of text
  */
 @Composable
-private fun EmptyListText(textStyle: TextStyle, backgroundColor: Color = colors.appBackground) {
+private fun EmptyListText(
+	textStyle: TextStyle,
+	backgroundColor: Color = colors.appBackground,
+) {
 	Text(
 		text = EMPTY_LIST_TEXT,
 		style = textStyle,
@@ -41,7 +44,10 @@ private fun EmptyListText(textStyle: TextStyle, backgroundColor: Color = colors.
  * @param textStyle [TextStyle] of text
  */
 @Composable
-fun EmptyListIndicator(backgroundColor: Color = colors.appBackground, textStyle: TextStyle = typo.displayMedium) {
+fun EmptyListIndicator(
+	backgroundColor: Color = colors.appBackground,
+	textStyle: TextStyle = typo.displayMedium,
+) {
 	EmptyListText(textStyle, backgroundColor)
 }
 

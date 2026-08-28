@@ -33,7 +33,10 @@ class PrefsStorager(
 	
 	fun getString(key: PrefKey): String? = prefsFrom(key).getString(key.name, null)
 	
-	fun putString(key: PrefKey, value: String) = prefsFrom(key).edit { putString(key.name, value) }
+	fun putString(
+		key: PrefKey,
+		value: String,
+	) = prefsFrom(key).edit { putString(key.name, value) }
 
 ////////////////////// STRING //////////////////////
 ////////////////////////////////////////////////////
@@ -44,7 +47,10 @@ class PrefsStorager(
 		return if (prefs.contains(key.name)) prefs.getInt(key.name, 0) else null
 	}
 	
-	fun putInt(key: PrefKey, value: Int) = prefsFrom(key).edit { putInt(key.name, value) }
+	fun putInt(
+		key: PrefKey,
+		value: Int,
+	) = prefsFrom(key).edit { putInt(key.name, value) }
 
 //////////////////////// INT ///////////////////////
 ////////////////////////////////////////////////////

@@ -12,7 +12,10 @@ import retrofit2.http.Path
 interface KeycloakApi {
 	@FormUrlEncoded
 	@POST("realms/{realm}/protocol/openid-connect/token")
-	suspend fun token(@Path("realm") realm: String, @FieldMap fields: Map<String, String>): TokenDto
+	suspend fun token(
+		@Path("realm") realm: String,
+		@FieldMap fields: Map<String, String>,
+	): TokenDto
 	
 	@FormUrlEncoded
 	@POST("realms/{realm}/protocol/openid-connect/logout")

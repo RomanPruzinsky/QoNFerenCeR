@@ -36,7 +36,11 @@ fun Modifier.specPadding(vararg pads: Pair<Edge, Dp> = arrayOf((Edge.ALL to defa
  * @param additier Specific [Dp] to add to [defaultLayoutPadding] (after multiplied)
  * @return [Modifier] with applied padding
  */
-fun Modifier.defaultLayoutPadding(pad: Edge = Edge.ALL, multiplier: Float = 1F, additier: Dp = 0.dp) = this.then(
+fun Modifier.defaultLayoutPadding(
+	pad: Edge = Edge.ALL,
+	multiplier: Float = 1F,
+	additier: Dp = 0.dp,
+) = this.then(
 	Modifier.specPadding(
 		pad to (defaultLayoutPadding * multiplier) + additier,
 	),

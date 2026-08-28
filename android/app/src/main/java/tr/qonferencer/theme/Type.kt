@@ -49,8 +49,15 @@ object FontSizeEnlarger {
  * - label:     buttons, image desc.      > buttons, interaction, system, images
  * ```
  */
-fun createTypography(color: Color, family: FontFamily, fontSizeEnlarger: Int): Typography {
-	fun buildStyle(size: Int, weight: FontWeight) = TextStyle(
+fun createTypography(
+	color: Color,
+	family: FontFamily,
+	fontSizeEnlarger: Int,
+): Typography {
+	fun buildStyle(
+		size: Int,
+		weight: FontWeight,
+	) = TextStyle(
 		fontSize = (size + fontSizeEnlarger).sp,
 		color = color,
 		fontFamily = family,

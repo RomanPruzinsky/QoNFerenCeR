@@ -9,7 +9,10 @@ import java.nio.ByteBuffer
 /** HCE card for AID "QoNFerenCeR", emits only while [NfcEmitter] has active screen */
 class QoNFerenCeRHceService : HostApduService() {
 
-	override fun processCommandApdu(apdu: ByteArray?, extras: Bundle?): ByteArray {
+	override fun processCommandApdu(
+		apdu: ByteArray?,
+		extras: Bundle?,
+	): ByteArray {
 		if (apdu == null) return SW_UNKNOWN
 		return try {
 			when {

@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import kotlinx.coroutines.launch
 import tr.qonferencer.QoNFerenCeRApp
-import tr.qonferencer.screens.customscreen.CustomScreenLayout
+import tr.qonferencer.screens.customScreen.CustomScreenLayout
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.color

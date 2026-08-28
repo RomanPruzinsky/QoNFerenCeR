@@ -17,7 +17,10 @@ class LoginViewModel(
 	val loginState = _loginState.asStateFlow()
 
 	/** QR, NFC, and manual entry all resolve to this */
-	fun submit(username: String, password: String) {
+	fun submit(
+		username: String,
+		password: String,
+	) {
 		infoStatedAction(_loginState) { authRepository.login(username, password) }
 	}
 

@@ -44,8 +44,10 @@ fun Modifier.defaultAnimation() = this.then(
  * @param condition Whether to apply [alpha]
  * @param alpha Alpha value
  */
-fun Modifier.alphaIf(condition: Boolean, alpha: Float = DEFAULT_HIDDEN_ALPHA) =
-	this.then(Modifier.alpha(if (condition) alpha else 1F))
+fun Modifier.alphaIf(
+	condition: Boolean,
+	alpha: Float = DEFAULT_HIDDEN_ALPHA,
+) = this.then(Modifier.alpha(if (condition) alpha else 1F))
 
 ////////////////////////////////////
 /////////// OPTIONABLE /////////////
@@ -55,7 +57,10 @@ fun Modifier.alphaIf(condition: Boolean, alpha: Float = DEFAULT_HIDDEN_ALPHA) =
  * @param ifTrue [Modifier] to apply
  * @param cond Condition to eval
  */
-fun Modifier.optionable(ifTrue: Modifier, cond: () -> Boolean) = this.then(
+fun Modifier.optionable(
+	ifTrue: Modifier,
+	cond: () -> Boolean,
+) = this.then(
 	if (cond()) ifTrue
 	else Modifier,
 )
@@ -65,7 +70,10 @@ fun Modifier.optionable(ifTrue: Modifier, cond: () -> Boolean) = this.then(
  * @param ifTrue [Modifier] to apply
  * @param cond Condition to eval
  */
-fun Modifier.optionable(ifTrue: Modifier, cond: Boolean) = this.optionable(ifTrue) { cond }
+fun Modifier.optionable(
+	ifTrue: Modifier,
+	cond: Boolean,
+) = this.optionable(ifTrue) { cond }
 
 /////////// OPTIONABLE /////////////
 ////////////////////////////////////
@@ -106,17 +114,20 @@ fun Modifier.longClickable(onLongClick: () -> Unit) =
  * @param color Color of border line
  */
 @Composable
-fun Modifier.defaultBorder(should: Boolean = true, size: Dp = defaultBorderSize, color: Color = colors.text) =
-	this.optionable(
-		ifTrue = Modifier
-			.defaultClip()
-			.border(
-				width = size,
-				shape = CircleShape.copy(CornerSize(defaultClipSize)),
-				color = color,
-			),
-		cond = should,
-	)
+fun Modifier.defaultBorder(
+	should: Boolean = true,
+	size: Dp = defaultBorderSize,
+	color: Color = colors.text,
+) = this.optionable(
+	ifTrue = Modifier
+		.defaultClip()
+		.border(
+			width = size,
+			shape = CircleShape.copy(CornerSize(defaultClipSize)),
+			color = color,
+		),
+	cond = should,
+)
 
 /**
  * Creates animated border

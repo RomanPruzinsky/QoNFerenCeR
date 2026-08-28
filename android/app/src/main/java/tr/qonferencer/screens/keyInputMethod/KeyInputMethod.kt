@@ -1,4 +1,4 @@
-package tr.qonferencer.screens.keyinputmethod
+package tr.qonferencer.screens.keyInputMethod
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Keyboard

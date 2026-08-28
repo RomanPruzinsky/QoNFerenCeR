@@ -21,7 +21,10 @@ class AuthTokenHelper(
 ////////////////////////////////////////////////////
 /////////////////////// MODIFY //////////////////////
 	
-	fun updateTokens(access: String, refresh: String?) {
+	fun updateTokens(
+		access: String,
+		refresh: String?,
+	) {
 		prefs.putString(PrefKey.ACCESS_TOKEN, access)
 		
 		if (refresh != null) prefs.putString(PrefKey.REFRESH_TOKEN, refresh)

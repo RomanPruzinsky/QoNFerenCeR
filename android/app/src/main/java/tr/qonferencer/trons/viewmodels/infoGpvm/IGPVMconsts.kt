@@ -47,7 +47,11 @@ class InfoGenericParamViewModel<P>(
 	 *
 	 *  @see [infoStatedAction]
 	 */
-	fun <A> getValue(args: A, delayedAction: suspend ViewModel.() -> Unit = {}, action: suspend ViewModel.(P, A) -> Unit) {
+	fun <A> getValue(
+		args: A,
+		delayedAction: suspend ViewModel.() -> Unit = {},
+		action: suspend ViewModel.(P, A) -> Unit,
+	) {
 		infoStatedAction(
 			state = _state,
 			delayedAction = delayedAction,

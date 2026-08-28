@@ -66,7 +66,10 @@ fun <K, V> Map<K, V>.ifNotEmptyLoopRaw(body: (K, V) -> Unit): Boolean = if (isNo
  * @param value Value of new entry
  * @return [MutableMap] with 1 element <[key], [value]>
  */
-fun <K, V> MutableMap<K, V>.putToEmpty(key: K, value: V): MutableMap<K, V> {
+fun <K, V> MutableMap<K, V>.putToEmpty(
+	key: K,
+	value: V,
+): MutableMap<K, V> {
 	this.clear()
 	this[key] = value
 	return this

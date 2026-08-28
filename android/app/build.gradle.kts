@@ -33,7 +33,10 @@ val generateLogoAssets = tasks.register("generateLogoAssets") {
 	outputs.file(drawableOutFile)
 
 	doLast {
-		fun scaledCopy(source: BufferedImage, maxDimension: Int): BufferedImage {
+		fun scaledCopy(
+			source: BufferedImage,
+			maxDimension: Int,
+		): BufferedImage {
 			val scale = minOf(1.0, maxDimension.toDouble() / maxOf(source.width, source.height))
 			val width = (source.width * scale).toInt()
 			val height = (source.height * scale).toInt()

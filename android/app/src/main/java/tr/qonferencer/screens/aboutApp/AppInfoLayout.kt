@@ -1,4 +1,4 @@
-package tr.qonferencer.screens.aboutapp
+package tr.qonferencer.screens.aboutApp
 
 import android.content.Intent
 import androidx.compose.foundation.clickable
@@ -40,7 +40,10 @@ fun ColumnScope.AppInfoLayout() {
 }
 
 @Composable
-private fun AppInfoButton(text: String, action: (() -> Unit)? = null) {
+private fun AppInfoButton(
+	text: String,
+	action: (() -> Unit)? = null,
+) {
 	CardLayout(
 		outerPads = PADS_DEFAULT_HALF,
 		innerPads = PADS_NONE,

@@ -41,19 +41,22 @@ fun ScreensMenuLayout(
 	}
 }
 
-private fun getValidScreenEntries(currentRole: Role, canCheckByName: Boolean, customScreens: List<CustomScreenDto>) =
-	QoNFerenCeRDestinations.entries
-		.asSequence()
-		.filter { currentRole.atLeast(it.minRole) }
-		.filter { it != QoNFerenCeRDestinations.MY_PROFILE }
-		.filter {
-			if (it != QoNFerenCeRDestinations.LOGIN) true
-			else currentRole == Role.ANONYM
-		}
-		.filter {
-			if (it != QoNFerenCeRDestinations.USER_CHECK) true
-			else currentRole == Role.ADMIN || canCheckByName
-		}
-		.map(NavTarget::Fixed)
-		.toList() +
-		customScreens.map(NavTarget::Custom)
+private fun getValidScreenEntries(
+	currentRole: Role,
+	canCheckByName: Boolean,
+	customScreens: List<CustomScreenDto>,
+) = QoNFerenCeRDestinations.entries
+	.asSequence()
+	.filter { currentRole.atLeast(it.minRole) }
+	.filter { it != QoNFerenCeRDestinations.MY_PROFILE }
+	.filter {
+		if (it != QoNFerenCeRDestinations.LOGIN) true
+		else currentRole == Role.ANONYM
+	}
+	.filter {
+		if (it != QoNFerenCeRDestinations.USER_CHECK) true
+		else currentRole == Role.ADMIN || canCheckByName
+	}
+	.map(NavTarget::Fixed)
+	.toList() +
+	customScreens.map(NavTarget::Custom)

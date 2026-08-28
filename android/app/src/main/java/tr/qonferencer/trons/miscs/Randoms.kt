@@ -12,7 +12,10 @@ val randomGenerator: Random = Random.Default
  *
  * @throws IllegalArgumentException if [from] is greater than or equal to [until].
  */
-fun getRandomInt(from: Int, until: Int) = randomGenerator.nextInt(from, until)
+fun getRandomInt(
+	from: Int,
+	until: Int,
+) = randomGenerator.nextInt(from, until)
 
 /** Gets next random [Boolean] value */
 fun getRandomBool() = randomGenerator.nextBoolean()

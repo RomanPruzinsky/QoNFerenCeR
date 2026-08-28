@@ -21,7 +21,7 @@ class SplashViewModel(
 	}
 
 	fun load() {
-		dataStatedAction(_splashState) {
+		dataStatedAction(_splashState, onErrorShouldReset = false) {
 			splashApi.all().also {
 				QoNFerenCeRApp.language.setNewData(it)
 				QoNFerenCeRApp.currentUser.setDetails(it.me)

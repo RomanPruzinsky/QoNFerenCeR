@@ -1,21 +1,23 @@
-package tr.qonferencer.screens.customscreen
+package tr.qonferencer.screens.aboutApp
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
+import tr.qonferencer.trons.defaultLayouts.defaultSpacing
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
-fun CustomScreenLayout(id: String) {
+fun AboutAppScreen() {
 	ScrollableColumn(
 		modifier = Modifier
 			.fillMaxSize()
 			.defaultLayoutPadding(),
+		verticalArrangement = defaultSpacing,
+		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
-		//TODO: fetch and render body via CustomElement renderer
-		Text("Custom screen: $id", style = typo.bodyMedium)
+		DeveloperContactLayout()
+		AppInfoLayout()
 	}
 }

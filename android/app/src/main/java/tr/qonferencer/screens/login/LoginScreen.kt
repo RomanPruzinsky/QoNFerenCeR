@@ -18,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import tr.qonferencer.api.QoNFerenCerApi
 import tr.qonferencer.api.authRepository
-import tr.qonferencer.screens.keyinputmethod.KeyInputMethod
-import tr.qonferencer.screens.keyinputmethod.KeyInputMethodPicker
+import tr.qonferencer.screens.keyInputMethod.KeyInputMethod
+import tr.qonferencer.screens.keyInputMethod.KeyInputMethodPicker
 import tr.qonferencer.screens.splash.SplashViewModel
 import tr.qonferencer.screens.splash.splashViewModelFactory
 import tr.qonferencer.theme.colors

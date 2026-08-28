@@ -36,7 +36,10 @@ private val logger = HttpLoggingInterceptor().apply {
 		else HttpLoggingInterceptor.Level.NONE
 }
 
-private fun buildRetrofit(baseUrl: String, client: OkHttpClient): Retrofit = Retrofit.Builder()
+private fun buildRetrofit(
+	baseUrl: String,
+	client: OkHttpClient,
+): Retrofit = Retrofit.Builder()
 	.baseUrl(baseUrl)
 	.client(client)
 	.addConverterFactory(JacksonConverterFactory.create(objectMapper))

@@ -69,7 +69,11 @@ class DataGenericParamViewModel<P, S>(
  * @return [DGpVMHold] with [DataState] and [action]
  */
 @Composable
-fun <P, S> getDGPVMState(param: P, initAction: Boolean = false, action: suspend ViewModel.(P) -> S): DGpVMHold<S> {
+fun <P, S> getDGPVMState(
+	param: P,
+	initAction: Boolean = false,
+	action: suspend ViewModel.(P) -> S,
+): DGpVMHold<S> {
 	val vm = viewModel<DataGenericParamViewModel<P, S>>(
 		key = param.toString(),
 		factory = viewModelFactory {

@@ -17,7 +17,10 @@ import tr.qonferencer.trons.theme.Edge.Companion.getTops
  * @param edge2 [Dp] to average
  * @return [CornerSize] of average of [edge1] and [edge2]
  */
-private fun evalCornerSize(edge1: Dp, edge2: Dp): CornerSize = CornerSize((edge1 + edge2) / 2)
+private fun evalCornerSize(
+	edge1: Dp,
+	edge2: Dp,
+): CornerSize = CornerSize((edge1 + edge2) / 2)
 
 /**
  * Clips element with specific [Edge] and [Dp]
@@ -45,7 +48,11 @@ fun Modifier.specClip(vararg clips: Pair<Edge, Dp> = (arrayOf(Edge.ALL to defaul
  * @param additier Specific [Dp] to add to [defaultClipSize] (after multiplied)
  * @return [Modifier] with applied clipping
  */
-fun Modifier.defaultClip(clip: Edge = Edge.ALL, multiplier: Float = 1F, additier: Dp = 0.dp) = this.then(
+fun Modifier.defaultClip(
+	clip: Edge = Edge.ALL,
+	multiplier: Float = 1F,
+	additier: Dp = 0.dp,
+) = this.then(
 	Modifier.specClip(
 		clip to (defaultClipSize * multiplier) + additier,
 	),
@@ -60,7 +67,10 @@ fun Modifier.defaultClip(clip: Edge = Edge.ALL, multiplier: Float = 1F, additier
  * @param additier Specific [Dp] to add to [defaultClipSize] (after multiplied)
  * @return [Modifier] with applied [Edge.TOP] clipping
  */
-fun Modifier.defaultTopClip(multiplier: Float = 1F, additier: Dp = 0.dp) = this.then(
+fun Modifier.defaultTopClip(
+	multiplier: Float = 1F,
+	additier: Dp = 0.dp,
+) = this.then(
 	Modifier.specClip(
 		Edge.TOP to (defaultClipSize * multiplier) + additier,
 	),
@@ -75,7 +85,10 @@ fun Modifier.defaultTopClip(multiplier: Float = 1F, additier: Dp = 0.dp) = this.
  * @param additier Specific [Dp] to add to [defaultClipSize] (after multiplied)
  * @return [Modifier] with applied [Edge.START] clipping
  */
-fun Modifier.defaultStartClip(multiplier: Float = 1F, additier: Dp = 0.dp) = this.then(
+fun Modifier.defaultStartClip(
+	multiplier: Float = 1F,
+	additier: Dp = 0.dp,
+) = this.then(
 	Modifier.specClip(
 		Edge.START to (defaultClipSize * multiplier) + additier,
 	),
@@ -90,7 +103,10 @@ fun Modifier.defaultStartClip(multiplier: Float = 1F, additier: Dp = 0.dp) = thi
  * @param additier Specific [Dp] to add to [defaultClipSize] (after multiplied)
  * @return [Modifier] with applied [Edge.END] clipping
  */
-fun Modifier.defaultEndClip(multiplier: Float = 1F, additier: Dp = 0.dp) = this.then(
+fun Modifier.defaultEndClip(
+	multiplier: Float = 1F,
+	additier: Dp = 0.dp,
+) = this.then(
 	Modifier.specClip(
 		Edge.END to (defaultClipSize * multiplier) + additier,
 	),
@@ -105,7 +121,10 @@ fun Modifier.defaultEndClip(multiplier: Float = 1F, additier: Dp = 0.dp) = this.
  * @param additier Specific [Dp] to add to [defaultClipSize] (after multiplied)
  * @return [Modifier] with applied [Edge.BOTTOM] clipping
  */
-fun Modifier.defaultBottomClip(multiplier: Float = 1F, additier: Dp = 0.dp) = this.then(
+fun Modifier.defaultBottomClip(
+	multiplier: Float = 1F,
+	additier: Dp = 0.dp,
+) = this.then(
 	Modifier.specClip(
 		Edge.BOTTOM to (defaultClipSize * multiplier) + additier,
 	),
