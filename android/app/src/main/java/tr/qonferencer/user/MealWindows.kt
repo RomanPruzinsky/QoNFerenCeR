@@ -10,6 +10,6 @@ class MealWindows {
 	val windows = _windows.asStateFlow()
 
 	fun setWindows(all: List<MealWindowDto>) {
-		_windows.value = all
+		_windows.value = all.sortedBy { it.startsAt }
 	}
 }

@@ -24,7 +24,7 @@ import tr.qonferencer.trons.states.errorIndicatorMessage
 @Composable
 fun <T> DataStateLayout(
 	state: DataState<T>,
-	backgroundColor: Color = colors.navigation,
+	backgroundColor: Color = colors.element,
 	textStyle: TextStyle = typo.headlineMedium,
 	bodyOnWaiting: @Composable (() -> Unit)? = null,
 	bodyOnSuccess: @Composable (T) -> Unit,
@@ -33,7 +33,7 @@ fun <T> DataStateLayout(
 		is DataState.Success -> {
 			bodyOnSuccess(state.value)
 		}
-
+		
 		is DataState.Error -> {
 			StateIndicator(
 				text = errorIndicatorMessage(state.specification),
@@ -41,11 +41,9 @@ fun <T> DataStateLayout(
 				textStyle = textStyle,
 			)
 		}
-
-		DataState.Processing -> {
-			CircularProgressIndicator()
-		}
-
+		
+		DataState.Processing -> CircularProgressIndicator()
+		
 		DataState.Waiting -> {
 			if (bodyOnWaiting != null) bodyOnWaiting()
 			else {
@@ -71,7 +69,7 @@ fun <T> DataStateLayout(
 @Composable
 fun <T> DataStateLayout(
 	stateFlow: StateFlow<DataState<T>>,
-	backgroundColor: Color = colors.navigation,
+	backgroundColor: Color = colors.element,
 	textStyle: TextStyle = typo.headlineMedium,
 	bodyOnWaiting: @Composable (() -> Unit)? = null,
 	bodyOnSuccess: @Composable (T) -> Unit,

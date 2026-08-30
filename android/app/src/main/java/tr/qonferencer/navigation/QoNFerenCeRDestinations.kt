@@ -29,7 +29,6 @@ enum class QoNFerenCeRDestinations(
 	MEAL_SCAN(Role.VOLUNTEER, "destination.mealScan", Icons.Default.Restaurant),
 	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
 	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
-
 	;
 
 	companion object {

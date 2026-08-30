@@ -29,7 +29,7 @@ data class MealScanResultDto(
 )
 
 /**
- * Portions of one variant left to hand out for a window
+ * Portions of one variant left to hand out for window
  * @property variantKey Translation key of meal variant
  * @property remaining Reservations of [variantKey] not yet consumed
  */

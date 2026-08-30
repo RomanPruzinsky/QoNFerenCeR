@@ -24,7 +24,7 @@ fun BasicSwitch(
 	checked: Boolean,
 	@SuppressLint("ModifierParameter") modifier: Modifier = Modifier.defaultLayoutPadding(Edge.HORIZONTAL),
 	colorOn: Color = colors.selected,
-	colorOff: Color = colors.navigation,
+	colorOff: Color = colors.appBackground,
 	action: (newBool: Boolean) -> Unit,
 ) {
 	Switch(

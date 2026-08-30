@@ -1,5 +1,6 @@
 package tr.qonferencer.trons.states.infoState
 
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -23,7 +24,7 @@ import tr.qonferencer.trons.states.errorIndicatorMessage
 @Composable
 fun InfoStateLayout(
 	state: InfoState,
-	backgroundColor: Color = colors.navigation,
+	backgroundColor: Color = colors.element,
 	textStyle: TextStyle = typo.headlineMedium,
 	bodyOnSuccess: @Composable (() -> Unit)? = null,
 	bodyOnWaiting: @Composable () -> Unit,
@@ -39,7 +40,7 @@ fun InfoStateLayout(
 				)
 			}
 		}
-
+		
 		is InfoState.Error -> {
 			StateIndicator(
 				text = errorIndicatorMessage(state.specification),
@@ -47,15 +48,9 @@ fun InfoStateLayout(
 				textStyle = textStyle,
 			)
 		}
-
-		InfoState.Processing -> {
-			StateIndicator(
-				text = DefaultSay.PROCESSING,
-				backgroundColor = backgroundColor,
-				textStyle = textStyle,
-			)
-		}
-
+		
+		InfoState.Processing -> CircularProgressIndicator()
+		
 		InfoState.Waiting -> {
 			bodyOnWaiting()
 		}
@@ -74,7 +69,7 @@ fun InfoStateLayout(
 @Composable
 fun InfoStateLayout(
 	stateFlow: StateFlow<InfoState>,
-	backgroundColor: Color = colors.navigation,
+	backgroundColor: Color = colors.element,
 	textStyle: TextStyle = typo.headlineMedium,
 	bodyOnSuccess: @Composable (() -> Unit)? = null,
 	bodyOnWaiting: @Composable () -> Unit,

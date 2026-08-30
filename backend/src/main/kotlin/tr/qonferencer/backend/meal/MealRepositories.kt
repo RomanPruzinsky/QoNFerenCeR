@@ -13,6 +13,27 @@ interface MealReservationRepository : JpaRepository<MealReservation, MealSlotId>
 	fun findByIdUserId(userId: Long): List<MealReservation>
 	
 	fun deleteByIdUserId(userId: Long)
+
+	/** Reservations of [windowId] not yet in [MealConsumption], grouped by variant */
+	@Query(
+		value = """
+			SELECT r.variant_key AS variantKey, COUNT(*) AS remaining
+			FROM meal_reservation r
+			WHERE r.window_id = :windowId
+			  AND NOT EXISTS (
+			      SELECT 1 FROM meal_consumption c WHERE c.user_id = r.user_id AND c.window_id = r.window_id
+			  )
+			GROUP BY r.variant_key
+		""",
+		nativeQuery = true,
+	)
+	fun remainingByWindow(@Param("windowId") windowId: Long): List<RemainingCount>
+}
+
+/** Projection for [MealReservationRepository.remainingByWindow] */
+interface RemainingCount {
+	fun getVariantKey(): String
+	fun getRemaining(): Long
 }
 
 /** Outcome of [MealConsumptionRepository.consume] */
