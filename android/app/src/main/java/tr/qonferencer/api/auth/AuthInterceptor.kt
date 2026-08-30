@@ -1,12 +1,17 @@
 package tr.qonferencer.api.auth
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import retrofit2.HttpException
 import tr.qonferencer.BuildConfig
+import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.data.remote.KeycloakApi
+import tr.qonferencer.translations.rawDynamicTranslation
+import tr.qonferencer.trons.miscs.Toast
 
 /** Adds bearer token to requests for backend */
 class AuthInterceptor(
@@ -52,7 +57,10 @@ class AuthInterceptor(
 			onFailure = { error ->
 				if (error is HttpException && (error.code() == REFRESH_TOKEN_EXPIRED || error.code() == JWT_REJECTED)) {
 					tokenStore.clearTokens()
-					//TODO: now is logged out, tell it to user (toast for example)
+					QoNFerenCeRApp.currentUser.setDetails(null)
+					withContext(Dispatchers.Main) {
+						Toast.short(QoNFerenCeRApp.appContext, rawDynamicTranslation("misc.sessionExpired"))
+					}
 				}
 				null
 			},
