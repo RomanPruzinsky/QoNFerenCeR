@@ -14,7 +14,7 @@ data class KeycloakUserInfo(
 	val username: String,
 	val role: Role,
 	val isSpeaker: Boolean,
-	val canCheckByName: Boolean,
+	val canCheckUsers: Boolean,
 )
 
 /** Wrapper over Keycloak Admin API for slot user */
@@ -30,14 +30,19 @@ class KeycloakAdminService(
 	 * Creates enabled user with [role] and its orthogonal attribute flags
 	 * @return User's Keycloak sub
 	 */
-	fun createUser(username: String, role: Role, isSpeaker: Boolean = false, canCheckByName: Boolean = false): UUID {
+	fun createUser(
+		username: String,
+		role: Role,
+		isSpeaker: Boolean = false,
+		canCheckUsers: Boolean = false,
+	): UUID {
 		val rep = UserRepresentation().apply {
 			this.username = username
 			isEnabled = true
 			email = "$username@qonferencer.local"
 			firstName = username
 			lastName = "slot"
-			attributes = keycloakedAttributes(isSpeaker, canCheckByName)
+			attributes = keycloakedAttributes(isSpeaker, canCheckUsers)
 		}
 		val sub = UUID.fromString(usersRes.create(rep).use { CreatedResponseUtil.getCreatedId(it) })
 		userResource(sub).roles().realmLevel().add(listOf(realmRole(role)))
@@ -45,9 +50,14 @@ class KeycloakAdminService(
 	}
 
 	/** Replaces [role] and flags of existing user; realm role is swapped, not added */
-	fun updateUser(sub: UUID, role: Role, isSpeaker: Boolean, canCheckByName: Boolean) {
+	fun updateUser(
+		sub: UUID,
+		role: Role,
+		isSpeaker: Boolean,
+		canCheckUsers: Boolean,
+	) {
 		val userRes = userResource(sub)
-		userRes.update(userRes.toRepresentation().apply { attributes = keycloakedAttributes(isSpeaker, canCheckByName) })
+		userRes.update(userRes.toRepresentation().apply { attributes = keycloakedAttributes(isSpeaker, canCheckUsers) })
 		
 		val realmRoles = userRes.roles().realmLevel()
 		
@@ -63,7 +73,10 @@ class KeycloakAdminService(
 	}
 
 	/** Sets fresh permanent password for user */
-	fun setPassword(sub: UUID, password: String) {
+	fun setPassword(
+		sub: UUID,
+		password: String,
+	) {
 		val cred = CredentialRepresentation().apply {
 			type = CredentialRepresentation.PASSWORD
 			value = password
@@ -85,7 +98,7 @@ class KeycloakAdminService(
 			username = rep.username,
 			role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name }),
 			isSpeaker = attrs["isSpeaker"]?.firstOrNull()?.toBoolean() ?: false,
-			canCheckByName = attrs["canCheckByName"]?.firstOrNull()?.toBoolean() ?: false,
+			canCheckUsers = attrs["canCheckUsers"]?.firstOrNull()?.toBoolean() ?: false,
 		)
 	}
 
@@ -113,8 +126,11 @@ class KeycloakAdminService(
 	/** Realm's representation of [role] */
 	private fun realmRole(role: Role) = realmRes.roles().get(role.name).toRepresentation()
 	
-	private fun keycloakedAttributes(isSpeaker: Boolean, canCheckByName: Boolean) = mapOf(
+	private fun keycloakedAttributes(
+		isSpeaker: Boolean,
+		canCheckUsers: Boolean,
+	) = mapOf(
 		"isSpeaker" to listOf(isSpeaker.toString()),
-		"canCheckByName" to listOf(canCheckByName.toString()),
+		"canCheckUsers" to listOf(canCheckUsers.toString()),
 	)
 }

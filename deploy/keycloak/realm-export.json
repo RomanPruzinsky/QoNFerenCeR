@@ -67,13 +67,13 @@
 					}
 				},
 				{
-					"name": "canCheckByName",
+					"name": "canCheckUsers",
 					"protocol": "openid-connect",
 					"protocolMapper": "oidc-usermodel-attribute-mapper",
 					"consentRequired": false,
 					"config": {
-						"user.attribute": "canCheckByName",
-						"claim.name": "canCheckByName",
+						"user.attribute": "canCheckUsers",
+						"claim.name": "canCheckUsers",
 						"jsonType.label": "boolean",
 						"id.token.claim": "true",
 						"access.token.claim": "true",
@@ -117,7 +117,7 @@
 				"isSpeaker": [
 					"false"
 				],
-				"canCheckByName": [
+				"canCheckUsers": [
 					"true"
 				]
 			}
@@ -136,6 +136,6 @@
 		}
 	],
 	"attributes": {
-		"kc.user.profile.config": "{\"unmanagedAttributePolicy\": \"ENABLED\", \"attributes\": [{\"name\": \"username\", \"displayName\": \"${username}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"email\", \"displayName\": \"${email}\", \"validations\": {\"email\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"firstName\", \"displayName\": \"${firstName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"lastName\", \"displayName\": \"${lastName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"isSpeaker\", \"displayName\": \"isSpeaker\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"canCheckByName\", \"displayName\": \"canCheckByName\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}]}"
+		"kc.user.profile.config": "{\"unmanagedAttributePolicy\": \"ENABLED\", \"attributes\": [{\"name\": \"username\", \"displayName\": \"${username}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"email\", \"displayName\": \"${email}\", \"validations\": {\"email\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"firstName\", \"displayName\": \"${firstName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"lastName\", \"displayName\": \"${lastName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"isSpeaker\", \"displayName\": \"isSpeaker\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"canCheckUsers\", \"displayName\": \"canCheckUsers\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}]}"
 	}
 }

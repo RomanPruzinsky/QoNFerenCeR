@@ -58,7 +58,7 @@ class SlotService(
 			username = username,
 			role = req.role,
 			isSpeaker = req.isSpeaker,
-			canCheckByName = req.canCheckByName,
+			canCheckUsers = req.canCheckUsers,
 		)
 		
 		val password = UserPasswordGenerator.generate(random)
@@ -76,11 +76,14 @@ class SlotService(
 
 	/** Replaces everything mutable about [userId]; replaces reservations, keeps consumptions */
 	@Transactional
-	fun updateUserSlot(userId: Long, req: ModifyableUserDataDto): UserDetailDto {
+	fun updateUserSlot(
+		userId: Long,
+		req: ModifyableUserDataDto,
+	): UserDetailDto {
 		validateMealWindows(req.meals)
 		
 		val user = findUser(userId)
-		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckByName)
+		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckUsers)
 		
 		user.fullName = req.fullName
 		anchors.storeCustomData(user, req.customData)
@@ -150,21 +153,30 @@ class SlotService(
 	}
 
 	/** Saves [meals] for [userId] */
-	private fun saveReservations(userId: Long, meals: List<UserMealEntryDto>) {
+	private fun saveReservations(
+		userId: Long,
+		meals: List<UserMealEntryDto>,
+	) {
 		reservations.saveAll(meals.map { MealReservation(MealSlotId(userId, it.windowId), it.variantKey) })
 	}
 	
-	private fun loginCredentials(username: String, password: String) = LoginCredentialsDto(
+	private fun loginCredentials(
+		username: String,
+		password: String,
+	) = LoginCredentialsDto(
 		username = username,
 		password = password,
 	)
 	
-	private fun userDetail(user: User, mod: ModifyableUserDataDto) = UserDetailDto(
+	private fun userDetail(
+		user: User,
+		mod: ModifyableUserDataDto,
+	) = UserDetailDto(
 		userId = user.id,
 		fullName = user.fullName,
 		role = mod.role,
 		isSpeaker = mod.isSpeaker,
-		canCheckByName = mod.canCheckByName,
+		canCheckUsers = mod.canCheckUsers,
 		meals = mod.meals,
 		customData = mod.customData,
 	)

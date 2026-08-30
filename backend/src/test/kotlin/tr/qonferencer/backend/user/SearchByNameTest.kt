@@ -95,14 +95,14 @@ class SearchByNameTest {
 	
 	@Test
 	fun `volunteer is refused even with the grant`() {
-		search("pruz", Role.VOLUNTEER, canCheckByName = true).andExpect {
+		search("pruz", Role.VOLUNTEER, canCheckUsers = true).andExpect {
 			status { isForbidden() }
 		}
 	}
 	
 	@Test
 	fun `organiser without the grant is refused`() {
-		search("pruz", Role.ORGANISER, canCheckByName = false).andExpect {
+		search("pruz", Role.ORGANISER, canCheckUsers = false).andExpect {
 			status { isForbidden() }
 		}
 	}
@@ -116,19 +116,23 @@ class SearchByNameTest {
 	
 	@Test
 	fun `admin browses everyone with an empty query, no grant needed`() {
-		search("", Role.ADMIN, canCheckByName = false).andExpect {
+		search("", Role.ADMIN, canCheckUsers = false).andExpect {
 			status { isOk() }
 			jsonPath("$.content.length()") { value(4) }
 		}
 	}
 	
-	private fun search(query: String, role: Role, canCheckByName: Boolean = true) = mockMvc.get(ApiPaths.User.BY_NAME) {
+	private fun search(
+		query: String,
+		role: Role,
+		canCheckUsers: Boolean = true,
+	) = mockMvc.get(ApiPaths.User.BY_NAME) {
 		param("searchFor", query)
 		with(
 			jwt().jwt {
 				it.subject(UUID.randomUUID().toString())
 					.claim("realm_access", mapOf("roles" to listOf(role.name)))
-					.claim("canCheckByName", canCheckByName)
+					.claim("canCheckUsers", canCheckUsers)
 			},
 		)
 	}

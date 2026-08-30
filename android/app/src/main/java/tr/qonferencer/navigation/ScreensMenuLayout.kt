@@ -12,12 +12,12 @@ import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 fun ScreensMenuLayout(
 	currentTarget: NavTarget,
 	currentRole: Role,
-	canCheckByName: Boolean,
+	canCheckUsers: Boolean,
 	customScreens: List<CustomScreenDto>,
 	onSelect: (NavTarget) -> Unit,
 ) {
-	val allTargets = remember(currentRole, canCheckByName, customScreens) {
-		getValidScreenEntries(currentRole, canCheckByName, customScreens)
+	val allTargets = remember(currentRole, canCheckUsers, customScreens) {
+		getValidScreenEntries(currentRole, canCheckUsers, customScreens)
 	}
 
 	ModalDrawerSheet(drawerContainerColor = colors.navigation) {
@@ -43,7 +43,7 @@ fun ScreensMenuLayout(
 
 private fun getValidScreenEntries(
 	currentRole: Role,
-	canCheckByName: Boolean,
+	canCheckUsers: Boolean,
 	customScreens: List<CustomScreenDto>,
 ) = QoNFerenCeRDestinations.entries
 	.asSequence()
@@ -55,7 +55,7 @@ private fun getValidScreenEntries(
 	}
 	.filter {
 		if (it != QoNFerenCeRDestinations.USER_CHECK) true
-		else currentRole == Role.ADMIN || canCheckByName
+		else currentRole == Role.ADMIN || canCheckUsers
 	}
 	.map(NavTarget::Fixed)
 	.toList() +

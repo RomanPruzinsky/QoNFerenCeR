@@ -16,7 +16,8 @@ DELETE FROM translation WHERE key IN (
 	'login.cameraDenied', 'login.grantCamera', 'login.scanningNfc',
 	'login.username', 'login.password', 'login.submit',
 	'login.by.qr', 'login.by.nfc', 'login.by.manual',
-	'userCheck.by.qr', 'userCheck.by.nfc', 'userCheck.by.manual'
+	'userCheck.by.qr', 'userCheck.by.nfc', 'userCheck.by.manual',
+	'user.detail.canCheckByName'
 );
 
 -- Kept in sync with docs/translations.md — edit that file, then reapply here.
@@ -58,7 +59,7 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('user.detail.role',            'en', 'role'),
 	('user.detail.userId',          'en', 'user id'),
 	('user.detail.isSpeaker',       'en', 'guest'),
-	('user.detail.canCheckByName',  'en', 'can check others'),
+	('user.detail.canCheckUsers',   'en', 'can check others'),
 	('user.detail.emittingNfc',     'en', 'emitting NFC'),
 	('user.detail.mealsIntro',      'en', 'ordered meals'),
 	('destination.userCheck',        'en', 'User check'),
@@ -107,7 +108,7 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('user.detail.role',            'sk', 'rola'),
 	('user.detail.userId',          'sk', 'ID používateľa'),
 	('user.detail.isSpeaker',       'sk', 'hosť'),
-	('user.detail.canCheckByName',  'sk', 'môže kontrolovať ostatných'),
+	('user.detail.canCheckUsers',   'sk', 'môže kontrolovať ostatných'),
 	('user.detail.emittingNfc',     'sk', 'vysiela NFC'),
 	('user.detail.mealsIntro',      'sk', 'objednané jedlá'),
 	('destination.userCheck',        'sk', 'Kontrola používateľa'),

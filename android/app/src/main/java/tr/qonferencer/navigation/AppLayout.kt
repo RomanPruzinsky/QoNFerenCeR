@@ -68,7 +68,7 @@ fun AppLayout() {
 			ScreensMenuLayout(
 				currentTarget = currentTarget,
 				currentRole = currentRole,
-				canCheckByName = currentUser?.canCheckByName == true,
+				canCheckUsers = currentUser?.canCheckUsers == true,
 				customScreens = customScreens,
 				onSelect = { target ->
 					currentTarget = target

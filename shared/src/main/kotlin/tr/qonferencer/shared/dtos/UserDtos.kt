@@ -9,7 +9,7 @@ data class UserDetailDto(
 	val fullName: String,
 	val role: Role,
 	val isSpeaker: Boolean,
-	val canCheckByName: Boolean,
+	val canCheckUsers: Boolean,
 	val meals: List<UserMealEntryDto> = emptyList(),
 	val customData: CustomDataType = emptyMap(),
 ) {
@@ -18,7 +18,6 @@ data class UserDetailDto(
 		fun roleOrAnonym(user: UserDetailDto?): Role = user?.role ?: Role.ANONYM
 	}
 }
-//TODO: rename canCheckByName -> canCheckUsers
 
 /**
  * Simple data of user searched by name
@@ -36,7 +35,7 @@ data class ModifyableUserDataDto(
 	val fullName: String,
 	val role: Role = Role.VISITOR,
 	val isSpeaker: Boolean = false,
-	val canCheckByName: Boolean = false,
+	val canCheckUsers: Boolean = false,
 	val meals: List<UserMealEntryDto> = emptyList(),
 	val customData: CustomDataType = emptyMap(),
 )

@@ -18,10 +18,13 @@ class SearchByNameService(
 	private val caller: CallerService,
 ) {
 	@Transactional(readOnly = true)
-	fun search(query: String, pageable: Pageable): PageDto<UserDisplayDto> {
+	fun search(
+		query: String,
+		pageable: Pageable,
+	): PageDto<UserDisplayDto> {
 		val role = caller.role()
-		val allowed = (role == Role.ADMIN) || (role.atLeast(Role.ORGANISER) && caller.canCheckByName())
-		if (!allowed) throw forbidden("needs ORGANISER with canCheckByName, or ADMIN")
+		val allowed = (role == Role.ADMIN) || (role.atLeast(Role.ORGANISER) && caller.canCheckUsers())
+		if (!allowed) throw forbidden("needs ORGANISER with canCheckUsers, or ADMIN")
 		
 		val trimmed = query.trim()
 		if (role != Role.ADMIN && trimmed.length < MIN_QUERY_LENGTH) {

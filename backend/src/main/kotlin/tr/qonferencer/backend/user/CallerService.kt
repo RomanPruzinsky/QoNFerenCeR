@@ -19,7 +19,7 @@ class CallerService(
 
 	fun role(): Role = jwtOrNull()?.let { Role.highestAvailable(it.processKeycloakRoles()) } ?: Role.ANONYM
 	fun isSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false
-	fun canCheckByName(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckByName") ?: false
+	fun canCheckUsers(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckUsers") ?: false
 
 	/** Keycloak's `slot_NNN` login name, from the standard `preferred_username` claim */
 	fun username(): String = jwt().getClaim("preferred_username")

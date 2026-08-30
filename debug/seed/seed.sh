@@ -35,16 +35,16 @@ for _ in $(seq 1 60); do
 done
 
 say "Enabling the custom user-profile attributes in Keycloak"
-# Realm import ignores kc.user.profile.config, so isSpeaker / canCheckByName get dropped on every
+# Realm import ignores kc.user.profile.config, so isSpeaker / canCheckUsers get dropped on every
 # fresh stack and their JWT claims come out null. The Admin API honours it; PUT is idempotent.
 # A production installer must run this same PUT once after first start.
 MASTER_TOKEN="$(curl -fsS -X POST "$KC/realms/master/protocol/openid-connect/token" \
 	-d grant_type=password -d client_id=admin-cli -d "username=$MASTER_USER" -d "password=$MASTER_PASS" | jq -r .access_token)"
 curl -fsS "$KC/admin/realms/$REALM/users/profile" -H "Authorization: Bearer $MASTER_TOKEN" \
 	| jq '.unmanagedAttributePolicy="ENABLED"
-		| .attributes |= (map(select(.name|IN("isSpeaker","canCheckByName")|not)) + [
+		| .attributes |= (map(select(.name|IN("isSpeaker","canCheckUsers")|not)) + [
 			{name:"isSpeaker",displayName:"isSpeaker",permissions:{view:["admin","user"],edit:["admin"]},multivalued:false},
-			{name:"canCheckByName",displayName:"canCheckByName",permissions:{view:["admin","user"],edit:["admin"]},multivalued:false}
+			{name:"canCheckUsers",displayName:"canCheckUsers",permissions:{view:["admin","user"],edit:["admin"]},multivalued:false}
 		])' \
 	| curl -fsS -X PUT "$KC/admin/realms/$REALM/users/profile" \
 		-H "Authorization: Bearer $MASTER_TOKEN" -H 'Content-Type: application/json' -d @- -o /dev/null -w "  profile → %{http_code}\n"
@@ -63,7 +63,7 @@ W1="$(w meal.day1.lunch)"; W2="$(w meal.day1.dinner)"; W3="$(w meal.day2.lunch)"
 [ -n "$W1" ] && [ -n "$W2" ] && [ -n "$W3" ] || { echo "meal windows missing — did content.sql run?"; exit 1; }
 echo "windows: lunch=$W1 dinner=$W2 saturday=$W3"
 
-# name | ROLE | isSpeaker | canCheckByName | company | tshirt | diet(->variant)
+# name | ROLE | isSpeaker | canCheckUsers | company | tshirt | diet(->variant)
 ATTENDEES=(
 	"Zuzana Krajčíová|ORGANISER|false|true|InfoDesk|M|none"
 	"Marek Dubovský|ORGANISER|false|true|InfoDesk|L|vegetarian"
@@ -137,7 +137,7 @@ for row in "${ATTENDEES[@]}"; do
 		--arg fn "$name" --arg role "$role" --argjson sp "$sp" --argjson cc "$cc" \
 		--arg comp "$company" --arg ts "$tshirt" --arg diet "$diet" --arg variant "$variant" \
 		--argjson w1 "$W1" --argjson w2 "$W2" --argjson w3 "$W3" \
-		'{fullName:$fn, role:$role, isSpeaker:$sp, canCheckByName:$cc,
+		'{fullName:$fn, role:$role, isSpeaker:$sp, canCheckUsers:$cc,
 		  customData:{company:$comp, tshirt:$ts, dietary:$diet},
 		  meals:[{windowId:$w1,variantKey:$variant},{windowId:$w2,variantKey:$variant},{windowId:$w3,variantKey:$variant}]}')"
 	resp="$(curl -fsS -X POST "$BACKEND/api/v1/admin/add-user" \

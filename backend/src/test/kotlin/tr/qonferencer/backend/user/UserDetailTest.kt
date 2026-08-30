@@ -60,7 +60,7 @@ class UserDetailTest {
 	fun `volunteer is refused even with the grant`() {
 		val userId = newUser("Peter Novák")
 		
-		detail(userId, Role.VOLUNTEER, canCheckByName = true).andExpect {
+		detail(userId, Role.VOLUNTEER, canCheckUsers = true).andExpect {
 			status { isForbidden() }
 		}
 	}
@@ -69,7 +69,7 @@ class UserDetailTest {
 	fun `organiser without the grant is refused`() {
 		val userId = newUser("Marek Kovacs")
 		
-		detail(userId, Role.ORGANISER, canCheckByName = false).andExpect {
+		detail(userId, Role.ORGANISER, canCheckUsers = false).andExpect {
 			status { isForbidden() }
 		}
 	}
@@ -78,7 +78,7 @@ class UserDetailTest {
 	fun `admin sees everything too, no grant needed`() {
 		val userId = newUser("Roman Pružinský")
 		
-		detail(userId, Role.ADMIN, canCheckByName = false).andExpect {
+		detail(userId, Role.ADMIN, canCheckUsers = false).andExpect {
 			status { isOk() }
 			jsonPath("$.fullName") { value("Roman Pružinský") }
 		}
@@ -91,14 +91,17 @@ class UserDetailTest {
 		}
 	}
 	
-	private fun detail(userId: Long, role: Role, canCheckByName: Boolean = true) =
-		mockMvc.get(ApiPaths.User.BY_ID.replace("{userId}", userId.toString())) {
-			with(
-				jwt().jwt {
-					it.subject(UUID.randomUUID().toString())
-						.claim("realm_access", mapOf("roles" to listOf(role.name)))
-						.claim("canCheckByName", canCheckByName)
-				},
-			)
-		}
+	private fun detail(
+		userId: Long,
+		role: Role,
+		canCheckUsers: Boolean = true,
+	) = mockMvc.get(ApiPaths.User.BY_ID.replace("{userId}", userId.toString())) {
+		with(
+			jwt().jwt {
+				it.subject(UUID.randomUUID().toString())
+					.claim("realm_access", mapOf("roles" to listOf(role.name)))
+					.claim("canCheckUsers", canCheckUsers)
+			},
+		)
+	}
 }
