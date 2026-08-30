@@ -39,7 +39,11 @@ interface UserRepository : JpaRepository<User, Long> {
 		countQuery = "SELECT count(*) FROM app_user WHERE $NAME_MATCH",
 		nativeQuery = true,
 	)
-	fun searchByName(@Param("query") query: String, @Param("threshold") threshold: Double, pageable: Pageable): Page<User>
+	fun searchByName(
+		@Param("query") query: String,
+		@Param("threshold") threshold: Double,
+		pageable: Pageable,
+	): Page<User>
 	
 	private companion object {
 		/** Helper for SQL script, similarity eval query */

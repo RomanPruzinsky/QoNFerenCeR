@@ -28,7 +28,10 @@ class SecurityConfig(
 ) {
 	
 	@Bean
-	fun securityFilterChain(http: HttpSecurity, caller: CallerService): SecurityFilterChain {
+	fun securityFilterChain(
+		http: HttpSecurity,
+		caller: CallerService,
+	): SecurityFilterChain {
 		http
 			.csrf { it.disable() } // QoNFerenCeR don't use cookies
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) } // Server remembers nothing

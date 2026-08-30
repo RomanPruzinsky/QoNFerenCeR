@@ -15,7 +15,11 @@ class UserAnchorService(
 ) {
 	/** Makes sure entry for this user exists */
 	@Transactional
-	fun ensure(kcSub: UUID, fullName: String, customData: CustomDataType = emptyMap()): User {
+	fun ensure(
+		kcSub: UUID,
+		fullName: String,
+		customData: CustomDataType = emptyMap(),
+	): User {
 		users.insertIfAbsent(kcSub, newSecret(), fullName, objectMapper.writeValueAsString(customData))
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
 	}
@@ -31,7 +35,10 @@ class UserAnchorService(
 			.getOrDefault(emptyMap())
 
 	/** Replaces whole [User.customData] */
-	fun storeCustomData(user: User, customData: CustomDataType) {
+	fun storeCustomData(
+		user: User,
+		customData: CustomDataType,
+	) {
 		user.customData = objectMapper.writeValueAsString(customData)
 		users.save(user)
 	}

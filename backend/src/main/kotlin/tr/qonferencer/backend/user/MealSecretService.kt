@@ -27,7 +27,10 @@ class MealSecretService(
 	}
 
 	/** @throws ApiException 403 if Keycloak rejects [username]/[password] */
-	private fun verifyPassword(username: String, password: String) {
+	private fun verifyPassword(
+		username: String,
+		password: String,
+	) {
 		val form = LinkedMultiValueMap<String, String>().apply {
 			add("grant_type", "password")
 			add("client_id", publicClientId)

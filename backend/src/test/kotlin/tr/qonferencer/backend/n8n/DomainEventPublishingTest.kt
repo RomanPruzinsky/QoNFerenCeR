@@ -155,7 +155,10 @@ class DomainEventPublishingTest {
 		return users.findByKcSub(sub)!!.id
 	}
 	
-	private fun newWindowWithPortion(userId: Long, variantKey: String): Long {
+	private fun newWindowWithPortion(
+		userId: Long,
+		variantKey: String,
+	): Long {
 		val windowId = windows.save(newWindow()).id
 		reservations.save(MealReservation(MealSlotId(userId, windowId), variantKey))
 		return windowId

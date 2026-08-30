@@ -105,7 +105,10 @@ class N8nDeliveryTest {
 		server.verify()
 	}
 	
-	private fun listener(enabled: Boolean, token: String = "test-secret") = N8nOutboundListener(
+	private fun listener(
+		enabled: Boolean,
+		token: String = "test-secret",
+	) = N8nOutboundListener(
 		builder.build(),
 		N8nProperties(
 			enabled = enabled,

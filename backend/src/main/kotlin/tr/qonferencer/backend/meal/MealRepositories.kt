@@ -40,7 +40,11 @@ interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId>
 	fun detachScanner(@Param("userId") userId: Long): Int
 
 	/** Records consumption */
-	fun consume(slot: MealSlotId, scannedBy: Long?, idempotencyKey: UUID): ConsumeOutcome {
+	fun consume(
+		slot: MealSlotId,
+		scannedBy: Long?,
+		idempotencyKey: UUID,
+	): ConsumeOutcome {
 		if (insertIfAbsent(slot.userId, slot.windowId, scannedBy, idempotencyKey) == 1) return ConsumeOutcome.NEW
 		val idempotencyKeysMatches = findById(slot).orElse(null)?.idempotencyKey == idempotencyKey
 		return if (idempotencyKeysMatches) ConsumeOutcome.RETRY else ConsumeOutcome.CONFLICT

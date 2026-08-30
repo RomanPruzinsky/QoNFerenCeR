@@ -27,8 +27,10 @@ class SlotController(
 	fun login(@PathVariable userId: Long): LoginCredentialsDto = slotService.getLoginCredentials(userId)
 	
 	@PutMapping(ApiPaths.Admin.UPDATE_USER)
-	fun update(@PathVariable userId: Long, @RequestBody req: ModifyableUserDataDto): UserDetailDto =
-		slotService.updateUserSlot(userId, req)
+	fun update(
+		@PathVariable userId: Long,
+		@RequestBody req: ModifyableUserDataDto,
+	): UserDetailDto = slotService.updateUserSlot(userId, req)
 	
 	@PostMapping(ApiPaths.Admin.REVOKE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)

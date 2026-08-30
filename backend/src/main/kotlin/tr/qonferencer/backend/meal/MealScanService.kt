@@ -64,7 +64,11 @@ class MealScanService(
 	}
 
 	/** @return Verified `app_user.id`, or null if user not found */
-	private fun verify(token: String, scannerType: ScannerType, now: Instant = Instant.now()): Long? = when (scannerType) {
+	private fun verify(
+		token: String,
+		scannerType: ScannerType,
+		now: Instant = Instant.now(),
+	): Long? = when (scannerType) {
 		ScannerType.QR, ScannerType.NFC -> {
 			val parsed = ScanToken.parse(token) ?: return null
 			val secret = users.findById(parsed.userId).orElse(null)?.mealSecret ?: return null

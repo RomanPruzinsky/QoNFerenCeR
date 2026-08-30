@@ -20,7 +20,10 @@ class N8nConfig {
 	
 	/** Sets up client that talks to n8n */
 	@Bean
-	fun n8nRestClient(builder: RestClient.Builder, properties: N8nProperties): RestClient {
+	fun n8nRestClient(
+		builder: RestClient.Builder,
+		properties: N8nProperties,
+	): RestClient {
 		val factory = SimpleClientHttpRequestFactory().apply {
 			setConnectTimeout(Duration.ofMillis(properties.timeoutMs))
 			setReadTimeout(Duration.ofMillis(properties.timeoutMs))

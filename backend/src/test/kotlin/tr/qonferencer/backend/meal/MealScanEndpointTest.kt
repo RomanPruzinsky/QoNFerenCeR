@@ -150,7 +150,10 @@ class MealScanEndpointTest {
 		}
 	}
 	
-	private fun scan(request: MealScanRequestDto, role: Role) = mockMvc.post(ApiPaths.Meal.MEAL_SCAN) {
+	private fun scan(
+		request: MealScanRequestDto,
+		role: Role,
+	) = mockMvc.post(ApiPaths.Meal.MEAL_SCAN) {
 		with(
 			jwt().jwt {
 				it.subject(scannerSub.toString())
@@ -167,7 +170,10 @@ class MealScanEndpointTest {
 		return users.findByKcSub(sub)!!.id
 	}
 	
-	private fun newWindowWithPortion(userId: Long, variantKey: String): Long {
+	private fun newWindowWithPortion(
+		userId: Long,
+		variantKey: String,
+	): Long {
 		val windowId = windows.save(newWindow()).id
 		reservations.save(MealReservation(MealSlotId(userId, windowId), variantKey))
 		return windowId
