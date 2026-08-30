@@ -16,7 +16,7 @@ import tr.qonferencer.trons.theme.defaultBorderSize
 @Composable
 fun DefaultWideDivider() {
 	HorizontalDivider(
-		color = colors.element,
+		color = colors.text,
 		thickness = defaultBorderSize,
 	)
 }

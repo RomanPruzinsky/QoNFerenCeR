@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.viewmodel.compose.viewModel
-import tr.qonferencer.screens.userCheck.UserSearchResultsScreen
 import tr.qonferencer.theme.colors
 import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
@@ -28,7 +27,7 @@ import tr.qonferencer.trons.remembers.rememberEmptyString
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.states.dataState.DataStateLayout
 import tr.qonferencer.trons.theme.defaultClip
-import tr.qonferencer.trons.theme.defaultIconSize
+import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 @Composable
@@ -75,7 +74,7 @@ fun ManualUserCheckScreen(onPick: (Long) -> Unit) {
 						.background(colors.clickable)
 						.clickable { submitSearch() }
 						.defaultLayoutPadding()
-						.size(defaultIconSize),
+						.size(defaultIconSizeLarge),
 				)
 			}
 		},

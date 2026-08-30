@@ -1,4 +1,4 @@
-package tr.qonferencer.screens.userCheck
+package tr.qonferencer.screens.userCheck.searchByName
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,7 +25,7 @@ import tr.qonferencer.theme.typo
 import tr.qonferencer.trons.defaultLayouts.ActionedLazyColumn
 import tr.qonferencer.trons.defaultLayouts.CardLayout
 import tr.qonferencer.trons.defaultLayouts.PADS_NONE
-import tr.qonferencer.trons.theme.defaultIconSize
+import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 
 private const val LOAD_MORE_THRESHOLD = 5
@@ -78,7 +78,7 @@ fun UserSearchResultsScreen(
 			CircularProgressIndicator(
 				color = colors.text,
 				modifier = Modifier
-					.size(defaultIconSize)
+					.size(defaultIconSizeLarge)
 					.align(Alignment.BottomEnd)
 					.defaultLayoutPadding(),
 			)

@@ -12,7 +12,7 @@ import tr.qonferencer.screens.home.HomeScreen
 import tr.qonferencer.screens.login.LoginScreen
 import tr.qonferencer.screens.myProfile.MyProfileScreen
 import tr.qonferencer.screens.settings.SettingsScreen
-import tr.qonferencer.screens.userCheck.detail.UserCheckScreen
+import tr.qonferencer.screens.userCheck.UserCheckScreen
 
 /** Directs each [QoNFerenCeRDestinations] entry to its composable */
 @Composable

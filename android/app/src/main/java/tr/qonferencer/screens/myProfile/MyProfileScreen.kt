@@ -38,7 +38,7 @@ import tr.qonferencer.trons.ops.orNullIf
 import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.theme.defaultClip
-import tr.qonferencer.trons.theme.defaultIconSize
+import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 
@@ -176,6 +176,6 @@ private fun ShowQrButton(onClick: () -> Unit) {
 			.background(colors.clickable)
 			.clickable(onClick = onClick)
 			.defaultTextPadding(2F)
-			.size(defaultIconSize),
+			.size(defaultIconSizeLarge),
 	)
 }

@@ -1,10 +1,11 @@
-package tr.qonferencer.screens.userCheck.detail
+package tr.qonferencer.screens.userCheck
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,7 +17,7 @@ import tr.qonferencer.screens.keyInputMethod.KeyInputMethod
 import tr.qonferencer.screens.keyInputMethod.KeyInputMethodPicker
 import tr.qonferencer.screens.login.NfcLoginScreen
 import tr.qonferencer.screens.login.QrLoginScreen
-import tr.qonferencer.screens.userCheck.UserCheckViewModel
+import tr.qonferencer.screens.userCheck.detail.UserCheckDetailScreen
 import tr.qonferencer.screens.userCheck.searchByName.ManualUserCheckScreen
 import tr.qonferencer.trons.states.dataState.DataStateLayout
 

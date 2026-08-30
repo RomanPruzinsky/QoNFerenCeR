@@ -31,6 +31,7 @@ enum class QoNFerenCeRDestinations(
 
 	companion object {
 		/** Destination shown at launch and as fallback */
-		val startDest = HOME
+		val startDest = USER_CHECK
+//		val startDest = HOME
 	}
 }

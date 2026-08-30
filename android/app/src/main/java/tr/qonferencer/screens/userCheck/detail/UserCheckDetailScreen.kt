@@ -4,12 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,8 +23,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.UserDetailDto
@@ -31,24 +35,22 @@ import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
-import tr.qonferencer.trons.defaultLayouts.CardLayout
 import tr.qonferencer.trons.defaultLayouts.CartedGroupBox
 import tr.qonferencer.trons.defaultLayouts.CustomDropdownMenu
 import tr.qonferencer.trons.defaultLayouts.DefaultHeightSpacer
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
-import tr.qonferencer.trons.defaultLayouts.PADS_NONE
+import tr.qonferencer.trons.defaultLayouts.DefaultWideDivider
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.defaultLayouts.defaultSpacing
+import tr.qonferencer.trons.miscs.DEFAULT_STATE_CHANGE_DELAY_SECS
 import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.ops.orNullIf
 import tr.qonferencer.trons.ops.relist
 import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.remembers.switch
+import tr.qonferencer.trons.states.StateIndicator
 import tr.qonferencer.trons.states.collectValue
-import tr.qonferencer.trons.states.dataState.DataState
-import tr.qonferencer.trons.states.dataState.OnError
-import tr.qonferencer.trons.states.dataState.OnProcessing
-import tr.qonferencer.trons.states.errorIndicatorMessage
+import tr.qonferencer.trons.states.dataState.DataStateLayout
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSize
 import tr.qonferencer.trons.theme.defaultLayoutPadding
@@ -56,122 +58,124 @@ import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
 fun UserCheckDetailScreen(user: UserDetailDto) {
-	val editVM: EditUserDetailsViewModel = viewModel(
+	val editVM = viewModel<EditUserDetailsViewModel>(
 		key = user.userId.toString(),
 		factory = editUserDetailsViewModelFactory(user),
 	)
 	
 	val canEdit = UserDetailDto.roleOrAnonym(QoNFerenCeRApp.currentUser.details.collectValue()).atLeast(Role.ADMIN)
 	val editMode = rememberFalse()
+	val roleExpanded = rememberFalse()
+	val updateResult by editVM.updateState.collectAsState()
+	
+	val currentData by editVM.detail.collectAsState()
+	val fullNameEdit = remember(currentData) { mutableStateOf(currentData.fullName) }
+	val roleIndex = remember(currentData) { mutableIntStateOf(currentData.role.ordinal) }
+	val isSpeakerEdit = remember(currentData) { mutableStateOf(currentData.isSpeaker) }
+	val canCheckByNameEdit = remember(currentData) { mutableStateOf(currentData.canCheckByName) }
+	
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 	
-	val current by editVM.detail.collectAsState()
-	
-	val fullNameEdit = remember(current) { mutableStateOf(current.fullName) }
-	val roleIndex = remember(current) { mutableIntStateOf(current.role.ordinal) }
-	val roleExpanded = rememberFalse()
-	val isSpeakerEdit = remember(current) { mutableStateOf(current.isSpeaker) }
-	val canCheckByNameEdit = remember(current) { mutableStateOf(current.canCheckByName) }
-	
-	val updateResult by editVM.updateState.collectAsState()
-	LaunchedEffect(updateResult) {
-		if (updateResult is DataState.Success) editMode.value = false
-	}
-	
-	ScrollableColumn(
-		modifier = Modifier
-			.fillMaxWidth()
-			.defaultLayoutPadding(),
-		verticalArrangement = defaultSpacing,
-		horizontalAlignment = Alignment.CenterHorizontally,
-	) {
-		if (canEdit) {
-			Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-				EditSwitchButton(editing = editMode.value) { editMode.switch() }
-			}
-		}
-		
-		if (editMode.value) {
-			DefaultOTF(
-				valueText = fullNameEdit,
-				labelText = dynamicTranslation("userCheck.detail.fullName"),
-				modifier = Modifier.fillMaxWidth(),
-			)
-		} else {
-			Text(text = current.fullName, style = typo.displayLarge)
-		}
-		
-		DefaultHeightSpacer(2)
-		
-		if (editMode.value) {
-			ProfileEditRow(dynamicTranslation("user.detail.role")) {
-				CustomDropdownMenu(
-					options = Role.entries.relist { it.name },
-					selected = roleIndex,
-					expanded = roleExpanded,
-					arrowAtStart = false,
-					selectedColor = colors.clickable,
-				)
-			}
-			ProfileToggleRow(dynamicTranslation("user.detail.isSpeaker"), isSpeakerEdit)
-			ProfileToggleRow(dynamicTranslation("user.detail.canCheckByName"), canCheckByNameEdit)
-		} else {
-			ProfileRow(dynamicTranslation("user.detail.role"), current.role.name)
-			ProfileRow(dynamicTranslation("user.detail.isSpeaker"), DefaultSay.yesOrNo(current.isSpeaker))
-			ProfileRow(dynamicTranslation("user.detail.canCheckByName"), DefaultSay.yesOrNo(current.canCheckByName))
-		}
-		
-		ProfileRow(dynamicTranslation("user.detail.userId"), current.userId.toString())
-		
-		CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
-			if (current.meals.isEmpty()) Text(text = DefaultSay.EMPTY, style = typo.bodyMedium)
-			else {
-				current.meals.forEach { meal ->
+	DataStateLayout(
+		state = updateResult,
+		bodyOnWaiting = {
+			ScrollableColumn(
+				modifier = Modifier
+					.fillMaxSize()
+					.defaultLayoutPadding(),
+				verticalArrangement = defaultSpacing,
+				horizontalAlignment = Alignment.CenterHorizontally,
+			) {
+				if (canEdit) {
+					EditButtonsRow(
+						editing = editMode.value,
+						onEditingChange = { editMode.switch() },
+						onSave = {
+							editVM.save(
+								ModifyableUserDataDto(
+									fullName = fullNameEdit.value.trim(),
+									role = Role.entries[roleIndex.intValue],
+									isSpeaker = isSpeakerEdit.value,
+									canCheckByName = canCheckByNameEdit.value,
+									meals = currentData.meals,
+									customData = currentData.customData,
+								),
+							)
+						},
+					)
+				}
+				
+				if (editMode.value) {
+					DefaultOTF(
+						valueText = fullNameEdit,
+						labelText = dynamicTranslation("userCheck.detail.fullName"),
+						modifier = Modifier.fillMaxWidth(),
+						specialCharFilter = { it != '\n' },
+					)
+				} else {
+					Text(
+						text = currentData.fullName,
+						style = typo.displayLarge,
+						modifier = Modifier.fillMaxWidth(),
+					)
+				}
+				
+				DefaultHeightSpacer(2)
+				
+				if (editMode.value) {
+					ProfileEditRow(dynamicTranslation("user.detail.role")) {
+						CustomDropdownMenu(
+							options = Role.entries.relist { it.name },
+							selected = roleIndex,
+							expanded = roleExpanded,
+							arrowAtStart = false,
+							selectedColor = colors.clickable,
+						)
+					}
+					ProfileToggleRow(dynamicTranslation("user.detail.isSpeaker"), isSpeakerEdit)
+					ProfileToggleRow(dynamicTranslation("user.detail.canCheckByName"), canCheckByNameEdit)
+				} else {
+					ProfileRow(dynamicTranslation("user.detail.role"), currentData.role.name)
+					ProfileRow(dynamicTranslation("user.detail.isSpeaker"), DefaultSay.yesOrNo(currentData.isSpeaker))
 					ProfileRow(
-						label = dynamicTranslation(mealWindows.first { it.id == meal.windowId }.nameKey),
-						value = dynamicTranslation(meal.variantKey),
+						dynamicTranslation("user.detail.canCheckByName"),
+						DefaultSay.yesOrNo(currentData.canCheckByName),
 					)
 				}
-			}
-		}
-		
-		if (current.customData.isNotEmpty()) {
-			current.customData.forEach { (key, value) ->
-				ProfileRow(
-					label = key,
-					value = value?.toString().orNullIf { it?.isBlank() ?: true } ?: "-",
-				)
-			}
-		}
-		
-		if (editMode.value) {
-			DefaultHeightSpacer(2)
-			
-			Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-				SaveButton {
-					editVM.save(
-						ModifyableUserDataDto(
-							fullName = fullNameEdit.value,
-							role = Role.entries[roleIndex.intValue],
-							isSpeaker = isSpeakerEdit.value,
-							canCheckByName = canCheckByNameEdit.value,
-							meals = current.meals,
-							customData = current.customData,
-						),
-					)
+				
+				ProfileRow(dynamicTranslation("user.detail.userId"), currentData.userId.toString())
+
+				if (currentData.meals.isEmpty()) DefaultWideDivider()
+				else {
+					CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
+						currentData.meals.forEach { meal ->
+							ProfileRow(
+								label = dynamicTranslation(mealWindows.first { it.id == meal.windowId }.nameKey),
+								value = dynamicTranslation(meal.variantKey),
+							)
+						}
+					}
+				}
+				
+				if (currentData.customData.isNotEmpty()) {
+					currentData.customData.forEach { (key, value) ->
+						ProfileRow(
+							label = key,
+							value = value?.toString().orNullIf { it?.isBlank() ?: true } ?: "-",
+						)
+					}
 				}
 			}
-			
-			editVM.updateState.OnProcessing { CircularProgressIndicator() }
-			editVM.updateState.OnError { e ->
-				Text(
-					text = errorIndicatorMessage(e),
-					style = typo.bodyMedium,
-					color = colors.action.delete,
-				)
+		},
+		bodyOnSuccess = { updateData ->
+			StateIndicator(text = DefaultSay.SUCCESS)
+			LaunchedEffect(updateData) {
+				editMode.value = false
+				delay(DEFAULT_STATE_CHANGE_DELAY_SECS)
+				editVM.reset()
 			}
-		}
-	}
+		},
+	)
 }
 
 @Composable
@@ -221,45 +225,51 @@ private fun ProfileToggleRow(
 	}
 }
 
-/**
- * Switches between viewing and editing
- * @param onClick Toggles edit mode
- */
 @Composable
-private fun EditSwitchButton(
+fun EditButtonsRow(
 	editing: Boolean,
-	onClick: () -> Unit,
+	onEditingChange: () -> Unit,
+	onSave: () -> Unit,
 ) {
-	Icon(
-		imageVector = if (editing) Icons.Default.Visibility else Icons.Default.Edit,
-		contentDescription = "switch edit mode",
-		tint = colors.text,
+	Row(
 		modifier = Modifier
-			.defaultClip()
-			.background(colors.clickable)
-			.clickable(onClick = onClick)
-			.defaultTextPadding(2F)
-			.size(defaultIconSize),
-	)
-}
-
-/**
- * Saves current edits
- * @param onClick Submits edited data
- */
-@Composable
-private fun SaveButton(onClick: () -> Unit) {
-	CardLayout(
-		borderize = true,
-		innerPads = PADS_NONE,
-		containerColor = colors.clickable,
+			.fillMaxWidth(),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically,
 	) {
-		Text(
-			text = dynamicTranslation("userCheck.detail.save"),
-			style = typo.labelLarge,
-			modifier = Modifier
-				.clickable(onClick = onClick)
-				.defaultTextPadding(),
+		@Composable
+		fun EditIcon(
+			icon: ImageVector,
+			background: Color,
+			contentDesctiption: String,
+			onClick: () -> Unit,
+		) {
+			Icon(
+				imageVector = icon,
+				contentDescription = contentDesctiption,
+				tint = colors.text,
+				modifier = Modifier
+					.defaultClip()
+					.background(background)
+					.clickable(onClick = onClick)
+					.defaultTextPadding()
+					.size(defaultIconSize),
+			)
+		}
+		EditIcon(
+			icon = if (editing) Icons.Default.Visibility else Icons.Default.Edit,
+			background = colors.clickable,
+			contentDesctiption = "switch edit mode",
+			onClick = onEditingChange,
 		)
+		
+		if (editing) {
+			EditIcon(
+				icon = Icons.Default.Check,
+				background = colors.action.approve,
+				contentDesctiption = "approve",
+				onClick = onSave,
+			)
+		}
 	}
 }

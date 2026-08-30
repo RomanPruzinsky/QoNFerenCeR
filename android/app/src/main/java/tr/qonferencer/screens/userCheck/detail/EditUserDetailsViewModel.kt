@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import tr.qonferencer.api.QoNFerenCerApi
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.UserDetailDto
+import tr.qonferencer.trons.states.dataState.DataState
 import tr.qonferencer.trons.states.dataState.dataStatedAction
 import tr.qonferencer.trons.states.dataState.initDataState
 
@@ -26,6 +27,10 @@ class EditUserDetailsViewModel(
 			_detail.value = updated
 			updated
 		}
+	}
+	
+	fun reset() {
+		_updateState.value = DataState.Waiting
 	}
 }
 
