@@ -26,8 +26,9 @@ class MealScanService(
 ) {
 	@Transactional
 	fun scan(request: MealScanRequestDto): MealScanResultDto {
-		if (!caller.role().atLeast(Role.VOLUNTEER)) throw forbidden("role below VOLUNTEER")
-		
+		val allowed = caller.role().atLeast(Role.VOLUNTEER) && caller.canFoodCheck()
+		if (!allowed) throw forbidden("needs VOLUNTEER with canFoodCheck")
+
 		val windowId = request.mealWindowId
 		val scannedBy = caller.requireUserId()
 		val scannerType = request.scannerType

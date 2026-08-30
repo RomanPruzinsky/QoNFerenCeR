@@ -82,10 +82,46 @@ class MealScanEndpointTest {
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.VISITOR).andExpect {
 			status { isForbidden() }
 		}
+	}
+
+	@Test
+	fun `volunteer without the grant is refused`() {
+		val secret = ByteArray(32) { 4 }
+		val userId = newUser(secret)
+		val windowId = newWindowWithPortion(userId, "meal.regular")
+		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
+
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.VOLUNTEER, canFoodCheck = false)
+			.andExpect { status { isForbidden() } }
+	}
+
+	@Test
+	fun `admin without the grant is refused too`() {
+		val secret = ByteArray(32) { 6 }
+		val userId = newUser(secret)
+		val windowId = newWindowWithPortion(userId, "meal.regular")
+		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
+
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.ADMIN, canFoodCheck = false)
+			.andExpect { status { isForbidden() } }
+	}
+
+	@Test
+	fun `admin with the grant scans too`() {
+		val secret = ByteArray(32) { 9 }
+		val userId = newUser(secret)
+		val windowId = newWindowWithPortion(userId, "meal.regular")
+		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
+
+		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.ADMIN, canFoodCheck = true)
+			.andExpect {
+				status { isOk() }
+				jsonPath("$.result") { value("APPROVED") }
+			}
 	}
 	
 	@Test
@@ -153,11 +189,13 @@ class MealScanEndpointTest {
 	private fun scan(
 		request: MealScanRequestDto,
 		role: Role,
+		canFoodCheck: Boolean = true,
 	) = mockMvc.post(ApiPaths.Meal.MEAL_SCAN) {
 		with(
 			jwt().jwt {
 				it.subject(scannerSub.toString())
 					.claim("realm_access", mapOf("roles" to listOf(role.name)))
+					.claim("canFoodCheck", canFoodCheck)
 			},
 		)
 		contentType = MediaType.APPLICATION_JSON

@@ -59,6 +59,7 @@ class SlotService(
 			role = req.role,
 			isSpeaker = req.isSpeaker,
 			canCheckUsers = req.canCheckUsers,
+			canFoodCheck = req.canFoodCheck,
 		)
 		
 		val password = UserPasswordGenerator.generate(random)
@@ -83,7 +84,7 @@ class SlotService(
 		validateMealWindows(req.meals)
 		
 		val user = findUser(userId)
-		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckUsers)
+		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckUsers, req.canFoodCheck)
 		
 		user.fullName = req.fullName
 		anchors.storeCustomData(user, req.customData)
@@ -177,6 +178,7 @@ class SlotService(
 		role = mod.role,
 		isSpeaker = mod.isSpeaker,
 		canCheckUsers = mod.canCheckUsers,
+		canFoodCheck = mod.canFoodCheck,
 		meals = mod.meals,
 		customData = mod.customData,
 	)

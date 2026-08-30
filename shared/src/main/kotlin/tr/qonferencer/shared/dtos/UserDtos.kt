@@ -10,6 +10,7 @@ data class UserDetailDto(
 	val role: Role,
 	val isSpeaker: Boolean,
 	val canCheckUsers: Boolean,
+	val canFoodCheck: Boolean,
 	val meals: List<UserMealEntryDto> = emptyList(),
 	val customData: CustomDataType = emptyMap(),
 ) {
@@ -36,6 +37,7 @@ data class ModifyableUserDataDto(
 	val role: Role = Role.VISITOR,
 	val isSpeaker: Boolean = false,
 	val canCheckUsers: Boolean = false,
+	val canFoodCheck: Boolean = false,
 	val meals: List<UserMealEntryDto> = emptyList(),
 	val customData: CustomDataType = emptyMap(),
 )

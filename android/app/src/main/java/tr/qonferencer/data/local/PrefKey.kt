@@ -12,4 +12,5 @@ enum class PrefKey(
 	APP_FONT_SIZE(false),
 	APP_LANGUAGE(false),
 	TRANSLATIONS(false),
+	MEAL_SCAN_SOUND(false),
 }

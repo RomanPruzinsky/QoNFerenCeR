@@ -3,6 +3,11 @@ package tr.qonferencer.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import tr.qonferencer.shared.enums.MealScanResult
+import tr.qonferencer.shared.enums.MealScanResult.ALREADY_CONSUMED
+import tr.qonferencer.shared.enums.MealScanResult.APPROVED
+import tr.qonferencer.shared.enums.MealScanResult.NOT_REGISTERED_PORTION
+import tr.qonferencer.shared.enums.MealScanResult.NO_USER_FOUND
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.shared.enums.Role.ADMIN
 import tr.qonferencer.shared.enums.Role.ANONYM
@@ -94,6 +99,15 @@ val Role.color: Color
 		LEADER -> colors.level.leader
 		ORGANISER -> colors.level.organiser
 		ADMIN -> colors.level.admin
+	}
+
+/** Per [MealScanResult] color */
+val MealScanResult.color: Color
+	@Composable get() = when (this) {
+		APPROVED -> colors.scanResult.approved
+		ALREADY_CONSUMED -> colors.scanResult.alreadyConsumed
+		NO_USER_FOUND -> colors.scanResult.noUserFound
+		NOT_REGISTERED_PORTION -> colors.scanResult.notRegisteredPortion
 	}
 
 /** Per-[tr.qonferencer.shared.enums.MealScanResult] feedback colors */

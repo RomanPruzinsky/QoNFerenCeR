@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import tr.qonferencer.shared.enums.Role
@@ -21,17 +22,18 @@ enum class QoNFerenCeRDestinations(
 	val titleKey: String,
 	val icon: ImageVector,
 ) {
-	HOME(Role.ANONYM, "destination.home", Icons.Default.Home),
-	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
-	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
 	MY_PROFILE(Role.VISITOR, "destination.myProfile", Icons.Default.Person),
+	HOME(Role.ANONYM, "destination.home", Icons.Default.Home),
 	ABOUT_APP(Role.ANONYM, "destination.aboutApp", Icons.Default.Info),
 	USER_CHECK(Role.ORGANISER, "destination.userCheck", Icons.Default.Badge),
+	MEAL_SCAN(Role.VOLUNTEER, "destination.mealScan", Icons.Default.Restaurant),
+	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
+	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
+
 	;
 
 	companion object {
 		/** Destination shown at launch and as fallback */
-		val startDest = USER_CHECK
-//		val startDest = HOME
+		val startDest = HOME
 	}
 }

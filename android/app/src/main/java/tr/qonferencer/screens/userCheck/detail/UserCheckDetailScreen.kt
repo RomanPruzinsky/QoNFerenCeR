@@ -73,6 +73,7 @@ fun UserCheckDetailScreen(user: UserDetailDto) {
 	val roleIndex = remember(currentData) { mutableIntStateOf(currentData.role.ordinal) }
 	val isSpeakerEdit = remember(currentData) { mutableStateOf(currentData.isSpeaker) }
 	val canCheckUsersEdit = remember(currentData) { mutableStateOf(currentData.canCheckUsers) }
+	val canFoodCheckEdit = remember(currentData) { mutableStateOf(currentData.canFoodCheck) }
 	
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 	
@@ -97,6 +98,7 @@ fun UserCheckDetailScreen(user: UserDetailDto) {
 									role = Role.entries[roleIndex.intValue],
 									isSpeaker = isSpeakerEdit.value,
 									canCheckUsers = canCheckUsersEdit.value,
+									canFoodCheck = canFoodCheckEdit.value,
 									meals = currentData.meals,
 									customData = currentData.customData,
 								),
@@ -134,12 +136,17 @@ fun UserCheckDetailScreen(user: UserDetailDto) {
 					}
 					ProfileToggleRow(dynamicTranslation("user.detail.isSpeaker"), isSpeakerEdit)
 					ProfileToggleRow(dynamicTranslation("user.detail.canCheckUsers"), canCheckUsersEdit)
+					ProfileToggleRow(dynamicTranslation("user.detail.canFoodCheck"), canFoodCheckEdit)
 				} else {
 					ProfileRow(dynamicTranslation("user.detail.role"), currentData.role.name)
 					ProfileRow(dynamicTranslation("user.detail.isSpeaker"), DefaultSay.yesOrNo(currentData.isSpeaker))
 					ProfileRow(
 						dynamicTranslation("user.detail.canCheckUsers"),
 						DefaultSay.yesOrNo(currentData.canCheckUsers),
+					)
+					ProfileRow(
+						dynamicTranslation("user.detail.canFoodCheck"),
+						DefaultSay.yesOrNo(currentData.canFoodCheck),
 					)
 				}
 				

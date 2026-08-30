@@ -38,6 +38,7 @@ object ApiPaths {
 		private const val ROOT = "$BASE/meal"
 
 		const val MEAL_SCAN = "$ROOT/scan"
+		const val MEAL_COUNTS = "$ROOT/counts/{windowId}"
 	}
 
 	// TODO: translations management

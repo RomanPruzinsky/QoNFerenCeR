@@ -38,7 +38,7 @@ class UserDetailTest {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, ByteArray(32), fullName)
 		val userId = users.findByKcSub(sub)!!.id
-		Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot_007", Role.VOLUNTEER, true, false))
+		Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot_007", Role.VOLUNTEER, true, false, false))
 		return userId
 	}
 	

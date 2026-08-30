@@ -15,6 +15,7 @@ data class KeycloakUserInfo(
 	val role: Role,
 	val isSpeaker: Boolean,
 	val canCheckUsers: Boolean,
+	val canFoodCheck: Boolean,
 )
 
 /** Wrapper over Keycloak Admin API for slot user */
@@ -35,6 +36,7 @@ class KeycloakAdminService(
 		role: Role,
 		isSpeaker: Boolean = false,
 		canCheckUsers: Boolean = false,
+		canFoodCheck: Boolean = false,
 	): UUID {
 		val rep = UserRepresentation().apply {
 			this.username = username
@@ -42,7 +44,7 @@ class KeycloakAdminService(
 			email = "$username@qonferencer.local"
 			firstName = username
 			lastName = "slot"
-			attributes = keycloakedAttributes(isSpeaker, canCheckUsers)
+			attributes = keycloakedAttributes(isSpeaker, canCheckUsers, canFoodCheck)
 		}
 		val sub = UUID.fromString(usersRes.create(rep).use { CreatedResponseUtil.getCreatedId(it) })
 		userResource(sub).roles().realmLevel().add(listOf(realmRole(role)))
@@ -55,9 +57,14 @@ class KeycloakAdminService(
 		role: Role,
 		isSpeaker: Boolean,
 		canCheckUsers: Boolean,
+		canFoodCheck: Boolean,
 	) {
 		val userRes = userResource(sub)
-		userRes.update(userRes.toRepresentation().apply { attributes = keycloakedAttributes(isSpeaker, canCheckUsers) })
+		userRes.update(
+			userRes.toRepresentation().apply {
+				attributes = keycloakedAttributes(isSpeaker, canCheckUsers, canFoodCheck)
+			},
+		)
 		
 		val realmRoles = userRes.roles().realmLevel()
 		
@@ -99,6 +106,7 @@ class KeycloakAdminService(
 			role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name }),
 			isSpeaker = attrs["isSpeaker"]?.firstOrNull()?.toBoolean() ?: false,
 			canCheckUsers = attrs["canCheckUsers"]?.firstOrNull()?.toBoolean() ?: false,
+			canFoodCheck = attrs["canFoodCheck"]?.firstOrNull()?.toBoolean() ?: false,
 		)
 	}
 
@@ -129,8 +137,10 @@ class KeycloakAdminService(
 	private fun keycloakedAttributes(
 		isSpeaker: Boolean,
 		canCheckUsers: Boolean,
+		canFoodCheck: Boolean,
 	) = mapOf(
 		"isSpeaker" to listOf(isSpeaker.toString()),
 		"canCheckUsers" to listOf(canCheckUsers.toString()),
+		"canFoodCheck" to listOf(canFoodCheck.toString()),
 	)
 }

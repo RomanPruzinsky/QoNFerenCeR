@@ -71,7 +71,16 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('userCheck.manual.searchLabel', 'en', 'search by name'),
 	('userCheck.manual.submit',      'en', 'submit'),
 	('userCheck.detail.fullName',    'en', 'full name'),
-	('userCheck.detail.save',        'en', 'save'),
+	('user.detail.canFoodCheck',     'en', 'can check food'),
+	('destination.mealScan',         'en', 'Meal scan'),
+	('mealScan.window.intro',        'en', 'serving now'),
+	('mealScan.nfc.scanning',        'en', 'scanning NFC'),
+	('mealScan.counts.intro',        'en', 'portions left'),
+	('mealScan.result.alreadyConsumed',     'en', 'already consumed'),
+	('mealScan.result.noUserFound',         'en', 'user not found'),
+	('mealScan.result.notRegisteredPortion', 'en', 'not registered for this portion'),
+	('mealScan.noWindow',            'en', 'no meal to scan for'),
+	('settings.mealScanSound',       'en', 'meal scan sounds'),
 	-- sk
 	('destination.custom.home',   'sk', 'Domov'),
 	('destination.custom.agenda', 'sk', 'Program'),
@@ -121,7 +130,16 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('userCheck.manual.searchLabel', 'sk', 'hľadať podľa mena'),
 	('userCheck.manual.submit',      'sk', 'potvrdiť'),
 	('userCheck.detail.fullName',    'sk', 'celé meno'),
-	('userCheck.detail.save',        'sk', 'uložiť')
+	('user.detail.canFoodCheck',     'sk', 'môže kontrolovať stravu'),
+	('destination.mealScan',         'sk', 'Kontrola stravy'),
+	('mealScan.window.intro',        'sk', 'práve sa podáva'),
+	('mealScan.nfc.scanning',        'sk', 'skenovanie NFC'),
+	('mealScan.counts.intro',        'sk', 'zostáva porcií'),
+	('mealScan.result.alreadyConsumed',     'sk', 'už vydané'),
+	('mealScan.result.noUserFound',         'sk', 'používateľ nenájdený'),
+	('mealScan.result.notRegisteredPortion', 'sk', 'nemá nárok na túto porciu'),
+	('mealScan.noWindow',            'sk', 'žiadne jedlo na kontrolu'),
+	('settings.mealScanSound',       'sk', 'zvuky pri kontrole stravy')
 ON CONFLICT (key, lang_code) DO UPDATE SET text = EXCLUDED.text;
 
 -- Meal windows (reservations are imported per-attendee, not seeded here).

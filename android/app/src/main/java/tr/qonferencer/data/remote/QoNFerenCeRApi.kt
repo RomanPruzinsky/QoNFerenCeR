@@ -12,6 +12,7 @@ import retrofit2.http.Query
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.CustomElement
 import tr.qonferencer.shared.dtos.LoginCredentialsDto
+import tr.qonferencer.shared.dtos.MealCountDto
 import tr.qonferencer.shared.dtos.MealScanRequestDto
 import tr.qonferencer.shared.dtos.MealScanResultDto
 import tr.qonferencer.shared.dtos.MealSecretDto
@@ -73,6 +74,9 @@ interface QoNFerenCeRApi {
 	interface Meal {
 		@POST(ApiPaths.Meal.MEAL_SCAN)
 		suspend fun scan(@Body request: MealScanRequestDto): MealScanResultDto
+
+		@GET(ApiPaths.Meal.MEAL_COUNTS)
+		suspend fun counts(@Path("windowId") windowId: Long): List<MealCountDto>
 	}
 }
 

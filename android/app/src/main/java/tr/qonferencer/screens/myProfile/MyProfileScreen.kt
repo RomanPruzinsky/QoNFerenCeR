@@ -68,6 +68,7 @@ fun MyProfileScreen() {
 		
 		ProfileRow(dynamicTranslation("user.detail.isSpeaker"), DefaultSay.yesOrNo(user.isSpeaker))
 		ProfileRow(dynamicTranslation("user.detail.canCheckUsers"), DefaultSay.yesOrNo(user.canCheckUsers))
+		ProfileRow(dynamicTranslation("user.detail.canFoodCheck"), DefaultSay.yesOrNo(user.canFoodCheck))
 		
 		val showQr = rememberFalse()
 		Row(

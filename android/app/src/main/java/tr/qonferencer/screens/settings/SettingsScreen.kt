@@ -30,6 +30,7 @@ fun SettingsScreen() {
 		ChangeFontFamilyLayout()
 		ChangeFontSizeLayout()
 		ChangeAppColorsLayout()
+		ChangeMealScanSoundLayout()
 	}
 }
 

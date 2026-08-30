@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import tr.qonferencer.shared.dtos.CustomScreenDto
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
+import tr.qonferencer.trons.defaultLayouts.DefaultWideDivider
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 
 @Composable
@@ -13,12 +14,14 @@ fun ScreensMenuLayout(
 	currentTarget: NavTarget,
 	currentRole: Role,
 	canCheckUsers: Boolean,
+	canFoodCheck: Boolean,
 	customScreens: List<CustomScreenDto>,
 	onSelect: (NavTarget) -> Unit,
 ) {
-	val allTargets = remember(currentRole, canCheckUsers, customScreens) {
-		getValidScreenEntries(currentRole, canCheckUsers, customScreens)
+	val allTargets = remember(currentRole, canCheckUsers, canFoodCheck, customScreens) {
+		getValidScreenEntries(currentRole, canCheckUsers, canFoodCheck, customScreens)
 	}
+	val customStartIndex = remember(allTargets) { allTargets.indexOfFirst { it is NavTarget.Custom } }
 
 	ModalDrawerSheet(drawerContainerColor = colors.navigation) {
 		ScreensMenuHeader {
@@ -28,7 +31,9 @@ fun ScreensMenuLayout(
 		}
 		
 		ScrollableColumn {
-			allTargets.forEach { target ->
+			allTargets.forEachIndexed { index, target ->
+				if (index == customStartIndex) DefaultWideDivider()
+
 				ScreensMenuItem(
 					target = target,
 					currentRole = currentRole,
@@ -44,6 +49,7 @@ fun ScreensMenuLayout(
 private fun getValidScreenEntries(
 	currentRole: Role,
 	canCheckUsers: Boolean,
+	canFoodCheck: Boolean,
 	customScreens: List<CustomScreenDto>,
 ) = QoNFerenCeRDestinations.entries
 	.asSequence()
@@ -56,6 +62,10 @@ private fun getValidScreenEntries(
 	.filter {
 		if (it != QoNFerenCeRDestinations.USER_CHECK) true
 		else currentRole == Role.ADMIN || canCheckUsers
+	}
+	.filter {
+		if (it != QoNFerenCeRDestinations.MEAL_SCAN) true
+		else canFoodCheck
 	}
 	.map(NavTarget::Fixed)
 	.toList() +

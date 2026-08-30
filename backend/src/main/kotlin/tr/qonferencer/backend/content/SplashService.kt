@@ -36,6 +36,7 @@ class SplashService(
 				role = meRole,
 				isSpeaker = caller.isSpeaker(),
 				canCheckUsers = caller.canCheckUsers(),
+				canFoodCheck = caller.canFoodCheck(),
 				customData = anchors.customData(user),
 				meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 			)

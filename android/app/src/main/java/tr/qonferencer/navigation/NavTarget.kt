@@ -31,6 +31,7 @@ val NavTarget.customColor: Color?
 		is NavTarget.Fixed -> when (destination) {
 			QoNFerenCeRDestinations.LOGIN -> colors.action.approve
 			QoNFerenCeRDestinations.USER_CHECK -> colors.level.organiser
+			QoNFerenCeRDestinations.MEAL_SCAN -> colors.level.organiser
 			else -> null
 		}
 		

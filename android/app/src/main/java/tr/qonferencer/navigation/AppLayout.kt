@@ -69,6 +69,7 @@ fun AppLayout() {
 				currentTarget = currentTarget,
 				currentRole = currentRole,
 				canCheckUsers = currentUser?.canCheckUsers == true,
+				canFoodCheck = currentUser?.canFoodCheck == true,
 				customScreens = customScreens,
 				onSelect = { target ->
 					currentTarget = target

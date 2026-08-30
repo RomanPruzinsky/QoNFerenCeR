@@ -32,6 +32,7 @@ class UserDetailService(
 			role = info.role,
 			isSpeaker = info.isSpeaker,
 			canCheckUsers = info.canCheckUsers,
+			canFoodCheck = info.canFoodCheck,
 			customData = anchors.customData(user),
 			meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 		)

@@ -3,6 +3,7 @@ package tr.qonferencer
 import android.app.Application
 import android.content.Context
 import tr.qonferencer.data.local.PrefsStorager
+import tr.qonferencer.screens.mealScan.MealScanAudioPrefs
 import tr.qonferencer.theme.ThemePrefs
 import tr.qonferencer.translations.Language
 import tr.qonferencer.user.CurrentUser
@@ -18,6 +19,7 @@ class QoNFerenCeRApp : Application() {
 		lateinit var currentUser: CurrentUser
 		lateinit var customScreens: CustomScreens
 		lateinit var mealWindows: MealWindows
+		lateinit var mealScanAudioPrefs: MealScanAudioPrefs
 	}
 
 	override fun onCreate() {
@@ -29,5 +31,6 @@ class QoNFerenCeRApp : Application() {
 		currentUser = CurrentUser()
 		customScreens = CustomScreens()
 		mealWindows = MealWindows()
+		mealScanAudioPrefs = MealScanAudioPrefs(tokenStore)
 	}
 }

@@ -54,6 +54,20 @@ class PrefsStorager(
 
 //////////////////////// INT ///////////////////////
 ////////////////////////////////////////////////////
+////////////////////// BOOLEAN //////////////////////
+
+	fun getBoolean(key: PrefKey): Boolean? {
+		val prefs = prefsFrom(key)
+		return if (prefs.contains(key.name)) prefs.getBoolean(key.name, false) else null
+	}
+
+	fun putBoolean(
+		key: PrefKey,
+		value: Boolean,
+	) = prefsFrom(key).edit { putBoolean(key.name, value) }
+
+////////////////////// BOOLEAN //////////////////////
+////////////////////////////////////////////////////
 ///////////////////// DELETE ///////////////////////
 	
 	fun remove(key: PrefKey) = prefsFrom(key).edit { remove(key.name) }
