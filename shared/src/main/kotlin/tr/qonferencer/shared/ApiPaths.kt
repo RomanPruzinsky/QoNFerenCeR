@@ -19,7 +19,6 @@ object ApiPaths {
 
 	object CustomScreens {
 		const val ROOT = "$BASE/custom-screens"
-
 		const val BY_ID = "$ROOT/{id}"
 	}
 
@@ -32,6 +31,11 @@ object ApiPaths {
 
 		const val LOGIN = "$ROOT/login/{userId}"
 		const val REVOKE = "$ROOT/revoke/{userId}"
+
+		object CustomScreens {
+			const val ROOT = "${Admin.ROOT}/custom-screens"
+			const val BY_ID = "$ROOT/{id}"
+		}
 	}
 
 	object Meal {

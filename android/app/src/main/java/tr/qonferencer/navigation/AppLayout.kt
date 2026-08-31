@@ -39,6 +39,7 @@ import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.miscs.UNKNOWN_TEXT
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultClip
@@ -85,7 +86,7 @@ fun AppLayout() {
 				TopAppBar(
 					title = {
 						Text(
-							text = dynamicTranslation(currentTarget.titleKey),
+							text = dynamicTranslation(currentTarget.titleKey).ifBlank { UNKNOWN_TEXT },
 							style = typo.headlineMedium,
 							maxLines = 1,
 							overflow = TextOverflow.Ellipsis,

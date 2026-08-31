@@ -2,6 +2,7 @@ package tr.qonferencer.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
@@ -29,12 +30,13 @@ enum class QoNFerenCeRDestinations(
 	USER_CHECK(Role.ORGANISER, "destination.userCheck", Icons.Default.Badge),
 	MEAL_SCAN(Role.VOLUNTEER, "destination.mealScan", Icons.Default.Restaurant),
 	CREATE_SLOT(Role.ADMIN, "destination.createSlot", Icons.Default.PersonAdd),
+	CUSTOM_SCREENS(Role.ADMIN, "destination.customScreens", Icons.Default.Dashboard),
 	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
 	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
 	;
 
 	companion object {
 		/** Destination shown at launch and as fallback */
-		val startDest = HOME
+		val startDest = CUSTOM_SCREENS
 	}
 }

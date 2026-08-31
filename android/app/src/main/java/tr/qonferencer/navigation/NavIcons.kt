@@ -11,11 +11,13 @@ import androidx.compose.material.icons.filled.Church
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Hotel
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalCafe
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MusicNote
@@ -65,7 +67,9 @@ val navIcons: Map<String, ImageVector> = mapOf(
 	"wifi" to Icons.Default.Wifi,
 	"car" to Icons.Default.DirectionsCar,
 	"mic" to Icons.Default.Mic,
+	"favorite" to Icons.Default.Favorite,
+	"location" to Icons.Default.LocationOn,
 )
 
 /** Resolves icon [key] with [FALLBACK_ICON_KEY] as fallback */
-fun iconFor(key: String): ImageVector = navIcons[key] ?: navIcons.getValue(FALLBACK_ICON_KEY)
+fun iconFrom(key: String): ImageVector = navIcons[key] ?: navIcons.getValue(FALLBACK_ICON_KEY)

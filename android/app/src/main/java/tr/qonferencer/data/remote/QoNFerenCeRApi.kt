@@ -11,6 +11,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.CustomElement
+import tr.qonferencer.shared.dtos.CustomScreenAdminDto
 import tr.qonferencer.shared.dtos.LoginCredentialsDto
 import tr.qonferencer.shared.dtos.MealCountDto
 import tr.qonferencer.shared.dtos.MealScanRequestDto
@@ -60,7 +61,19 @@ interface QoNFerenCeRApi {
 			@Path("userId") userId: Long,
 			@Body request: ModifyableUserDataDto,
 		): UserDetailDto
-		
+
+		@GET(ApiPaths.Admin.CustomScreens.ROOT)
+		suspend fun listCustomScreens(): List<CustomScreenAdminDto>
+
+		@PUT(ApiPaths.Admin.CustomScreens.BY_ID)
+		suspend fun updateCustomScreen(
+			@Path("id") id: String,
+			@Body request: CustomScreenAdminDto,
+		): CustomScreenAdminDto
+
+		@DELETE(ApiPaths.Admin.CustomScreens.BY_ID)
+		suspend fun deleteCustomScreen(@Path("id") id: String): Response<Unit>
+
 		@POST(ApiPaths.Admin.LOGIN)
 		suspend fun login(@Path("userId") userId: Long): LoginCredentialsDto
 		

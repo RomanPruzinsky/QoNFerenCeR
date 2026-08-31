@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import tr.qonferencer.R
+import tr.qonferencer.trons.miscs.EMPTY_STRING
 import tr.qonferencer.trons.screen.findActivity
 
 /** Scans NFC while composed */
@@ -26,7 +27,7 @@ fun ScanNfc(onDecode: (String) -> Unit) {
 		val callback = NfcAdapter.ReaderCallback { tag ->
 			if (!hasDecoded) {
 				hasDecoded = true
-				onDecode(readToken(tag, selectAidApdu) ?: "")
+				onDecode(readToken(tag, selectAidApdu) ?: EMPTY_STRING)
 			}
 		}
 

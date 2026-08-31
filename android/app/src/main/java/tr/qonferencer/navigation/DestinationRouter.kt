@@ -3,6 +3,7 @@ package tr.qonferencer.navigation
 import androidx.compose.runtime.Composable
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.ABOUT_APP
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.CREATE_SLOT
+import tr.qonferencer.navigation.QoNFerenCeRDestinations.CUSTOM_SCREENS
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.HOME
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.LOGIN
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.MEAL_SCAN
@@ -11,6 +12,7 @@ import tr.qonferencer.navigation.QoNFerenCeRDestinations.SETTINGS
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.USER_CHECK
 import tr.qonferencer.screens.aboutApp.AboutAppScreen
 import tr.qonferencer.screens.admin.createSlot.CreateSlotScreen
+import tr.qonferencer.screens.admin.customScreens.CustomScreensPickerScreen
 import tr.qonferencer.screens.home.HomeScreen
 import tr.qonferencer.screens.login.LoginScreen
 import tr.qonferencer.screens.mealScan.MealScanScreen
@@ -29,4 +31,5 @@ fun QoNFerenCeRDestinations.ProcessScreen(): Unit = when (this) {
 	USER_CHECK -> UserCheckScreen()
 	MEAL_SCAN -> MealScanScreen()
 	CREATE_SLOT -> CreateSlotScreen()
+	CUSTOM_SCREENS -> CustomScreensPickerScreen()
 }

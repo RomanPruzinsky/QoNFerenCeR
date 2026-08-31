@@ -48,8 +48,8 @@ fun TransparentGroupBox(
 	val cornerRadiusPx = with(density) { defaultClipSize.toPx() }
 	val borderWidthPx = with(density) { defaultBorderSize.toPx() }
 	val headerWidthDp = with(density) { headerWidthPx.floatValue.toDp() }
-	val borderColor = colors.element
-	
+	val borderColor = colors.text
+
 	Box(
 		modifier = modifier
 			.specPadding(Edge.TOP to defaultLayoutPadding)
@@ -83,7 +83,7 @@ fun TransparentGroupBox(
 					Offset(size.width - cornerRadiusPx, size.height),
 					borderWidthPx,
 				)
-				
+
 				drawArc(
 					borderColor,
 					180f,
@@ -135,7 +135,7 @@ fun TransparentGroupBox(
 				horizontalAlignment = Alignment.CenterHorizontally,
 			)
 		}
-		
+
 		Box(
 			modifier = Modifier
 				.offset(y = -(defaultLayoutPadding - defaultBorderSize))

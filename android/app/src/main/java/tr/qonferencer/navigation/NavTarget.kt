@@ -9,19 +9,19 @@ import tr.qonferencer.theme.colors
 sealed class NavTarget {
 	abstract val titleKey: String
 	abstract val icon: ImageVector
-	
+
 	data class Fixed(
 		val destination: QoNFerenCeRDestinations,
 	) : NavTarget() {
 		override val titleKey = destination.titleKey
 		override val icon = destination.icon
 	}
-	
+
 	data class Custom(
 		val screen: CustomScreenDto,
 	) : NavTarget() {
 		override val titleKey = screen.titleKey
-		override val icon = iconFor(screen.icon)
+		override val icon = iconFrom(screen.icon)
 	}
 }
 
@@ -33,8 +33,9 @@ val NavTarget.customColor: Color?
 			QoNFerenCeRDestinations.USER_CHECK -> colors.level.organiser
 			QoNFerenCeRDestinations.MEAL_SCAN -> colors.level.organiser
 			QoNFerenCeRDestinations.CREATE_SLOT -> colors.level.adminLight
+			QoNFerenCeRDestinations.CUSTOM_SCREENS -> colors.level.adminLight
 			else -> null
 		}
-		
+
 		is NavTarget.Custom -> null
 	}

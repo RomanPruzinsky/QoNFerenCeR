@@ -14,6 +14,7 @@ import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.color
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.miscs.UNKNOWN_TEXT
 import tr.qonferencer.trons.theme.defaultClipSize
 
 @Composable
@@ -27,7 +28,7 @@ fun ScreensMenuItem(
 	NavigationDrawerItem(
 		label = {
 			Text(
-				text = dynamicTranslation(target.titleKey),
+				text = dynamicTranslation(target.titleKey).ifBlank { UNKNOWN_TEXT },
 				style = typo.headlineMedium,
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,

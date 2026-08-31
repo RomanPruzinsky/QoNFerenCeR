@@ -1,21 +1,23 @@
 package tr.qonferencer.screens.customScreen
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import tr.qonferencer.theme.typo
+import androidx.lifecycle.viewmodel.compose.viewModel
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
-import tr.qonferencer.trons.theme.defaultLayoutPadding
+import tr.qonferencer.trons.defaultLayouts.defaultSpacing
+import tr.qonferencer.trons.states.dataState.DataStateLayout
 
 @Composable
 fun CustomScreenLayout(id: String) {
+	val screenVM = viewModel<CustomScreenViewModel>(key = id, factory = customScreenViewModelFactory(id))
+
 	ScrollableColumn(
-		modifier = Modifier
-			.fillMaxSize()
-			.defaultLayoutPadding(),
+		modifier = Modifier.fillMaxSize(),
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = defaultSpacing,
 	) {
-		//TODO: fetch and render body via CustomElement renderer
-		Text("Custom screen: $id", style = typo.bodyMedium)
+		DataStateLayout(stateFlow = screenVM.bodyState) { elements -> elements.forEach { it.Render() } }
 	}
 }

@@ -21,6 +21,7 @@ import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.ProfileDisplayRow
+import tr.qonferencer.trons.miscs.EMPTY_STRING
 import tr.qonferencer.trons.ops.orNullIf
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSize
@@ -29,8 +30,8 @@ import tr.qonferencer.trons.theme.halfDefaultLayoutPadding
 
 /** One editable customData row, kept as stable [mutableStateOf] pair for [DefaultOTF] */
 class CustomDataFieldState(
-	key: String = "",
-	value: String = "",
+	key: String = EMPTY_STRING,
+	value: String = EMPTY_STRING,
 ) {
 	val key = mutableStateOf(key)
 	val value = mutableStateOf(value)
