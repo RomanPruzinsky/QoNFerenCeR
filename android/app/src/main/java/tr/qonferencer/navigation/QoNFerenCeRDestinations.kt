@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
@@ -27,12 +28,14 @@ enum class QoNFerenCeRDestinations(
 	ABOUT_APP(Role.ANONYM, "destination.aboutApp", Icons.Default.Info),
 	USER_CHECK(Role.ORGANISER, "destination.userCheck", Icons.Default.Badge),
 	MEAL_SCAN(Role.VOLUNTEER, "destination.mealScan", Icons.Default.Restaurant),
+	CREATE_SLOT(Role.ADMIN, "destination.createSlot", Icons.Default.PersonAdd),
 	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
 	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
 	;
 
 	companion object {
 		/** Destination shown at launch and as fallback */
-		val startDest = HOME
+		val startDest = USER_CHECK
+//		val startDest = HOME
 	}
 }

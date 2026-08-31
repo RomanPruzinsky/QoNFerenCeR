@@ -88,6 +88,7 @@ data class RoleColors(
 	val leader: Color,
 	val organiser: Color,
 	val admin: Color,
+	val adminLight: Color,
 )
 
 /** Per [Role] coolor */
@@ -133,6 +134,7 @@ val standardRoleColors = RoleColors(
 	leader = Color(0xFFDEA813),
 	organiser = Color(0xFFDE5A13),
 	admin = Color(0xFF550055),
+	adminLight = Color(0xFF9609C9),
 )
 
 /** Default scan-result colors */

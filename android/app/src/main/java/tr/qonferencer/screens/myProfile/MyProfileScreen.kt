@@ -1,6 +1,5 @@
 package tr.qonferencer.screens.myProfile
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,10 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.QrCode2
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.launch
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.api.authRepository
+import tr.qonferencer.nfc.currentRotatingToken
 import tr.qonferencer.nfc.emitNfc
 import tr.qonferencer.nfc.rememberIsNfcHceSupported
 import tr.qonferencer.qr.ShowQrDialog
@@ -32,19 +28,18 @@ import tr.qonferencer.trons.defaultLayouts.CartedGroupBox
 import tr.qonferencer.trons.defaultLayouts.DefaultHeightSpacer
 import tr.qonferencer.trons.defaultLayouts.PADS_NONE
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
+import tr.qonferencer.trons.defaultLayouts.ShowQrButton
 import tr.qonferencer.trons.defaultLayouts.defaultSpacing
 import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.ops.orNullIf
 import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.states.collectValue
-import tr.qonferencer.trons.theme.defaultClip
-import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
 fun MyProfileScreen() {
-	val token = emitNfc()!!
+	val token = emitNfc(::currentRotatingToken)!!
 	val user = QoNFerenCeRApp.currentUser.details.collectValue() ?: return
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
 	val coroutineScope = rememberCoroutineScope()
@@ -160,23 +155,4 @@ private fun LogoutButton(onClick: () -> Unit) {
 				.defaultTextPadding(),
 		)
 	}
-}
-
-/**
- * Opens login-key QR dialog
- * @param onClick Shows dialog
- */
-@Composable
-private fun ShowQrButton(onClick: () -> Unit) {
-	Icon(
-		imageVector = Icons.Default.QrCode2,
-		contentDescription = "show QR code",
-		tint = colors.text,
-		modifier = Modifier
-			.defaultClip()
-			.background(colors.clickable)
-			.clickable(onClick = onClick)
-			.defaultTextPadding(2F)
-			.size(defaultIconSizeLarge),
-	)
 }

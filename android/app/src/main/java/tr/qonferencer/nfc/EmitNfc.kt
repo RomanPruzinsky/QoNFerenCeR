@@ -6,6 +6,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.api.auth.AuthTokenHelper
@@ -24,23 +25,24 @@ fun currentRotatingToken(): String? {
 }
 
 /**
- * Emits NFC while composed
- * @return Token currently being emitted, refreshed every [TOKEN_REFRESH_SECONDS]
+ * Emits [payload] via NFC while composed
+ * @param payload What to emit
+ * @return Value currently being emitted, refreshed every [TOKEN_REFRESH_SECONDS]
  */
 @Composable
-fun emitNfc(): String? {
-	val computeToken = ::currentRotatingToken
+fun emitNfc(payload: () -> String?): String? {
+	val payloadUpdated = rememberUpdatedState(payload)
 
 	DisposableEffect(Unit) {
 		val id = Any()
-		NfcEmitter.start(id, computeToken)
+		NfcEmitter.start(id) { payloadUpdated.value() }
 		onDispose { NfcEmitter.stop(id) }
 	}
-
-	val token by produceState(initialValue = computeToken()) {
+	
+	val token by produceState(initialValue = payloadUpdated.value()) {
 		while (true) {
 			delaySeconds(TOKEN_REFRESH_SECONDS)
-			value = computeToken()
+			value = payloadUpdated.value()
 		}
 	}
 	return token

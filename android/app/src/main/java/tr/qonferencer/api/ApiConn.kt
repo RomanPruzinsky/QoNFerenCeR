@@ -80,5 +80,8 @@ val QoNFerenCerApi: QoNFerenCeRApiClient by lazy {
 fun parseLoginCredentials(json: String): LoginCredentialsDto? =
 	runCatching { objectMapper.readValue<LoginCredentialsDto>(json) }.getOrNull()
 
+/** @return [this] encoded as login-QR/NFC payload, readable back by [parseLoginCredentials] */
+fun LoginCredentialsDto.formatAsLoginQrJson(): String = objectMapper.writeValueAsString(this)
+
 /////////////////// API ACCESS ///////////////////
 //////////////////////////////////////////////////

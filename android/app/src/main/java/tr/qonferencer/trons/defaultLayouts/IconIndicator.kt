@@ -1,6 +1,7 @@
 package tr.qonferencer.trons.defaultLayouts
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.Icon
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import tr.qonferencer.theme.colors
 import tr.qonferencer.trons.theme.Edge
+import tr.qonferencer.trons.theme.defaultIconSize
 import tr.qonferencer.trons.theme.halfDefaultLayoutPadding
 import tr.qonferencer.trons.theme.specPadding
 
@@ -41,6 +43,7 @@ fun IconIndicator(
 			tint = tint,
 			modifier = Modifier
 				.align(alignment)
+				.size(defaultIconSize)
 				.specPadding(
 					Edge.ALL to
 						if (shouldPaddingate) halfDefaultLayoutPadding

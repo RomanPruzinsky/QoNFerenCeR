@@ -32,6 +32,7 @@ val NavTarget.customColor: Color?
 			QoNFerenCeRDestinations.LOGIN -> colors.action.approve
 			QoNFerenCeRDestinations.USER_CHECK -> colors.level.organiser
 			QoNFerenCeRDestinations.MEAL_SCAN -> colors.level.organiser
+			QoNFerenCeRDestinations.CREATE_SLOT -> colors.level.adminLight
 			else -> null
 		}
 		
