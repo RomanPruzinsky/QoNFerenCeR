@@ -29,7 +29,13 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('meal.breakfast2.name', 'en', 'Breakfast — Day 2'),
 	('meal.lunch2.name',     'en', 'Lunch — Day 2'),
 	('meal.dinner2.name',    'en', 'Dinner — Day 2'),
-	('meal.variant.standard', 'en', 'Standard'),
+	('meal.breakfast3.name', 'en', 'Breakfast — Day 3'),
+	('meal.lunch3.name',     'en', 'Lunch — Day 3'),
+	('meal.dinner3.name',    'en', 'Dinner — Day 3'),
+	('meal.variant.standard',   'en', 'Standard'),
+	('meal.variant.vegetarian', 'en', 'Vegetarian'),
+	('meal.variant.vegan',      'en', 'Vegan'),
+	('meal.variant.glutenFree', 'en', 'Gluten-free'),
 	('settings.appColors',  'en', 'App colors'),
 	('settings.language',   'en', 'Language'),
 	('settings.fontFamily', 'en', 'Font family'),
@@ -97,6 +103,7 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.customData.key',          'en', 'key'),
 	('admin.customData.value',        'en', 'value'),
 	('admin.customData.addField',     'en', 'add field'),
+	('admin.meal.notRegistered',      'en', 'not registered'),
 	-- sk
 	('destination.custom.home',   'sk', 'Domov'),
 	('destination.custom.agenda', 'sk', 'Program'),
@@ -105,7 +112,13 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('meal.breakfast2.name', 'sk', 'Raňajky — deň 2'),
 	('meal.lunch2.name',     'sk', 'Obed — deň 2'),
 	('meal.dinner2.name',    'sk', 'Večera — deň 2'),
-	('meal.variant.standard', 'sk', 'Štandardná'),
+	('meal.breakfast3.name', 'sk', 'Raňajky — deň 3'),
+	('meal.lunch3.name',     'sk', 'Obed — deň 3'),
+	('meal.dinner3.name',    'sk', 'Večera — deň 3'),
+	('meal.variant.standard',   'sk', 'Štandardná'),
+	('meal.variant.vegetarian', 'sk', 'Vegetariánska'),
+	('meal.variant.vegan',      'sk', 'Vegánska'),
+	('meal.variant.glutenFree', 'sk', 'Bezlepková'),
 	('settings.appColors',  'sk', 'Farby aplikácie'),
 	('settings.language',   'sk', 'Jazyk'),
 	('settings.fontFamily', 'sk', 'Rodina písma'),
@@ -171,7 +184,8 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('misc.done',                     'sk', 'hotovo'),
 	('admin.customData.key',          'sk', 'kľúč'),
 	('admin.customData.value',        'sk', 'hodnota'),
-	('admin.customData.addField',     'sk', 'pridať pole')
+	('admin.customData.addField',     'sk', 'pridať pole'),
+	('admin.meal.notRegistered',      'sk', 'neregistrovaný')
 ON CONFLICT (key, lang_code) DO UPDATE SET text = EXCLUDED.text;
 
 -- Meal windows (reservations are imported per-attendee, not seeded here).
@@ -183,7 +197,10 @@ FROM (VALUES
 	('meal.dinner1.name',    '2026-09-01T18:30:00Z', '2026-09-01T20:00:00Z'),
 	('meal.breakfast2.name', '2026-09-02T08:00:00Z', '2026-09-02T09:30:00Z'),
 	('meal.lunch2.name',     '2026-09-02T11:30:00Z', '2026-09-02T13:00:00Z'),
-	('meal.dinner2.name',    '2026-09-02T18:30:00Z', '2026-09-02T20:00:00Z')
+	('meal.dinner2.name',    '2026-09-02T18:30:00Z', '2026-09-02T20:00:00Z'),
+	('meal.breakfast3.name', '2026-09-03T08:00:00Z', '2026-09-03T09:30:00Z'),
+	('meal.lunch3.name',     '2026-09-03T11:30:00Z', '2026-09-03T13:00:00Z'),
+	('meal.dinner3.name',    '2026-09-03T18:30:00Z', '2026-09-03T20:00:00Z')
 ) AS v(name_key, starts_at, ends_at)
 WHERE NOT EXISTS (SELECT 1 FROM meal_window w WHERE w.name_key = v.name_key);
 
@@ -197,7 +214,8 @@ INSERT INTO meal_reservation (user_id, window_id, variant_key)
 SELECT u.id, w.id, 'meal.variant.standard'
 FROM app_user u
 JOIN meal_window w ON w.name_key IN (
-	'meal.lunch1.name', 'meal.dinner1.name', 'meal.breakfast2.name', 'meal.lunch2.name', 'meal.dinner2.name'
+	'meal.lunch1.name', 'meal.dinner1.name', 'meal.breakfast2.name', 'meal.lunch2.name', 'meal.dinner2.name',
+	'meal.breakfast3.name', 'meal.lunch3.name', 'meal.dinner3.name'
 )
 WHERE u.full_name = 'First Admin'
 ON CONFLICT (user_id, window_id) DO NOTHING;

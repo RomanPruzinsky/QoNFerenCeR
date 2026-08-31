@@ -34,9 +34,13 @@ import kotlinx.coroutines.delay
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.screens.admin.CustomDataDisplay
 import tr.qonferencer.screens.admin.CustomDataEditor
+import tr.qonferencer.screens.admin.MealEditor
 import tr.qonferencer.screens.admin.UserLoginCredentialsScreen
+import tr.qonferencer.screens.admin.mealVariantKeys
 import tr.qonferencer.screens.admin.toCustomData
 import tr.qonferencer.screens.admin.toFieldStates
+import tr.qonferencer.screens.admin.toMealFieldStates
+import tr.qonferencer.screens.admin.toMeals
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.shared.enums.Role
@@ -104,6 +108,10 @@ fun UserCheckDetailScreen(
 	val customDataEdit = remember(currentData) { currentData.customData.toFieldStates().toMutableStateList() }
 	
 	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
+	val variantKeys = QoNFerenCeRApp.language.options.collectValue().translations.mealVariantKeys()
+	val mealFieldsEdit = remember(currentData, mealWindows, variantKeys) {
+		mealWindows.toMealFieldStates(currentData.meals, variantKeys)
+	}
 	
 	ConfirmDialog(
 		opened = revokeConfirmOpen,
@@ -165,7 +173,7 @@ fun UserCheckDetailScreen(
 									isSpeaker = isSpeakerEdit.value,
 									canCheckUsers = canCheckUsersEdit.value,
 									canFoodCheck = canFoodCheckEdit.value,
-									meals = currentData.meals,
+									meals = mealFieldsEdit.toMeals(),
 									customData = customDataEdit.toCustomData(),
 								),
 							)
@@ -221,14 +229,23 @@ fun UserCheckDetailScreen(
 				
 				ProfileDisplayRow(dynamicTranslation("user.detail.userId"), currentData.userId.toString())
 				
-				if (currentData.meals.isEmpty()) DefaultWideDivider()
-				else {
-					CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
-						currentData.meals.forEach { meal ->
-							ProfileDisplayRow(
-								label = dynamicTranslation(mealWindows.first { it.id == meal.windowId }.nameKey),
-								value = dynamicTranslation(meal.variantKey),
-							)
+				if (editMode.value) {
+					if (mealWindows.isEmpty()) DefaultWideDivider()
+					else {
+						CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
+							MealEditor(mealFieldsEdit)
+						}
+					}
+				} else {
+					if (currentData.meals.isEmpty()) DefaultWideDivider()
+					else {
+						CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
+							currentData.meals.forEach { meal ->
+								ProfileDisplayRow(
+									label = dynamicTranslation(mealWindows.first { it.id == meal.windowId }.nameKey),
+									value = dynamicTranslation(meal.variantKey),
+								)
+							}
 						}
 					}
 				}

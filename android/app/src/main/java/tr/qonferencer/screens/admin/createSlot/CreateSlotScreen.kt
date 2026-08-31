@@ -16,14 +16,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.screens.admin.CustomDataEditor
 import tr.qonferencer.screens.admin.CustomDataFieldState
+import tr.qonferencer.screens.admin.MealEditor
 import tr.qonferencer.screens.admin.UserLoginCredentialsScreen
+import tr.qonferencer.screens.admin.mealVariantKeys
 import tr.qonferencer.screens.admin.toCustomData
+import tr.qonferencer.screens.admin.toMealFieldStates
+import tr.qonferencer.screens.admin.toMeals
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.CartedGroupBox
 import tr.qonferencer.trons.defaultLayouts.CustomDropdownMenu
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.DefaultWideDivider
@@ -35,6 +41,7 @@ import tr.qonferencer.trons.miscs.cannotBeEmptyToast
 import tr.qonferencer.trons.ops.relist
 import tr.qonferencer.trons.remembers.rememberEmptyString
 import tr.qonferencer.trons.remembers.rememberFalse
+import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.states.dataState.DataStateLayout
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSizeLarge
@@ -70,6 +77,9 @@ private fun CreateSlotForm(onSubmit: (ModifyableUserDataDto) -> Unit) {
 	val canCheckUsers = rememberFalse()
 	val canFoodCheck = rememberFalse()
 	val customFields = remember { mutableStateListOf<CustomDataFieldState>() }
+	val mealWindows = QoNFerenCeRApp.mealWindows.windows.collectValue()
+	val variantKeys = QoNFerenCeRApp.language.options.collectValue().translations.mealVariantKeys()
+	val mealFields = remember(mealWindows, variantKeys) { mealWindows.toMealFieldStates(emptyList(), variantKeys) }
 	
 	ScrollableColumn(
 		modifier = Modifier
@@ -98,6 +108,12 @@ private fun CreateSlotForm(onSubmit: (ModifyableUserDataDto) -> Unit) {
 		ProfileToggleRow(dynamicTranslation("user.detail.canCheckUsers"), canCheckUsers)
 		ProfileToggleRow(dynamicTranslation("user.detail.canFoodCheck"), canFoodCheck)
 		
+		if (mealWindows.isNotEmpty()) {
+			CartedGroupBox(indicatorText = dynamicTranslation("user.detail.mealsIntro")) {
+				MealEditor(mealFields)
+			}
+		}
+		
 		DefaultWideDivider()
 		CustomDataEditor(fields = customFields)
 		
@@ -121,7 +137,7 @@ private fun CreateSlotForm(onSubmit: (ModifyableUserDataDto) -> Unit) {
 							isSpeaker = isSpeaker.value,
 							canCheckUsers = canCheckUsers.value,
 							canFoodCheck = canFoodCheck.value,
-							meals = emptyList(),
+							meals = mealFields.toMeals(),
 							customData = customFields.toCustomData(),
 						),
 					)
