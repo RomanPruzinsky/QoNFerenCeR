@@ -22,20 +22,23 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-/** Live camera preview that decodes QR code and reports it via [onDecode] */
+/** Live camera preview that decodes [format] and reports value plus format via [onDecode] */
 @OptIn(ExperimentalGetImage::class)
 @Composable
-fun QrScannerView(onDecode: (String) -> Unit) {
+fun QrScannerView(
+	format: Int = Barcode.FORMAT_QR_CODE,
+	onDecode: (value: String, format: Int) -> Unit,
+) {
 	val context = LocalContext.current
 	val lifecycleOwner = LocalLifecycleOwner.current
 	val scanner = remember {
-		BarcodeScanning.getClient(BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build())
+		BarcodeScanning.getClient(BarcodeScannerOptions.Builder().setBarcodeFormats(format).build())
 	}
-
+	
 	val scanExecutorService = remember { Executors.newSingleThreadExecutor() }
 	val scanExecutor = remember { Executor { command -> runCatching { scanExecutorService.execute(command) } } }
 	var hasDecoded = false
-
+	
 	val cameraController = remember {
 		LifecycleCameraController(context).apply {
 			setEnabledUseCases(CameraController.IMAGE_ANALYSIS)
@@ -47,21 +50,22 @@ fun QrScannerView(onDecode: (String) -> Unit) {
 					imageProxy.close()
 					return@setImageAnalysisAnalyzer
 				}
-
+				
 				val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 				scanner.process(image)
 					.addOnSuccessListener(scanExecutor) { barcodes ->
 						if (hasDecoded) return@addOnSuccessListener
-						val value = barcodes.firstOrNull()?.rawValue ?: return@addOnSuccessListener
+						val barcode = barcodes.firstOrNull() ?: return@addOnSuccessListener
+						val value = barcode.rawValue ?: return@addOnSuccessListener
 						hasDecoded = true
-						onDecode(value)
+						onDecode(value, barcode.format)
 					}
 					.addOnCompleteListener(scanExecutor) { imageProxy.close() }
 			}
 			bindToLifecycle(lifecycleOwner)
 		}
 	}
-
+	
 	DisposableEffect(Unit) {
 		onDispose {
 			cameraController.unbind()
@@ -69,7 +73,7 @@ fun QrScannerView(onDecode: (String) -> Unit) {
 			scanExecutorService.shutdown()
 		}
 	}
-
+	
 	AndroidView(
 		modifier = Modifier.fillMaxSize(),
 		factory = { PreviewView(it).apply { controller = cameraController } },

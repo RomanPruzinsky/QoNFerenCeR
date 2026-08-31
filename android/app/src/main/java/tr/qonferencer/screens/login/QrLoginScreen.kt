@@ -47,7 +47,7 @@ fun QrLoginScreen(onDecode: (String) -> Unit) {
 		onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
 	}
 
-	if (hasCameraPermission) QrScannerView(onDecode = onDecode)
+	if (hasCameraPermission) QrScannerView(onDecode = { value, _ -> onDecode(value) })
 	else {
 		Text(
 			text = dynamicTranslation("login.state.cameraDenied"),

@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.mlkit.vision.barcode.common.Barcode
 import tr.qonferencer.QoNFerenCeRApp
 import tr.qonferencer.nfc.ScanNfc
 import tr.qonferencer.screens.keyInputMethod.KeyInputMethod
@@ -69,9 +70,13 @@ fun MealScanScreen() {
 	if (isQrScannerOpen) {
 		BackHandler { isQrScannerOpen = false }
 		QrScannerView(
-			onDecode = { token ->
+			format = Barcode.FORMAT_ALL_FORMATS,
+			onDecode = { token, format ->
 				isQrScannerOpen = false
-				mealScanVM.scan(token, ScannerType.QR)
+				val scannerType =
+					if (format == Barcode.FORMAT_QR_CODE) ScannerType.QR
+					else ScannerType.BARCODE
+				mealScanVM.scan(token, scannerType)
 			},
 		)
 		return
