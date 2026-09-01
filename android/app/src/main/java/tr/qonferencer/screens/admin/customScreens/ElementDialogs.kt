@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.TableRows
 import androidx.compose.material.icons.filled.TextFields
@@ -35,15 +33,16 @@ import tr.qonferencer.shared.enums.CustomTextSize
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.ApproveIconButton
 import tr.qonferencer.trons.defaultLayouts.CardLayout
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
+import tr.qonferencer.trons.defaultLayouts.DeleteIconButton
 import tr.qonferencer.trons.defaultLayouts.DialogFullWidth
 import tr.qonferencer.trons.defaultLayouts.defaultHorizontalSpacing
 import tr.qonferencer.trons.miscs.EMPTY_STRING
 import tr.qonferencer.trons.remembers.rememberString
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSize
-import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 import tr.qonferencer.trons.theme.halfDefaultLayoutPadding
@@ -152,18 +151,12 @@ fun ElementEditDialog(
 				is CustomElement.Column -> ElementKindLabel(ElementKind.COLUMN)
 			}
 
-			Icon(
-				imageVector = Icons.Default.Delete,
+			DeleteIconButton(
 				contentDescription = "delete element",
-				tint = colors.text,
 				modifier = Modifier
 					.align(Alignment.End)
-					.defaultLayoutPadding()
-					.defaultClip()
-					.background(colors.action.delete)
-					.clickable(onClick = onDelete)
-					.defaultTextPadding()
-					.size(defaultIconSizeLarge),
+					.defaultLayoutPadding(),
+				onClick = onDelete,
 			)
 		}
 	}
@@ -257,17 +250,11 @@ private fun ColumnScope.ImageElementForm(
 
 @Composable
 private fun ColumnScope.ApproveButton(onClick: () -> Unit) {
-	Icon(
-		imageVector = Icons.Default.Check,
+	ApproveIconButton(
 		contentDescription = "approve",
-		tint = colors.text,
 		modifier = Modifier
 			.defaultLayoutPadding()
-			.align(Alignment.End)
-			.defaultClip()
-			.background(colors.action.approve)
-			.clickable(onClick = onClick)
-			.defaultTextPadding()
-			.size(defaultIconSizeLarge),
+			.align(Alignment.End),
+		onClick = onClick,
 	)
 }

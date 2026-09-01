@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,6 +26,7 @@ import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.translations.rawDynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.ApproveIconButton
 import tr.qonferencer.trons.defaultLayouts.CardLayout
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.DialogFullWidth
@@ -41,7 +41,6 @@ import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.states.dataState.DataStateLayout
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSize
-import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 
@@ -134,30 +133,23 @@ fun CustomScreensPickerScreen() {
 							modifier = Modifier.fillMaxWidth(),
 						)
 
-						Icon(
-							imageVector = Icons.Default.Check,
+						ApproveIconButton(
 							contentDescription = "create custom screen",
-							tint = colors.text,
-							modifier = Modifier
-								.defaultLayoutPadding()
-								.defaultClip()
-								.background(colors.action.approve)
-								.clickable {
-									val trimmedId = newId.value.trim()
-									if (trimmedId.isBlank()) {
-										cannotBeEmptyToast(context)
-										return@clickable
-									}
-									if (screens.any { it.id == trimmedId }) {
-										Toast.short(context, rawDynamicTranslation("admin.customScreen.idTaken"))
-										return@clickable
-									}
-									screensVM.create(trimmedId)
-									showNewScreenDialog.value = false
-									newId.clear()
+							modifier = Modifier.defaultLayoutPadding(),
+							onClick = {
+								val trimmedId = newId.value.trim()
+								if (trimmedId.isBlank()) {
+									cannotBeEmptyToast(context)
+									return@ApproveIconButton
 								}
-								.defaultTextPadding()
-								.size(defaultIconSizeLarge),
+								if (screens.any { it.id == trimmedId }) {
+									Toast.short(context, rawDynamicTranslation("admin.customScreen.idTaken"))
+									return@ApproveIconButton
+								}
+								screensVM.create(trimmedId)
+								showNewScreenDialog.value = false
+								newId.clear()
+							},
 						)
 					}
 				}

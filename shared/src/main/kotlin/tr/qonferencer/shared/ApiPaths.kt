@@ -36,6 +36,10 @@ object ApiPaths {
 			const val ROOT = "${Admin.ROOT}/custom-screens"
 			const val BY_ID = "$ROOT/{id}"
 		}
+
+		object Translations {
+			const val ROOT = "${Admin.ROOT}/translations"
+		}
 	}
 
 	object Meal {
@@ -44,6 +48,4 @@ object ApiPaths {
 		const val MEAL_SCAN = "$ROOT/scan"
 		const val MEAL_COUNTS = "$ROOT/counts/{windowId}"
 	}
-
-	// TODO: translations management
 }

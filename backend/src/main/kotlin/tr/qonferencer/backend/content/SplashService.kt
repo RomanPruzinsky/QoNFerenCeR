@@ -11,6 +11,7 @@ import tr.qonferencer.backend.meal.toUserMealEntry
 import tr.qonferencer.backend.n8n.OutboundEvent
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.backend.user.UserAnchorService
+import tr.qonferencer.shared.dtos.AllTranslationsDto
 import tr.qonferencer.shared.dtos.SplashDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 
@@ -60,8 +61,7 @@ class SplashService(
 		check(gaps.isEmpty()) { "translations missing lang(s) for keys: $gaps" }
 		
 		return SplashDto(
-			languages = allLanguages,
-			translations = allTranslations.map { it.toDto() },
+			translations = AllTranslationsDto(languages = allLanguages, translations = allTranslations.map { it.toDto() }),
 			customScreens = screens.findAll(Sort.by(CustomScreen::id.name))
 				.filter { meRole.atLeast(it.minRole) }
 				.map { it.toDto() },

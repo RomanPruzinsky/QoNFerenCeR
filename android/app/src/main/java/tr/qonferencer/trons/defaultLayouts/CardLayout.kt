@@ -44,6 +44,8 @@ val PADS_TEXT = arrayOf(
  *
  * Body is stored inside [Column]
  *
+ * !! IMPORTANT !! - When [body] is clickable, use `innerPads = PADS_NONE`
+ *
  * @param modifier [Modifier] applied to parent
  * @param outerPads Optional array of [Pair]<[Edge], [Dp]> for padding around [Card]
  * @param innerPads Optional array of [Pair]<[Edge], [Dp]> for padding of [Card]'s body

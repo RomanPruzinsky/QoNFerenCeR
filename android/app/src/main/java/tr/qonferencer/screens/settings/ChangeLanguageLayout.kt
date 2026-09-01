@@ -25,7 +25,6 @@ fun ChangeLanguageLayout() {
 			options = availableLanguages.relist { it.name },
 			selected = selectedIndex,
 			expanded = isSelectionExpanded,
-			arrowAtStart = false,
 			selectedColor = colors.clickable,
 			additiveOnClickAction = {
 				availableLanguages.getOrNull(selectedIndex.intValue)?.let {

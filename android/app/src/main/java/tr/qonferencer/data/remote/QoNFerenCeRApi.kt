@@ -10,6 +10,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import tr.qonferencer.shared.ApiPaths
+import tr.qonferencer.shared.dtos.AllTranslationsDto
 import tr.qonferencer.shared.dtos.CustomElement
 import tr.qonferencer.shared.dtos.CustomScreenAdminDto
 import tr.qonferencer.shared.dtos.LoginCredentialsDto
@@ -73,6 +74,12 @@ interface QoNFerenCeRApi {
 
 		@DELETE(ApiPaths.Admin.CustomScreens.BY_ID)
 		suspend fun deleteCustomScreen(@Path("id") id: String): Response<Unit>
+
+		@GET(ApiPaths.Admin.Translations.ROOT)
+		suspend fun getTranslations(): AllTranslationsDto
+
+		@PUT(ApiPaths.Admin.Translations.ROOT)
+		suspend fun setTranslations(@Body request: AllTranslationsDto): AllTranslationsDto
 
 		@POST(ApiPaths.Admin.LOGIN)
 		suspend fun login(@Path("userId") userId: Long): LoginCredentialsDto

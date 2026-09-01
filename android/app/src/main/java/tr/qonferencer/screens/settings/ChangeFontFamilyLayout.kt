@@ -23,7 +23,6 @@ fun ChangeFontFamilyLayout() {
 			selected = selectedIndex,
 			expanded = isSelectionExpanded,
 			specialFont = AvailableFonts.entries.relist { it.family },
-			arrowAtStart = false,
 			selectedColor = colors.clickable,
 			additiveOnClickAction = {
 				QoNFerenCeRApp.themePrefs.font.setFont(AvailableFonts.entries[selectedIndex.intValue])

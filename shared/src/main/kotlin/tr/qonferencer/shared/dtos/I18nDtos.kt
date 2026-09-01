@@ -23,3 +23,13 @@ data class TranslationDto(
 	val langCode: String,
 	val text: String,
 )
+
+/**
+ * Whole translation state: splash reads it, admin edits it
+ * @property languages All configured languages
+ * @property translations All key+language translation entries
+ */
+data class AllTranslationsDto(
+	val languages: List<LanguageDto>,
+	val translations: List<TranslationDto>,
+)

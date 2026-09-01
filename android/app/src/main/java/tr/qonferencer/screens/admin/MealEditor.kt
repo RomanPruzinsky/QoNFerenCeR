@@ -64,7 +64,6 @@ fun MealEditor(fields: List<MealFieldState>) {
 					field.variantKeys.relistC { dynamicTranslation(it) },
 				selected = field.selectedIndex,
 				expanded = field.expanded,
-				arrowAtStart = false,
 				selectedColor = colors.clickable,
 			)
 		}

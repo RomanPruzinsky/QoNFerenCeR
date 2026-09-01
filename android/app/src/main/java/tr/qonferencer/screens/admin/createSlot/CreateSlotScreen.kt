@@ -1,13 +1,7 @@
 package tr.qonferencer.screens.admin.createSlot
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -29,6 +23,7 @@ import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.ApproveIconButton
 import tr.qonferencer.trons.defaultLayouts.CartedGroupBox
 import tr.qonferencer.trons.defaultLayouts.CustomDropdownMenu
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
@@ -43,10 +38,7 @@ import tr.qonferencer.trons.remembers.rememberEmptyString
 import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.states.collectValue
 import tr.qonferencer.trons.states.dataState.DataStateLayout
-import tr.qonferencer.trons.theme.defaultClip
-import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
-import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
 fun CreateSlotScreen() {
@@ -100,7 +92,6 @@ private fun CreateSlotForm(onSubmit: (ModifyableUserDataDto) -> Unit) {
 				options = Role.entries.relist { it.name },
 				selected = roleIndex,
 				expanded = roleExpanded,
-				arrowAtStart = false,
 				selectedColor = colors.clickable,
 			)
 		}
@@ -116,34 +107,27 @@ private fun CreateSlotForm(onSubmit: (ModifyableUserDataDto) -> Unit) {
 		
 		DefaultWideDivider()
 		CustomDataEditor(fields = customFields)
-		
-		Icon(
-			imageVector = Icons.Default.Check,
+
+		ApproveIconButton(
 			contentDescription = "create slot",
-			tint = colors.text,
-			modifier = Modifier
-				.align(Alignment.End)
-				.defaultClip()
-				.background(colors.action.approve)
-				.clickable {
-					if (fullName.value.isBlank()) {
-						cannotBeEmptyToast(context)
-						return@clickable
-					}
-					onSubmit(
-						ModifyableUserDataDto(
-							fullName = fullName.value.trim(),
-							role = Role.fromIndex(roleIndex.intValue),
-							isSpeaker = isSpeaker.value,
-							canCheckUsers = canCheckUsers.value,
-							canFoodCheck = canFoodCheck.value,
-							meals = mealFields.toMeals(),
-							customData = customFields.toCustomData(),
-						),
-					)
+			modifier = Modifier.align(Alignment.End),
+			onClick = {
+				if (fullName.value.isBlank()) {
+					cannotBeEmptyToast(context)
+					return@ApproveIconButton
 				}
-				.defaultTextPadding()
-				.size(defaultIconSizeLarge),
+				onSubmit(
+					ModifyableUserDataDto(
+						fullName = fullName.value.trim(),
+						role = Role.fromIndex(roleIndex.intValue),
+						isSpeaker = isSpeaker.value,
+						canCheckUsers = canCheckUsers.value,
+						canFoodCheck = canFoodCheck.value,
+						meals = mealFields.toMeals(),
+						customData = customFields.toCustomData(),
+					),
+				)
+			},
 		)
 	}
 }

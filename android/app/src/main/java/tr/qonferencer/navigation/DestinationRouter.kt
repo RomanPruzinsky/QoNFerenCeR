@@ -8,10 +8,12 @@ import tr.qonferencer.navigation.QoNFerenCeRDestinations.LOGIN
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.MEAL_SCAN
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.MY_PROFILE
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.SETTINGS
+import tr.qonferencer.navigation.QoNFerenCeRDestinations.TRANSLATIONS
 import tr.qonferencer.navigation.QoNFerenCeRDestinations.USER_CHECK
 import tr.qonferencer.screens.aboutApp.AboutAppScreen
 import tr.qonferencer.screens.admin.createSlot.CreateSlotScreen
 import tr.qonferencer.screens.admin.customScreens.CustomScreensPickerScreen
+import tr.qonferencer.screens.admin.translations.TranslationsScreen
 import tr.qonferencer.screens.login.LoginScreen
 import tr.qonferencer.screens.mealScan.MealScanScreen
 import tr.qonferencer.screens.myProfile.MyProfileScreen
@@ -29,4 +31,5 @@ fun QoNFerenCeRDestinations.ProcessScreen(): Unit = when (this) {
 	MEAL_SCAN -> MealScanScreen()
 	CREATE_SLOT -> CreateSlotScreen()
 	CUSTOM_SCREENS -> CustomScreensPickerScreen()
+	TRANSLATIONS -> TranslationsScreen()
 }

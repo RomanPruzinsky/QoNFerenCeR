@@ -207,7 +207,6 @@ fun UserCheckDetailScreen(
 							options = Role.entries.relist { it.name },
 							selected = roleIndex,
 							expanded = roleExpanded,
-							arrowAtStart = false,
 							selectedColor = colors.clickable,
 						)
 					}

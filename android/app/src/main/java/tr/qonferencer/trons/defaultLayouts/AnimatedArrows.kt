@@ -50,7 +50,7 @@ fun AnimatedArrows(
 				}
 			}
 		}
-		
+
 		AnimatedVisibilityText(true)
 		AnimatedVisibilityText(false)
 	}

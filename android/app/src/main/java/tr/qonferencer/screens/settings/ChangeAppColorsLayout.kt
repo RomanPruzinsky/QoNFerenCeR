@@ -22,7 +22,6 @@ fun ChangeAppColorsLayout() {
 			options = AppColorsOptions.entries.relist { it.name.replace("_", " ") },
 			selected = selectedIndex,
 			expanded = isSelectionExpanded,
-			arrowAtStart = false,
 			selectedColor = colors.clickable,
 			additiveOnClickAction = {
 				QoNFerenCeRApp.themePrefs.colors.setColors(AppColorsOptions.entries[selectedIndex.intValue])

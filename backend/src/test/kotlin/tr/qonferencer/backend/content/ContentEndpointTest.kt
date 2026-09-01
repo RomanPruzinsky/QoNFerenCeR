@@ -37,7 +37,7 @@ class ContentEndpointTest {
 		mockMvc.get("/api/v1/splash").andExpect {
 			status { isOk() }
 			header { exists("ETag") }
-			jsonPath("$.languages[0].code") { value("en") }
+			jsonPath("$.translations.languages[0].code") { value("en") }
 			jsonPath("$.customScreens.length()") { value(1) }
 			jsonPath("$.customScreens[0].id") { value("home") }
 			jsonPath("$.mealWindows[0].nameKey") { value("meal.lunch1.name") }

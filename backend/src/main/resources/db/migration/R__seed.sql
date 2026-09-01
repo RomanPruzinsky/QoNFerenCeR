@@ -114,6 +114,7 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.customScreen.titleKey',      'en', 'title key'),
 	('admin.customScreen.icon',          'en', 'icon'),
 	('admin.customScreen.minRole',       'en', 'min role to see'),
+	('admin.customScreen.startingScreen', 'en', 'starting screen'),
 	('admin.customScreen.element.text',   'en', 'Text'),
 	('admin.customScreen.element.image',  'en', 'Image'),
 	('admin.customScreen.element.row',    'en', 'Row'),
@@ -126,6 +127,14 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.customScreen.text.size.medium', 'en', 'medium'),
 	('admin.customScreen.text.size.large',  'en', 'large'),
 	('admin.customScreen.image.url', 'en', 'image URL'),
+	('destination.translations',              'en', 'Translations'),
+	('admin.translations.langCode',           'en', 'language code'),
+	('admin.translations.langName',           'en', 'language name'),
+	('admin.translations.key',                'en', 'translation key'),
+	('admin.translations.missing',            'en', 'missing translation'),
+	('admin.translations.codeTaken',          'en', 'code already taken'),
+	('admin.translations.keyTaken',           'en', 'key already taken'),
+	('admin.translations.needDefaultLanguage', 'en', 'cannot delete default language'),
 	-- sk
 	('destination.custom.home',   'sk', 'Domov'),
 	('destination.custom.agenda', 'sk', 'Program'),
@@ -218,6 +227,7 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.customScreen.titleKey',      'sk', 'kľúč názvu'),
 	('admin.customScreen.icon',          'sk', 'ikona'),
 	('admin.customScreen.minRole',       'sk', 'min. rola na zobrazenie'),
+	('admin.customScreen.startingScreen', 'sk', 'úvodná obrazovka'),
 	('admin.customScreen.element.text',   'sk', 'Text'),
 	('admin.customScreen.element.image',  'sk', 'Obrázok'),
 	('admin.customScreen.element.row',    'sk', 'Riadok'),
@@ -229,7 +239,15 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.customScreen.text.size.small',  'sk', 'malé'),
 	('admin.customScreen.text.size.medium', 'sk', 'stredné'),
 	('admin.customScreen.text.size.large',  'sk', 'veľké'),
-	('admin.customScreen.image.url', 'sk', 'URL obrázka')
+	('admin.customScreen.image.url', 'sk', 'URL obrázka'),
+	('destination.translations',              'sk', 'Preklady'),
+	('admin.translations.langCode',           'sk', 'kód jazyka'),
+	('admin.translations.langName',           'sk', 'názov jazyka'),
+	('admin.translations.key',                'sk', 'prekladový kľúč'),
+	('admin.translations.missing',            'sk', 'chýbajúci preklad'),
+	('admin.translations.codeTaken',          'sk', 'kód je už obsadený'),
+	('admin.translations.keyTaken',           'sk', 'kľúč je už obsadený'),
+	('admin.translations.needDefaultLanguage', 'sk', 'predvolený jazyk nemožno zmazať')
 ON CONFLICT (key, lang_code) DO UPDATE SET text = EXCLUDED.text;
 
 -- Meal windows (reservations are imported per-attendee, not seeded here).

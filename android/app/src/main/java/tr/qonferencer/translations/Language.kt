@@ -55,7 +55,7 @@ class Language(
 	val current: StateFlow<String?> = _current.asStateFlow()
 	
 	fun setNewData(splash: SplashDto) {
-		val newState = TranslationState(splash.languages, splash.translations)
+		val newState = TranslationState(splash.translations.languages, splash.translations.translations)
 		_options.value = newState
 		prefsStorager.putString(PrefKey.TRANSLATIONS, mapper.writeValueAsString(newState))
 		if (_current.value == null) newState.defaultLangCode?.let { select(it) }

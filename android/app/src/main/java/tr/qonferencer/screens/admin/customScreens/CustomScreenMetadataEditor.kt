@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +23,7 @@ import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.ApproveIconButton
 import tr.qonferencer.trons.defaultLayouts.CustomDropdownMenu
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.ProfileEditRow
@@ -42,9 +41,7 @@ import tr.qonferencer.trons.states.StateIndicator
 import tr.qonferencer.trons.states.dataState.DataStateLayout
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSize
-import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
-import tr.qonferencer.trons.theme.defaultTextPadding
 import tr.qonferencer.trons.theme.orTransparentIf
 
 @Composable
@@ -104,7 +101,6 @@ fun CustomScreenMetadataEditor(screen: CustomScreenAdminDto) {
 							options = Role.entries.relist { it.name },
 							selected = roleIndex,
 							expanded = rememberFalse(),
-							arrowAtStart = false,
 							selectedColor = colors.clickable,
 						)
 					}
@@ -112,26 +108,19 @@ fun CustomScreenMetadataEditor(screen: CustomScreenAdminDto) {
 
 				ProfileToggleRow(dynamicTranslation("admin.customScreen.startingScreen"), isStartingScreen)
 
-				Icon(
-					imageVector = Icons.Default.Check,
+				ApproveIconButton(
 					contentDescription = "save custom screen metadata",
-					tint = colors.text,
-					modifier = Modifier
-						.align(Alignment.End)
-						.defaultClip()
-						.background(colors.action.approve)
-						.clickable {
-							screensVM.save(
-								screen.copy(
-									titleKey = titleKey.value.trim(),
-									icon = navIcon.value,
-									minRole = if (isStartingScreen.value) Role.ANONYM else Role.fromIndex(roleIndex.intValue),
-									isStartingScreen = isStartingScreen.value,
-								),
-							)
-						}
-						.defaultTextPadding()
-						.size(defaultIconSizeLarge),
+					modifier = Modifier.align(Alignment.End),
+					onClick = {
+						screensVM.save(
+							screen.copy(
+								titleKey = titleKey.value.trim(),
+								icon = navIcon.value,
+								minRole = if (isStartingScreen.value) Role.ANONYM else Role.fromIndex(roleIndex.intValue),
+								isStartingScreen = isStartingScreen.value,
+							),
+						)
+					},
 				)
 			}
 		},

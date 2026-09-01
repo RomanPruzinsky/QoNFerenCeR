@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.ui.graphics.vector.ImageVector
 import tr.qonferencer.shared.enums.Role
 
@@ -29,6 +30,7 @@ enum class QoNFerenCeRDestinations(
 	MEAL_SCAN(Role.VOLUNTEER, "destination.mealScan", Icons.Default.Restaurant),
 	CREATE_SLOT(Role.ADMIN, "destination.createSlot", Icons.Default.PersonAdd),
 	CUSTOM_SCREENS(Role.ADMIN, "destination.customScreens", Icons.Default.Dashboard),
+	TRANSLATIONS(Role.ADMIN, "destination.translations", Icons.Default.Translate),
 	SETTINGS(Role.ANONYM, "destination.settings", Icons.Default.Settings),
 	LOGIN(Role.ANONYM, "destination.login", Icons.Default.QrCode),
 	;
