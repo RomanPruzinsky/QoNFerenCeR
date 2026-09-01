@@ -42,7 +42,6 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('settings.fontSize',   'en', 'Text size'),
 	('user.detail.logout',  'en', 'Logout'),
 	-- app chrome (system labels — also translation-keyed, not compiled resources)
-	('destination.home',      'en', 'Home'),
 	('destination.login',     'en', 'Login'),
 	('destination.settings',  'en', 'Settings'),
 	('destination.myProfile', 'en', 'My profile'),
@@ -147,7 +146,6 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('settings.fontFamily', 'sk', 'Rodina písma'),
 	('settings.fontSize',   'sk', 'Veľkosť textu'),
 	('user.detail.logout',  'sk', 'Odhlásiť sa'),
-	('destination.home',      'sk', 'Domov'),
 	('destination.login',     'sk', 'Prihlásenie'),
 	('destination.settings',  'sk', 'Nastavenia'),
 	('destination.myProfile', 'sk', 'Môj profil'),

@@ -49,12 +49,17 @@ import tr.qonferencer.trons.theme.specPadding
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppLayout() {
-	val startTarget = NavTarget.Fixed(QoNFerenCeRDestinations.startDest)
-	var currentTarget by remember { mutableStateOf<NavTarget>(startTarget) }
+	val customScreens = QoNFerenCeRApp.customScreens.screens.collectValue()
+	val startTarget = remember(customScreens) {
+		val customStarting = customScreens.firstOrNull { it.isStartingScreen }
+
+		if (customStarting != null) NavTarget.Custom(customStarting)
+		else NavTarget.Fixed(QoNFerenCeRDestinations.startDest)
+	}
+	var currentTarget by remember { mutableStateOf(startTarget) }
 	val coroutineScope = rememberCoroutineScope()
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-	val customScreens = QoNFerenCeRApp.customScreens.screens.collectValue()
 	val currentUser = QoNFerenCeRApp.currentUser.details.collectValue()
 	val currentRole = UserDetailDto.roleOrAnonym(currentUser)
 

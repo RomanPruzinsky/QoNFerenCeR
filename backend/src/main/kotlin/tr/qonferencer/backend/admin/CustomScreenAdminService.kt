@@ -3,12 +3,14 @@ package tr.qonferencer.backend.admin
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.admin.CustomScreenAdminService.Companion.bodyType
 import tr.qonferencer.backend.common.notFound
 import tr.qonferencer.backend.content.CustomScreen
 import tr.qonferencer.backend.content.CustomScreenRepository
 import tr.qonferencer.shared.dtos.CustomElement
 import tr.qonferencer.shared.dtos.CustomScreenAdminDto
+import tr.qonferencer.shared.enums.Role
 
 /** Admin CRUD over custom screens */
 @Service
@@ -18,10 +20,23 @@ class CustomScreenAdminService(
 ) {
 	fun list(): List<CustomScreenAdminDto> = screens.findAll().sortedBy { it.id }.map { it.toAdminDto() }
 
+	@Transactional
 	fun upsert(
 		id: String,
 		req: CustomScreenAdminDto,
-	): CustomScreenAdminDto = screens.save(req.copy(id = id).toEntity()).toAdminDto()
+	): CustomScreenAdminDto {
+		if (!req.isStartingScreen) return screens.save(req.copy(id = id).toEntity()).toAdminDto()
+
+		unsetOtherStartingScreens(except = id)
+		return screens.save(req.copy(id = id, minRole = Role.ANONYM).toEntity()).toAdminDto()
+	}
+
+	/** Enforces at most one starting screen */
+	private fun unsetOtherStartingScreens(except: String) {
+		val others = screens.findAll().filter { it.id != except && it.isStartingScreen }
+		others.forEach { it.isStartingScreen = false }
+		screens.saveAll(others)
+	}
 
 	fun delete(id: String) {
 		findScreenOrThrow(id)
@@ -36,6 +51,7 @@ class CustomScreenAdminService(
 		titleKey = titleKey,
 		icon = icon,
 		minRole = minRole,
+		isStartingScreen = isStartingScreen,
 		body = objectMapper.readValue(body, bodyType),
 	)
 
@@ -44,6 +60,7 @@ class CustomScreenAdminService(
 		titleKey = titleKey,
 		minRole = minRole,
 		icon = icon,
+		isStartingScreen = isStartingScreen,
 		body = body.toBodyJson(),
 	)
 

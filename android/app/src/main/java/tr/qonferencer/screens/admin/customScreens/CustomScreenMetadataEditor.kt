@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,16 +23,19 @@ import tr.qonferencer.navigation.navIcons
 import tr.qonferencer.shared.dtos.CustomScreenAdminDto
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.colors
+import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.trons.defaultLayouts.CustomDropdownMenu
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.ProfileEditRow
+import tr.qonferencer.trons.defaultLayouts.ProfileToggleRow
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.defaultLayouts.TransparentGroupBox
 import tr.qonferencer.trons.defaultLayouts.defaultSpacing
 import tr.qonferencer.trons.miscs.DEFAULT_STATE_CHANGE_DELAY_SECS
 import tr.qonferencer.trons.miscs.DefaultSay
 import tr.qonferencer.trons.ops.relist
+import tr.qonferencer.trons.remembers.rememberBool
 import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.remembers.rememberString
 import tr.qonferencer.trons.states.StateIndicator
@@ -50,6 +54,7 @@ fun CustomScreenMetadataEditor(screen: CustomScreenAdminDto) {
 	val titleKey = rememberString(screen.titleKey)
 	val navIcon = rememberString(screen.icon)
 	val roleIndex = remember { mutableIntStateOf(screen.minRole.ordinal) }
+	val isStartingScreen = rememberBool(screen.isStartingScreen)
 
 	DataStateLayout(
 		stateFlow = screensVM.saveState,
@@ -92,14 +97,20 @@ fun CustomScreenMetadataEditor(screen: CustomScreenAdminDto) {
 					}
 				}
 				ProfileEditRow(dynamicTranslation("admin.customScreen.minRole")) {
-					CustomDropdownMenu(
-						options = Role.entries.relist { it.name },
-						selected = roleIndex,
-						expanded = rememberFalse(),
-						arrowAtStart = false,
-						selectedColor = colors.clickable,
-					)
+					if (isStartingScreen.value) {
+						Text(text = Role.ANONYM.name, style = typo.labelMedium)
+					} else {
+						CustomDropdownMenu(
+							options = Role.entries.relist { it.name },
+							selected = roleIndex,
+							expanded = rememberFalse(),
+							arrowAtStart = false,
+							selectedColor = colors.clickable,
+						)
+					}
 				}
+
+				ProfileToggleRow(dynamicTranslation("admin.customScreen.startingScreen"), isStartingScreen)
 
 				Icon(
 					imageVector = Icons.Default.Check,
@@ -114,7 +125,8 @@ fun CustomScreenMetadataEditor(screen: CustomScreenAdminDto) {
 								screen.copy(
 									titleKey = titleKey.value.trim(),
 									icon = navIcon.value,
-									minRole = Role.fromIndex(roleIndex.intValue),
+									minRole = if (isStartingScreen.value) Role.ANONYM else Role.fromIndex(roleIndex.intValue),
+									isStartingScreen = isStartingScreen.value,
 								),
 							)
 						}

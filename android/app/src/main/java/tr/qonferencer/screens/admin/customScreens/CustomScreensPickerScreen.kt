@@ -3,6 +3,7 @@ package tr.qonferencer.screens.admin.customScreens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,19 +81,30 @@ fun CustomScreensPickerScreen() {
 								.fillMaxWidth()
 								.clickable { screensVM.select(screen) }
 								.defaultLayoutPadding(),
+							horizontalArrangement = Arrangement.SpaceBetween,
 							verticalAlignment = Alignment.CenterVertically,
 						) {
-							Icon(
-								imageVector = iconFrom(screen.icon),
-								contentDescription = screen.id,
-								tint = colors.text,
-								modifier = Modifier.size(defaultIconSize),
-							)
-							Text(
-								text = dynamicTranslation(screen.titleKey).ifBlank { screen.id },
-								style = typo.labelLarge,
-								modifier = Modifier.defaultTextPadding(),
-							)
+							Row(verticalAlignment = Alignment.CenterVertically) {
+								Icon(
+									imageVector = iconFrom(screen.icon),
+									contentDescription = screen.id,
+									tint = colors.text,
+									modifier = Modifier.size(defaultIconSize),
+								)
+								Text(
+									text = dynamicTranslation(screen.titleKey).ifBlank { screen.id },
+									style = typo.labelLarge,
+									modifier = Modifier.defaultTextPadding(),
+								)
+							}
+							if (screen.isStartingScreen) {
+								Icon(
+									imageVector = Icons.Default.Home,
+									contentDescription = "starting screen",
+									tint = colors.level.leader,
+									modifier = Modifier.size(defaultIconSize),
+								)
+							}
 						}
 					}
 				}

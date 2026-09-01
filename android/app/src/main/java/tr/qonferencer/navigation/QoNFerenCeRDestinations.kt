@@ -3,7 +3,6 @@ package tr.qonferencer.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
@@ -25,7 +24,6 @@ enum class QoNFerenCeRDestinations(
 	val icon: ImageVector,
 ) {
 	MY_PROFILE(Role.VISITOR, "destination.myProfile", Icons.Default.Person),
-	HOME(Role.ANONYM, "destination.home", Icons.Default.Home),
 	ABOUT_APP(Role.ANONYM, "destination.aboutApp", Icons.Default.Info),
 	USER_CHECK(Role.ORGANISER, "destination.userCheck", Icons.Default.Badge),
 	MEAL_SCAN(Role.VOLUNTEER, "destination.mealScan", Icons.Default.Restaurant),
@@ -36,7 +34,7 @@ enum class QoNFerenCeRDestinations(
 	;
 
 	companion object {
-		/** Destination shown at launch and as fallback */
-		val startDest = CUSTOM_SCREENS
+		/** Fallback shown at launch when no custom screen is set as starting */
+		val startDest = ABOUT_APP
 	}
 }

@@ -50,6 +50,7 @@ class CustomScreensViewModel : ViewModel() {
 			titleKey = EMPTY_STRING,
 			icon = FALLBACK_ICON_KEY,
 			minRole = Role.VISITOR,
+			isStartingScreen = false,
 			body = emptyList(),
 		)
 	}

@@ -42,11 +42,12 @@ CREATE TABLE translation (
 
 -- Runtime-added screen; body = List<CustomElement> as ordered JSON array
 CREATE TABLE custom_screen (
-	id        VARCHAR(64)  PRIMARY KEY,
-	title_key VARCHAR(128) NOT NULL,							-- translation key
-	min_role  VARCHAR(16)  NOT NULL DEFAULT 'VISITOR',	-- min role to see
-	icon      VARCHAR(32)  NOT NULL DEFAULT 'help',		-- key into client's icon options
-	body      JSONB        NOT NULL DEFAULT '[]'			-- elements, render order = array order
+	id                  VARCHAR(64)  PRIMARY KEY,
+	title_key           VARCHAR(128) NOT NULL,							-- translation key
+	min_role            VARCHAR(16)  NOT NULL DEFAULT 'VISITOR',	-- min role to see
+	icon                VARCHAR(32)  NOT NULL DEFAULT 'help',		-- key into client's icon options
+	is_starting_screen  BOOLEAN      NOT NULL DEFAULT false,		-- shown at app launch; app enforces maximally one true 
+	body                JSONB        NOT NULL DEFAULT '[]'			-- elements, render order = array order
 );
 
 -- Meal serving window (organizer-defined)

@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import tr.qonferencer.shared.dtos.CustomScreenDto
+import tr.qonferencer.shared.enums.Role
+import tr.qonferencer.theme.color
 import tr.qonferencer.theme.colors
 
 sealed class NavTarget {
@@ -34,8 +36,13 @@ val NavTarget.customColor: Color?
 			QoNFerenCeRDestinations.MEAL_SCAN -> colors.level.organiser
 			QoNFerenCeRDestinations.CREATE_SLOT -> colors.level.adminLight
 			QoNFerenCeRDestinations.CUSTOM_SCREENS -> colors.level.adminLight
+			QoNFerenCeRDestinations.TRANSLATIONS -> colors.level.adminLight
 			else -> null
 		}
 
-		is NavTarget.Custom -> null
+		is NavTarget.Custom -> when {
+			!screen.minRole.atLeast(Role.VOLUNTEER) -> null
+			screen.minRole == Role.ADMIN -> colors.level.adminLight
+			else -> screen.minRole.color
+		}
 	}

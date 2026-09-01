@@ -29,7 +29,7 @@ fun ScreensMenuLayout(
 				onSelect(NavTarget.Fixed(QoNFerenCeRDestinations.MY_PROFILE))
 			}
 		}
-		
+
 		ScrollableColumn {
 			allTargets.forEachIndexed { index, target ->
 				if (index == customStartIndex) DefaultWideDivider()
@@ -70,3 +70,4 @@ private fun getValidScreenEntries(
 	.map(NavTarget::Fixed)
 	.toList() +
 	customScreens.map(NavTarget::Custom)
+		.sortedWith(compareBy({ it.screen.minRole }, { it.screen.id }))
