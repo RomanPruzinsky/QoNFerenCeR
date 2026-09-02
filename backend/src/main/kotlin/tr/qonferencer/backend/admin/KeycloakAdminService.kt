@@ -65,12 +65,12 @@ class KeycloakAdminService(
 				attributes = keycloakedAttributes(isSpeaker, canCheckUsers, canFoodCheck)
 			},
 		)
-		
+
 		val realmRoles = userRes.roles().realmLevel()
-		
+
 		val ours = realmRoles.listAll().filter { held -> Role.entries.any { it.name == held.name } }
 		if (ours.isNotEmpty()) realmRoles.remove(ours)
-		
+
 		realmRoles.add(listOf(realmRole(role)))
 	}
 
@@ -100,7 +100,7 @@ class KeycloakAdminService(
 		val userRes = userResource(sub)
 		val rep = userRes.toRepresentation()
 		val attrs = rep.attributes ?: emptyMap()
-		
+
 		return KeycloakUserInfo(
 			username = rep.username,
 			role = Role.highestAvailable(userRes.roles().realmLevel().listAll().map { it.name }),
@@ -133,7 +133,7 @@ class KeycloakAdminService(
 
 	/** Realm's representation of [role] */
 	private fun realmRole(role: Role) = realmRes.roles().get(role.name).toRepresentation()
-	
+
 	private fun keycloakedAttributes(
 		isSpeaker: Boolean,
 		canCheckUsers: Boolean,

@@ -32,14 +32,14 @@ class MealScanService(
 		val windowId = request.mealWindowId
 		val scannedBy = caller.requireUserId()
 		val scannerType = request.scannerType
-		
+
 		val userId = verify(request.token, scannerType)
 			?: return denied(null, windowId, scannedBy, scannerType, MealScanResult.NO_USER_FOUND)
-		
+
 		val mealSlotId = MealSlotId(userId, windowId)
 		val reservation = reservations.findById(mealSlotId).orElse(null)
 			?: return denied(userId, windowId, scannedBy, scannerType, MealScanResult.NOT_REGISTERED_PORTION)
-		
+
 		when (consumptions.consume(mealSlotId, scannedBy, request.idempotencyKey)) {
 			ConsumeOutcome.CONFLICT -> return denied(
 				userId = userId,
@@ -48,7 +48,7 @@ class MealScanService(
 				scannerType = scannerType,
 				result = MealScanResult.ALREADY_CONSUMED,
 			)
-			
+
 			ConsumeOutcome.NEW -> events.publishEvent(
 				OutboundEvent.MealApproved(
 					userId = userId,
@@ -57,10 +57,10 @@ class MealScanService(
 					scannerType = scannerType,
 				),
 			)
-			
+
 			ConsumeOutcome.RETRY -> Unit
 		}
-		
+
 		return MealScanResultDto(MealScanResult.APPROVED, reservation.variantKey)
 	}
 
@@ -76,13 +76,13 @@ class MealScanService(
 			if (!ScanToken.matches(parsed, secret, now.epochSecond)) return null
 			parsed.userId
 		}
-			
+
 		ScannerType.BARCODE, ScannerType.MANUAL -> {
 			val userId = token.trim().toLongOrNull() ?: return null
 			if (users.existsById(userId)) userId else null
 		}
 	}
-	
+
 	private fun denied(
 		userId: Long?,
 		windowId: Long,
@@ -99,7 +99,7 @@ class MealScanService(
 				scannerType = scannerType,
 			),
 		)
-		
+
 		return MealScanResultDto(result, null)
 	}
 }

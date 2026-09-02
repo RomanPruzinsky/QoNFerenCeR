@@ -23,7 +23,7 @@ class UserDetailService(
 		val role = caller.role()
 		val allowed = role == Role.ADMIN || (role.atLeast(Role.ORGANISER) && caller.canCheckUsers())
 		if (!allowed) throw forbidden("needs ORGANISER with canCheckUsers, or ADMIN")
-		
+
 		val user = users.findById(userId).orElseThrow { notFound("user $userId doesn't exist") }
 		val info = kc.info(user.kcSub)
 		return UserDetailDto(

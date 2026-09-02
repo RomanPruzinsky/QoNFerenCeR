@@ -26,7 +26,7 @@ class SecurityConfig(
 	@param:Value($$"${qonferencer.keycloak.jwk-set-uri}") private val jwkSetUri: String,
 	@param:Value($$"${qonferencer.keycloak.issuer}") private val issuer: String,
 ) {
-	
+
 	@Bean
 	fun securityFilterChain(
 		http: HttpSecurity,

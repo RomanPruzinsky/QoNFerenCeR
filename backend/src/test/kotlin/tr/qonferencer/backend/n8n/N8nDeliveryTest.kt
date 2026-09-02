@@ -23,13 +23,13 @@ import tr.qonferencer.shared.enums.ScannerType
 
 /** Delivery mechanics, invoked straight rather than through `@Async` so assertions cannot race */
 class N8nDeliveryTest {
-	
+
 	private val builder = RestClient.builder().baseUrl(BASE_URL).messageConverters { converters ->
 		converters.removeIf { it is MappingJackson2HttpMessageConverter }
 		converters.add(MappingJackson2HttpMessageConverter(ObjectMapper().registerModule(JavaTimeModule())))
 	}
 	private val server = MockRestServiceServer.bindTo(builder).build()
-	
+
 	@Test
 	fun `event goes to the path named after it, wrapped in the envelope`() {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/MEAL_APPROVED"))
@@ -41,7 +41,7 @@ class N8nDeliveryTest {
 			.andExpect(jsonPath("$.data.userId").value(42))
 			.andExpect(jsonPath("$.data.meal.variantKey").value("meal.vegan"))
 			.andRespond(withSuccess())
-		
+
 		listener(enabled = true).sendMessageToN8n(
 			OutboundEvent.MealApproved(
 				userId = 42L,
@@ -50,10 +50,10 @@ class N8nDeliveryTest {
 				scannerType = ScannerType.QR,
 			),
 		)
-		
+
 		server.verify()
 	}
-	
+
 	@Test
 	fun `the shared secret rides along on every request`() {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/SLOT_CREATED"))
@@ -66,26 +66,26 @@ class N8nDeliveryTest {
 
 		server.verify()
 	}
-	
+
 	@Test
 	fun `a webhook nobody created is not an error`() {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/APP_LAUNCHED"))
 			.andRespond(withStatus(HttpStatus.NOT_FOUND))
-		
+
 		listener(enabled = true).sendMessageToN8n(OutboundEvent.AppLaunched(user = null))
-		
+
 		server.verify()
 	}
-	
+
 	@Test
 	fun `an n8n that answers with a server error is swallowed too`() {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/SLOT_CREATED"))
 			.andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
-		
+
 		listener(enabled = true).sendMessageToN8n(
 			OutboundEvent.SlotCreated(userId = 1L, username = "slot_001", userData = ModifyableUserDataDto("Roman")),
 		)
-		
+
 		server.verify()
 	}
 
@@ -101,10 +101,10 @@ class N8nDeliveryTest {
 				scannerType = ScannerType.QR,
 			),
 		)
-		
+
 		server.verify()
 	}
-	
+
 	private fun listener(
 		enabled: Boolean,
 		token: String = "test-secret",
@@ -119,7 +119,7 @@ class N8nDeliveryTest {
 			timeoutMs = 3000,
 		),
 	)
-	
+
 	private companion object {
 		const val BASE_URL = "http://n8n.test/webhook"
 	}

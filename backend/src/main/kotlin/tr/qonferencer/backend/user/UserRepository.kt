@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param
 import java.util.UUID
 
 interface UserRepository : JpaRepository<User, Long> {
-	
+
 	fun findByKcSub(kcSub: UUID): User?
 
 	/** Creates [User] or skips it if is already present  */
@@ -44,7 +44,7 @@ interface UserRepository : JpaRepository<User, Long> {
 		@Param("threshold") threshold: Double,
 		pageable: Pageable,
 	): Page<User>
-	
+
 	private companion object {
 		/** Helper for SQL script, similarity eval query */
 		const val SIMILARITY = "word_similarity(lower(immutable_unaccent(:query)), lower(immutable_unaccent(full_name)))"

@@ -28,14 +28,14 @@ class CallerService(
 // /////////////////// PUBLIC /////////////////////
 // ////////////////////////////////////////////////
 // ////////////////// HELPERS /////////////////////
-	
+
 	private fun jwt(): Jwt = jwtOrNull() ?: throw notFound("no authenticated principal")
-	
+
 	private fun jwtOrNull(): Jwt? = (SecurityContextHolder.getContext().authentication as? JwtAuthenticationToken)?.token
-	
+
 	@Suppress("UNCHECKED_CAST")
 	private fun Jwt.processKeycloakRoles(): List<String> =
 		(getClaimAsMap("realm_access")?.get("roles") as? List<String>).orEmpty()
-	
+
 	private fun Jwt.processIsSpeaker(): Boolean = getClaim<Boolean>("isSpeaker") ?: false
 }

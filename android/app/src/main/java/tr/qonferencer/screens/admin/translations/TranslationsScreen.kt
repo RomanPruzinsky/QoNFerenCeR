@@ -135,10 +135,13 @@ fun TranslationsScreen() {
 						translations =
 							translations + existingKeys.map { key -> TranslationDto(key, newLang.code, EMPTY_STRING) }
 					},
-					onRename = { oldCode, newCode, newName ->
+					onRename = { oldCode, newCode, newName, newIsDefault ->
 						languages = languages.map {
-							if (it.code == oldCode) it.copy(code = newCode, name = newName)
-							else it
+							when {
+								it.code == oldCode -> it.copy(code = newCode, name = newName, isDefault = newIsDefault)
+								newIsDefault -> it.copy(isDefault = false)
+								else -> it
+							}
 						}
 						if (newCode != oldCode) {
 							translations = translations.map {

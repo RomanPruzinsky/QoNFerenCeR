@@ -1,7 +1,6 @@
 package tr.qonferencer.backend.admin
 
 import org.springframework.stereotype.Service
-import tr.qonferencer.backend.common.badRequest
 import tr.qonferencer.backend.content.Language
 import tr.qonferencer.backend.content.LanguageRepository
 import tr.qonferencer.backend.content.Translation
@@ -23,14 +22,16 @@ class TranslationAdminService(
 		translations = translations.findAll().map { it.toDto() },
 	)
 
-	/** Replaces whole language/translation state with [req] */
+	/** Replaces whole language/translation state with [req]; defaults first language if none marked default */
 	fun set(req: AllTranslationsDto): AllTranslationsDto {
-		if (req.languages.none { it.isDefault }) throw badRequest("must keep exactly one default language")
+		val reqLanguages =
+			if (req.languages.count { it.isDefault } == 1) req.languages
+			else req.languages.mapIndexed { i, lang -> if (i == 0) lang.copy(isDefault = true) else lang }
 
-		val incomingLangCodes = req.languages.map { it.code }.toSet()
+		val incomingLangCodes = reqLanguages.map { it.code }.toSet()
 		val incomingIds = req.translations.map { it.key to it.langCode }.toSet()
 
-		languages.saveAll(req.languages.map { it.toEntity() })
+		languages.saveAll(reqLanguages.map { it.toEntity() })
 		translations.saveAll(req.translations.map { it.toEntity() })
 
 		translations.findAll()

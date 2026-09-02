@@ -42,12 +42,12 @@ class SplashService(
 				meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 			)
 		}
-		
+
 		events.publishEvent(OutboundEvent.AppLaunched(user = me))
-		
+
 		val allLanguages = languages.findAll(Sort.by(Language::code.name)).map { it.toDto() }
 		check(allLanguages.any { it.isDefault }) { "no default language configured" }
-		
+
 		val langCodes = allLanguages.map { it.code }.toSet()
 		val allTranslations = translations.findAll(
 			Sort.by(
@@ -55,11 +55,11 @@ class SplashService(
 				"${Translation::id.name}.${TranslationId::langCode.name}",
 			),
 		)
-		
+
 		// `count(key)` must match `count(language)`
 		val gaps = allTranslations.groupingBy { it.id.key }.eachCount().filterValues { it != langCodes.size }.keys
 		check(gaps.isEmpty()) { "translations missing lang(s) for keys: $gaps" }
-		
+
 		return SplashDto(
 			translations = AllTranslationsDto(languages = allLanguages, translations = allTranslations.map { it.toDto() }),
 			customScreens = screens.findAll(Sort.by(CustomScreen::id.name))

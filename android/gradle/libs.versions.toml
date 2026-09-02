@@ -8,6 +8,10 @@ lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
 kotlin = "2.4.10"
 composeBom = "2026.08.00"
+# TODO: material3 pinned below composeBom's 1.5.0-alpha17 - that alpha crashes OutlinedTextField
+# (NoSuchElementException in OutlinedTextFieldMeasurePolicy.measure) when freshly mounted inside an
+# already-open Dialog on a mode switch, repro'd on LanguagesDialog's Add/Edit forms. Unpin once fixed upstream.
+material3 = { strictly = "1.4.0" }
 ktlintGradle = "14.2.0"
 composeRulesKtlint = "0.6.4"
 coroutines = "1.11.0"
@@ -38,7 +42,7 @@ androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graph
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }

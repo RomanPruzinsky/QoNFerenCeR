@@ -17,7 +17,7 @@ class MealScanController(
 ) {
 	@PostMapping(ApiPaths.Meal.MEAL_SCAN)
 	fun scan(@RequestBody request: MealScanRequestDto): MealScanResultDto = scanService.scan(request)
-	
+
 	@GetMapping(ApiPaths.Meal.MEAL_COUNTS)
 	fun counts(@PathVariable windowId: Long): List<MealCountDto> = countsService.counts(windowId)
 }

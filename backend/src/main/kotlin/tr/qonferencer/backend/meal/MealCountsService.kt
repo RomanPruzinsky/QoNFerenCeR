@@ -17,6 +17,7 @@ class MealCountsService(
 		val allowed = caller.role().atLeast(Role.VOLUNTEER) && caller.canFoodCheck()
 		if (!allowed) throw forbidden("needs VOLUNTEER with canFoodCheck")
 
-		return reservations.remainingByWindow(windowId).map { MealCountDto(it.getVariantKey(), it.getRemaining().toInt()) }
+		return reservations.remainingByWindow(windowId)
+			.map { MealCountDto(it.getVariantKey(), it.getRemaining().toInt()) }
 	}
 }

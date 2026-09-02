@@ -52,7 +52,7 @@ class SlotService(
 	@Transactional
 	fun createUserSlot(req: ModifyableUserDataDto): SlotProvisionedDto {
 		validateMealWindows(req.meals)
-		
+
 		val username = "slot_%03d".format(nextSlotNumber())
 		val sub = kc.createUser(
 			username = username,
@@ -61,13 +61,13 @@ class SlotService(
 			canCheckUsers = req.canCheckUsers,
 			canFoodCheck = req.canFoodCheck,
 		)
-		
+
 		val password = UserPasswordGenerator.generate(random)
 		kc.setPassword(sub, password)
-		
+
 		val user = anchors.ensure(sub, req.fullName, req.customData)
 		saveReservations(user.id, req.meals)
-		
+
 		events.publishEvent(OutboundEvent.SlotCreated(userId = user.id, username = username, userData = req))
 		return SlotProvisionedDto(
 			user = userDetail(user, req),
@@ -82,16 +82,16 @@ class SlotService(
 		req: ModifyableUserDataDto,
 	): UserDetailDto {
 		validateMealWindows(req.meals)
-		
+
 		val user = findUser(userId)
 		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckUsers, req.canFoodCheck)
-		
+
 		user.fullName = req.fullName
 		anchors.storeCustomData(user, req.customData)
-		
+
 		reservations.deleteByIdUserId(userId)
 		saveReservations(userId, req.meals)
-		
+
 		events.publishEvent(OutboundEvent.SlotUpdated(userId = userId, userData = req))
 		return userDetail(user, req)
 	}
@@ -109,7 +109,7 @@ class SlotService(
 	fun deleteUserSlot(userId: Long): DeleteOutcome {
 		val sub = findUser(userId).kcSub
 		userDelete.delete(userId)
-		
+
 		val outcome = try {
 			kc.deleteUser(sub)
 			DeleteOutcome.FULL
@@ -117,7 +117,7 @@ class SlotService(
 			log.warn("app data for $userId is gone, Keycloak user survives: ${e.message}")
 			DeleteOutcome.KEYCLOAK_SURVIVED
 		}
-		
+
 		events.publishEvent(OutboundEvent.SlotDeleted(userId = userId))
 		return outcome
 	}
@@ -127,9 +127,9 @@ class SlotService(
 		val user = findUser(userId)
 		val password = UserPasswordGenerator.generate(random)
 		val username = kc.username(user.kcSub)
-		
+
 		kc.setPassword(user.kcSub, password)
-		
+
 		events.publishEvent(OutboundEvent.SlotLoginIssued(userId = user.id, username = username))
 		return loginCredentials(username, password)
 	}
@@ -160,7 +160,7 @@ class SlotService(
 	) {
 		reservations.saveAll(meals.map { MealReservation(MealSlotId(userId, it.windowId), it.variantKey) })
 	}
-	
+
 	private fun loginCredentials(
 		username: String,
 		password: String,
@@ -168,7 +168,7 @@ class SlotService(
 		username = username,
 		password = password,
 	)
-	
+
 	private fun userDetail(
 		user: User,
 		mod: ModifyableUserDataDto,
@@ -182,7 +182,7 @@ class SlotService(
 		meals = mod.meals,
 		customData = mod.customData,
 	)
-	
+
 	private companion object {
 		val log: Logger = LoggerFactory.getLogger(SlotService::class.java)
 	}

@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -31,15 +34,18 @@ import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.translations.rawDynamicTranslation
 import tr.qonferencer.trons.defaultLayouts.ApproveIconButton
 import tr.qonferencer.trons.defaultLayouts.CardLayout
+import tr.qonferencer.trons.defaultLayouts.DefaultHeightSpacer
 import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.DefaultWideDivider
 import tr.qonferencer.trons.defaultLayouts.DeleteIconButton
 import tr.qonferencer.trons.defaultLayouts.DialogFullWidth
+import tr.qonferencer.trons.defaultLayouts.ProfileToggleRow
 import tr.qonferencer.trons.miscs.EMPTY_STRING
 import tr.qonferencer.trons.miscs.Toast
 import tr.qonferencer.trons.miscs.cannotBeEmptyToast
 import tr.qonferencer.trons.remembers.rememberEmptyString
 import tr.qonferencer.trons.theme.defaultClip
+import tr.qonferencer.trons.theme.defaultIconSize
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 import tr.qonferencer.trons.theme.halfDefaultLayoutPadding
@@ -65,7 +71,7 @@ fun LanguagesDialog(
 	languages: List<LanguageDto>,
 	onDismiss: () -> Unit,
 	onAdd: (LanguageDto) -> Unit,
-	onRename: (oldCode: String, newCode: String, newName: String) -> Unit,
+	onRename: (oldCode: String, newCode: String, newName: String, newIsDefault: Boolean) -> Unit,
 	onDelete: (LanguageDto) -> Unit,
 ) {
 	if (!show) return
@@ -81,14 +87,28 @@ fun LanguagesDialog(
 			when (val current = mode.value) {
 				LanguagesDialogMode.List -> {
 					languages.forEach { lang ->
-						Text(
-							text = lang.name,
-							style = typo.labelLarge,
+						Row(
 							modifier = Modifier
+								.fillMaxWidth()
 								.defaultClip()
-								.clickable { mode.value = LanguagesDialogMode.Edit(lang) }
-								.defaultTextPadding(),
-						)
+								.clickable { mode.value = LanguagesDialogMode.Edit(lang) },
+							horizontalArrangement = Arrangement.SpaceBetween,
+							verticalAlignment = Alignment.CenterVertically,
+						) {
+							Text(
+								text = lang.name,
+								style = typo.labelLarge,
+								modifier = Modifier.defaultTextPadding(),
+							)
+							if (lang.isDefault) {
+								Icon(
+									imageVector = Icons.Default.Home,
+									contentDescription = "default language",
+									tint = colors.level.leader,
+									modifier = Modifier.size(defaultIconSize),
+								)
+							}
+						}
 					}
 					AddButton(label = " + ", onClick = { mode.value = LanguagesDialogMode.Add })
 				}
@@ -105,8 +125,8 @@ fun LanguagesDialog(
 					language = current.language,
 					existingCodes = languages.map { it.code },
 					onBack = { mode.value = LanguagesDialogMode.List },
-					onRename = { newCode, newName ->
-						onRename(current.language.code, newCode, newName)
+					onRename = { newCode, newName, newIsDefault ->
+						onRename(current.language.code, newCode, newName, newIsDefault)
 						mode.value = LanguagesDialogMode.List
 					},
 				) {
@@ -175,10 +195,10 @@ private fun ColumnScope.AddLanguageForm(
 }
 
 /**
- * Fields to rename or delete [language]
+ * Fields to rename, toggle default or delete [language]
  * @param existingCodes Already configured [LanguageDto.code]s, to reject duplicates on rename
  * @param onBack Returns to [LanguagesDialogMode.List]
- * @param onRename Called with new code and new name on apply
+ * @param onRename Called with new code, new name and new default flag on apply
  * @param onDelete Called on delete, blocked when [language] is default
  */
 @Composable
@@ -186,7 +206,7 @@ private fun EditLanguageForm(
 	language: LanguageDto,
 	existingCodes: List<String>,
 	onBack: () -> Unit,
-	onRename: (newCode: String, newName: String) -> Unit,
+	onRename: (newCode: String, newName: String, newIsDefault: Boolean) -> Unit,
 	onDelete: () -> Unit,
 ) {
 	val context = LocalContext.current
@@ -194,6 +214,7 @@ private fun EditLanguageForm(
 	val focusManager = LocalFocusManager.current
 	val code = remember(language) { mutableStateOf(language.code) }
 	val name = remember(language) { mutableStateOf(language.name) }
+	val isDefault = remember(language) { mutableStateOf(language.isDefault) }
 	val nameFocusRequester = remember { FocusRequester() }
 
 	Row(
@@ -233,11 +254,16 @@ private fun EditLanguageForm(
 						Toast.short(context, rawDynamicTranslation("admin.translations.codeTaken"))
 						return@ApproveIconButton
 					}
-					onRename(trimmedCode, trimmedName)
+					onRename(trimmedCode, trimmedName, isDefault.value)
 				},
 			)
 		}
 	}
+
+	DefaultHeightSpacer()
+	DefaultWideDivider()
+	DefaultHeightSpacer()
+	ProfileToggleRow(dynamicTranslation("admin.translations.isDefault"), isDefault)
 
 	DefaultOTF(
 		valueText = code,

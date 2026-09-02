@@ -57,10 +57,10 @@ class UserAnchorService(
 		users.save(user)
 		return user.mealSecretV
 	}
-	
+
 	private val random = SecureRandom()
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
-	
+
 	internal companion object {
 		/** Length of `mealSecret` in bytes */
 		const val SECRET_LENGTH = 32

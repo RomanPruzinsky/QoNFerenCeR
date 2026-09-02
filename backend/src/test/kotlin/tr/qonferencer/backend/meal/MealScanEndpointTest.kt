@@ -28,29 +28,29 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @Transactional
 class MealScanEndpointTest {
-	
+
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-	
+
 	@Autowired
 	private lateinit var objectMapper: ObjectMapper
-	
+
 	@Autowired
 	private lateinit var windows: MealWindowRepository
-	
+
 	@Autowired
 	private lateinit var reservations: MealReservationRepository
-	
+
 	@Autowired
 	private lateinit var users: UserRepository
-	
+
 	private val scannerSub = UUID.randomUUID()
-	
+
 	@BeforeEach
 	fun createScanner() {
 		users.insertIfAbsent(scannerSub, ByteArray(UserAnchorService.SECRET_LENGTH), "Volunteer Scanner")
 	}
-	
+
 	@Test
 	fun `volunteer scan approves, the same key repeats it, a fresh key is already consumed`() {
 		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 7 }
@@ -58,25 +58,25 @@ class MealScanEndpointTest {
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
 		val key = UUID.randomUUID()
-		
+
 		scan(MealScanRequestDto(token, windowId, key, ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("APPROVED") }
 			jsonPath("$.variantKey") { value("meal.vegan") }
 		}
-		
+
 		scan(MealScanRequestDto(token, windowId, key, ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("APPROVED") }
 			jsonPath("$.variantKey") { value("meal.vegan") }
 		}
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("ALREADY_CONSUMED") }
 		}
 	}
-	
+
 	@Test
 	fun `visitor cannot scan`() {
 		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 3 }
@@ -124,22 +124,22 @@ class MealScanEndpointTest {
 				jsonPath("$.result") { value("APPROVED") }
 			}
 	}
-	
+
 	@Test
 	fun `unreadable token is a verdict, not a transport error`() {
 		val windowId = windows.save(newWindow()).id
-		
+
 		scan(MealScanRequestDto("Q1:nonsense", windowId, UUID.randomUUID(), ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NO_USER_FOUND") }
 		}
 	}
-	
+
 	@Test
 	fun `a printed badge number feeds a flat phone`() {
 		val userId = newUser(ByteArray(UserAnchorService.SECRET_LENGTH) { 2 })
 		val windowId = newWindowWithPortion(userId, "meal.regular")
-		
+
 		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE), Role.VOLUNTEER)
 			.andExpect {
 				status { isOk() }
@@ -154,7 +154,7 @@ class MealScanEndpointTest {
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.BARCODE), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NO_USER_FOUND") }
@@ -167,26 +167,26 @@ class MealScanEndpointTest {
 		val userId = newUser(ByteArray(UserAnchorService.SECRET_LENGTH) { 7 })
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, ByteArray(UserAnchorService.SECRET_LENGTH) { 9 }, Instant.now().epochSecond)
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NO_USER_FOUND") }
 		}
 	}
-	
+
 	@Test
 	fun `scan without a reservation is not a registered portion`() {
 		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 5 }
 		val userId = newUser(secret)
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
 			jsonPath("$.result") { value("NOT_REGISTERED_PORTION") }
 		}
 	}
-	
+
 	private fun scan(
 		request: MealScanRequestDto,
 		role: Role,
@@ -202,13 +202,13 @@ class MealScanEndpointTest {
 		contentType = MediaType.APPLICATION_JSON
 		content = objectMapper.writeValueAsString(request)
 	}
-	
+
 	private fun newUser(secret: ByteArray): Long {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, secret, "Hungry Attendee")
 		return users.findByKcSub(sub)!!.id
 	}
-	
+
 	private fun newWindowWithPortion(
 		userId: Long,
 		variantKey: String,
@@ -217,6 +217,6 @@ class MealScanEndpointTest {
 		reservations.save(MealReservation(MealSlotId(userId, windowId), variantKey))
 		return windowId
 	}
-	
+
 	private fun newWindow() = MealWindow(0, "meal.test", Instant.now(), Instant.now().plusSeconds(3600))
 }

@@ -40,32 +40,32 @@ import kotlin.test.assertEquals
 @RecordApplicationEvents
 @Transactional
 class DomainEventPublishingTest {
-	
+
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-	
+
 	@Autowired
 	private lateinit var objectMapper: ObjectMapper
-	
+
 	@Autowired
 	private lateinit var events: ApplicationEvents
-	
+
 	@Autowired
 	private lateinit var users: UserRepository
-	
+
 	@Autowired
 	private lateinit var windows: MealWindowRepository
-	
+
 	@Autowired
 	private lateinit var reservations: MealReservationRepository
-	
+
 	private val scannerSub = UUID.randomUUID()
-	
+
 	@BeforeEach
 	fun createScanner() {
 		users.insertIfAbsent(scannerSub, ByteArray(UserAnchorService.SECRET_LENGTH), "Volunteer Scanner")
 	}
-	
+
 	@Test
 	fun `an anonymous launch carries no profile`() {
 		mockMvc.get(ApiPaths.Splash.ALL).andExpect { status { isOk() } }
@@ -100,9 +100,9 @@ class DomainEventPublishingTest {
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
-		
+
 		val event = published().filterIsInstance<OutboundEvent.MealApproved>().single()
 		assertEquals(userId, event.userId)
 		assertEquals(windowId, event.meal.windowId)
@@ -115,30 +115,30 @@ class DomainEventPublishingTest {
 	fun `a badge scan says so, so the weaker ones can be counted`() {
 		val userId = newUser(ByteArray(UserAnchorService.SECRET_LENGTH) { 6 })
 		val windowId = newWindowWithPortion(userId, "meal.regular")
-		
+
 		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE))
 			.andExpect { status { isOk() } }
-		
+
 		val event = published().filterIsInstance<OutboundEvent.MealApproved>().single()
 		assertEquals(ScannerType.BARCODE, event.scannerType)
 	}
-	
+
 	@Test
 	fun `a refused scan announces the reason, since nothing is written down`() {
 		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 5 }
 		val userId = newUser(secret)
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
-		
+
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR)).andExpect { status { isOk() } }
-		
+
 		val event = published().filterIsInstance<OutboundEvent.MealDenied>().single()
 		assertEquals(MealScanResult.NOT_REGISTERED_PORTION, event.reason)
 		assertEquals(userId, event.userId)
 	}
-	
+
 	private fun published(): List<OutboundEvent> = events.stream(OutboundEvent::class.java).toList()
-	
+
 	private fun scan(request: MealScanRequestDto) = mockMvc.post(ApiPaths.Meal.MEAL_SCAN) {
 		with(
 			jwt().jwt {
@@ -150,13 +150,13 @@ class DomainEventPublishingTest {
 		contentType = MediaType.APPLICATION_JSON
 		content = objectMapper.writeValueAsString(request)
 	}
-	
+
 	private fun newUser(secret: ByteArray): Long {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, secret, "Hungry Attendee")
 		return users.findByKcSub(sub)!!.id
 	}
-	
+
 	private fun newWindowWithPortion(
 		userId: Long,
 		variantKey: String,
@@ -165,6 +165,6 @@ class DomainEventPublishingTest {
 		reservations.save(MealReservation(MealSlotId(userId, windowId), variantKey))
 		return windowId
 	}
-	
+
 	private fun newWindow() = MealWindow(0, "meal.test", Instant.now(), Instant.now().plusSeconds(3600))
 }

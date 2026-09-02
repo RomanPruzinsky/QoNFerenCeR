@@ -24,10 +24,10 @@ data class TranslationId(
 @Entity
 @Table(name = "translation")
 class Translation(
-	
+
 	@EmbeddedId
 	var id: TranslationId,
-	
+
 	@Column(name = "text", nullable = false, columnDefinition = "text")
 	var text: String,
 )

@@ -10,12 +10,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CustomElementJsonTest {
-	
+
 	private val mapper = jacksonObjectMapper()
 
 	// Serialize via the declared type like Spring MVC does, or generics erase the discriminator
 	private val listWriter = mapper.writerFor(object : TypeReference<List<CustomElement>>() {})
-	
+
 	@Test
 	fun `round-trips the sealed element tree`() {
 		val tree: List<CustomElement> = listOf(
@@ -34,7 +34,7 @@ class CustomElementJsonTest {
 		val back = mapper.readValue<List<CustomElement>>(listWriter.writeValueAsString(tree))
 		assertEquals(tree, back)
 	}
-	
+
 	@Test
 	fun `deserializes the seed body shape`() {
 		val seed = """[{"type":"TEXT","source":{"kind":"REF","key":"home.welcome"},"size":"LARGE"}]"""

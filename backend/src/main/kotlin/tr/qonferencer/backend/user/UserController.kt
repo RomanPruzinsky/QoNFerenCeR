@@ -24,13 +24,13 @@ class UserController(
 ) {
 	@GetMapping(ApiPaths.User.BY_ID)
 	fun detail(@PathVariable userId: Long): UserDetailDto = userDetailService.detail(userId)
-	
+
 	@GetMapping(ApiPaths.User.BY_NAME)
 	fun search(
 		@RequestParam("searchFor") query: String,
 		@PageableDefault(size = DEFAULT_PAGING_SIZE) pageable: Pageable,
 	): PageDto<UserDisplayDto> = searchService.search(query, pageable)
-	
+
 	@PostMapping(ApiPaths.User.MEAL_SECRET)
 	fun mealSecret(@RequestBody request: MealSecretRequestDto): MealSecretDto =
 		MealSecretDto(mealSecretService.reveal(request.password))

@@ -23,16 +23,16 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @Transactional
 class ContentEndpointTest {
-	
+
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-	
+
 	@Autowired
 	private lateinit var users: UserRepository
-	
+
 	@MockitoBean
 	private lateinit var keycloak: KeycloakAdminService
-	
+
 	@Test
 	fun `splash returns seeded content, role-filtered, with an etag`() {
 		// anonymous caller = ANONYM → sees only the ANONYM screen 'home', not the VISITOR 'agenda'
@@ -46,12 +46,12 @@ class ContentEndpointTest {
 			jsonPath("$.me") { doesNotExist() }
 		}
 	}
-	
+
 	@Test
 	fun `splash embeds the caller's own profile when authenticated, minus the scan secret`() {
 		val sub = UUID.randomUUID()
 		users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), "Jana Kováčová")
-		
+
 		mockMvc.get(ApiPaths.Splash.ALL) {
 			with(
 				jwt().jwt {
@@ -68,7 +68,7 @@ class ContentEndpointTest {
 			jsonPath("$.me.mealSecret") { doesNotExist() }
 		}
 	}
-	
+
 	@Test
 	fun `custom screen above caller role is 403`() {
 		// 'agenda' is minRole VISITOR; anonymous ANONYM must not reach it
@@ -76,7 +76,7 @@ class ContentEndpointTest {
 			status { isForbidden() }
 		}
 	}
-	
+
 	@Test
 	fun `custom screen body renders the sealed element`() {
 		mockMvc.get(ApiPaths.CustomScreens.BY_ID.replace("{id}", "home")).andExpect {
@@ -87,7 +87,7 @@ class ContentEndpointTest {
 			jsonPath("$[0].size") { value("LARGE") }
 		}
 	}
-	
+
 	@Test
 	fun `unknown custom screen is 404`() {
 		mockMvc.get(ApiPaths.CustomScreens.BY_ID.replace("{id}", "does-not-exist")).andExpect {

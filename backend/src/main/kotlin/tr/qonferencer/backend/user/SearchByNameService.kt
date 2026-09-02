@@ -25,19 +25,19 @@ class SearchByNameService(
 		val role = caller.role()
 		val allowed = (role == Role.ADMIN) || (role.atLeast(Role.ORGANISER) && caller.canCheckUsers())
 		if (!allowed) throw forbidden("needs ORGANISER with canCheckUsers, or ADMIN")
-		
+
 		val trimmed = query.trim()
 		if (role != Role.ADMIN && trimmed.length < MIN_QUERY_LENGTH) {
 			throw badRequest("searchFor must be at least $MIN_QUERY_LENGTH characters")
 		}
-		
+
 		val page = users.searchByName(trimmed, SIMILARITY_THRESHOLD, pageable).map {
 			val info = kc.info(it.kcSub)
 			UserDisplayDto(it.id, it.fullName, info.role, info.isSpeaker)
 		}
 		return PageDto(page.content, page.totalElements, page.totalPages, page.number, page.size)
 	}
-	
+
 	private companion object {
 		/** 0.5 still accepts transposed pair of letters, 0.6 default doesn't ("Nvoak" → "Novak" is valid now) */
 		const val SIMILARITY_THRESHOLD = .5
