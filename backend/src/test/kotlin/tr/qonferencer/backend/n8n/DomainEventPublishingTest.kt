@@ -21,6 +21,7 @@ import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealSlotId
 import tr.qonferencer.backend.meal.MealWindow
 import tr.qonferencer.backend.meal.MealWindowRepository
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.MealScanRequestDto
@@ -62,7 +63,7 @@ class DomainEventPublishingTest {
 	
 	@BeforeEach
 	fun createScanner() {
-		users.insertIfAbsent(scannerSub, ByteArray(32), "Volunteer Scanner")
+		users.insertIfAbsent(scannerSub, ByteArray(UserAnchorService.SECRET_LENGTH), "Volunteer Scanner")
 	}
 	
 	@Test
@@ -76,7 +77,7 @@ class DomainEventPublishingTest {
 	@Test
 	fun `a logged-in launch carries the caller's own profile`() {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, ByteArray(32), "Hungry Attendee")
+		users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), "Hungry Attendee")
 		val userId = users.findByKcSub(sub)!!.id
 
 		mockMvc.get(ApiPaths.Splash.ALL) {
@@ -95,7 +96,7 @@ class DomainEventPublishingTest {
 
 	@Test
 	fun `a handed out meal announces who got what`() {
-		val secret = ByteArray(32) { 7 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 7 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -112,7 +113,7 @@ class DomainEventPublishingTest {
 	/** The organizer has to be able to tell a cryptographic scan from a copyable badge */
 	@Test
 	fun `a badge scan says so, so the weaker ones can be counted`() {
-		val userId = newUser(ByteArray(32) { 6 })
+		val userId = newUser(ByteArray(UserAnchorService.SECRET_LENGTH) { 6 })
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		
 		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE))
@@ -124,7 +125,7 @@ class DomainEventPublishingTest {
 	
 	@Test
 	fun `a refused scan announces the reason, since nothing is written down`() {
-		val secret = ByteArray(32) { 5 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 5 }
 		val userId = newUser(secret)
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -143,6 +144,7 @@ class DomainEventPublishingTest {
 			jwt().jwt {
 				it.subject(scannerSub.toString())
 					.claim("realm_access", mapOf("roles" to listOf(Role.VOLUNTEER.name)))
+					.claim("canFoodCheck", true)
 			},
 		)
 		contentType = MediaType.APPLICATION_JSON

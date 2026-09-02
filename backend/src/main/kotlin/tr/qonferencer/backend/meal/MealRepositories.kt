@@ -9,20 +9,19 @@ import java.util.UUID
 interface MealWindowRepository : JpaRepository<MealWindow, Long>
 
 interface MealReservationRepository : JpaRepository<MealReservation, MealSlotId> {
-	
+
 	fun findByIdUserId(userId: Long): List<MealReservation>
-	
+
 	fun deleteByIdUserId(userId: Long)
 
-	/** Reservations of [windowId] not yet in [MealConsumption], grouped by variant */
+	/** Reservations of [windowId] grouped by variant, counting those not yet in [MealConsumption] */
 	@Query(
 		value = """
-			SELECT r.variant_key AS variantKey, COUNT(*) AS remaining
+			SELECT r.variant_key AS variantKey,
+			       COUNT(*) FILTER (WHERE c.user_id IS NULL) AS remaining
 			FROM meal_reservation r
+			LEFT JOIN meal_consumption c ON c.user_id = r.user_id AND c.window_id = r.window_id
 			WHERE r.window_id = :windowId
-			  AND NOT EXISTS (
-			      SELECT 1 FROM meal_consumption c WHERE c.user_id = r.user_id AND c.window_id = r.window_id
-			  )
 			GROUP BY r.variant_key
 		""",
 		nativeQuery = true,
@@ -49,7 +48,7 @@ enum class ConsumeOutcome {
 }
 
 interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId> {
-	
+
 	fun deleteByIdUserId(userId: Long)
 
 	/** Clears [userId] from `scannedBy` */

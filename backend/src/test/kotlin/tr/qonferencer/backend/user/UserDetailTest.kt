@@ -36,7 +36,7 @@ class UserDetailTest {
 	
 	private fun newUser(fullName: String): Long {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, ByteArray(32), fullName)
+		users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), fullName)
 		val userId = users.findByKcSub(sub)!!.id
 		Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot_007", Role.VOLUNTEER, true, false, false))
 		return userId

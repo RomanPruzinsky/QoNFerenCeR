@@ -12,7 +12,9 @@ import org.springframework.test.web.servlet.get
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.TestcontainersConfiguration
 import tr.qonferencer.backend.admin.KeycloakAdminService
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
+import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.enums.Role
 import java.util.UUID
 
@@ -34,7 +36,7 @@ class ContentEndpointTest {
 	@Test
 	fun `splash returns seeded content, role-filtered, with an etag`() {
 		// anonymous caller = ANONYM → sees only the ANONYM screen 'home', not the VISITOR 'agenda'
-		mockMvc.get("/api/v1/splash").andExpect {
+		mockMvc.get(ApiPaths.Splash.ALL).andExpect {
 			status { isOk() }
 			header { exists("ETag") }
 			jsonPath("$.translations.languages[0].code") { value("en") }
@@ -48,9 +50,9 @@ class ContentEndpointTest {
 	@Test
 	fun `splash embeds the caller's own profile when authenticated, minus the scan secret`() {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, ByteArray(32), "Jana Kováčová")
+		users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), "Jana Kováčová")
 		
-		mockMvc.get("/api/v1/splash") {
+		mockMvc.get(ApiPaths.Splash.ALL) {
 			with(
 				jwt().jwt {
 					it.subject(sub.toString())
@@ -70,25 +72,25 @@ class ContentEndpointTest {
 	@Test
 	fun `custom screen above caller role is 403`() {
 		// 'agenda' is minRole VISITOR; anonymous ANONYM must not reach it
-		mockMvc.get("/api/v1/custom-screens/agenda").andExpect {
+		mockMvc.get(ApiPaths.CustomScreens.BY_ID.replace("{id}", "agenda")).andExpect {
 			status { isForbidden() }
 		}
 	}
 	
 	@Test
 	fun `custom screen body renders the sealed element`() {
-		mockMvc.get("/api/v1/custom-screens/home").andExpect {
+		mockMvc.get(ApiPaths.CustomScreens.BY_ID.replace("{id}", "home")).andExpect {
 			status { isOk() }
 			jsonPath("$[0].type") { value("TEXT") }
 			jsonPath("$[0].source.kind") { value("REF") }
-			jsonPath("$[0].source.key") { value("home.welcome") }
+			jsonPath("$[0].source.key") { value("destination.custom.home") }
 			jsonPath("$[0].size") { value("LARGE") }
 		}
 	}
 	
 	@Test
 	fun `unknown custom screen is 404`() {
-		mockMvc.get("/api/v1/custom-screens/does-not-exist").andExpect {
+		mockMvc.get(ApiPaths.CustomScreens.BY_ID.replace("{id}", "does-not-exist")).andExpect {
 			status { isNotFound() }
 		}
 	}

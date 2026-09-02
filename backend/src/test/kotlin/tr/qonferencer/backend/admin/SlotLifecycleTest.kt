@@ -14,6 +14,7 @@ import tr.qonferencer.backend.meal.MealReservationRepository
 import tr.qonferencer.backend.meal.MealSlotId
 import tr.qonferencer.backend.meal.MealWindow
 import tr.qonferencer.backend.meal.MealWindowRepository
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.UserMealEntryDto
@@ -116,7 +117,7 @@ class SlotLifecycleTest {
 	
 	private fun newUser(fullName: String): Long {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, ByteArray(32) { 1 }, fullName)
+		users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH) { 1 }, fullName)
 		return users.findByKcSub(sub)!!.id
 	}
 	

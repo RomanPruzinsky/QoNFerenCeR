@@ -13,7 +13,7 @@ class UserPasswordGeneratorTest {
 		repeat(200) {
 			val pwd = UserPasswordGenerator.generate(random)
 			assertEquals(8, pwd.length)
-			assertTrue(pwd.all { it in "0123456789ABCDEFGHJKMNPQRSTVWXYZ" })
+			assertTrue(pwd.all { it in UserPasswordGenerator.ALPHABET })
 			assertTrue(pwd.none { it in "ILOU" })
 		}
 	}

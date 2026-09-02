@@ -35,7 +35,7 @@ class N8nDeliveryTest {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/MEAL_APPROVED"))
 			.andExpect(method(HttpMethod.POST))
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.schemaVersion").value(1))
+			.andExpect(jsonPath("$.schemaVersion").value(N8nOutboundListener.SCHEMA_VERSION))
 			.andExpect(jsonPath("$.eventType").value("MEAL_APPROVED"))
 			.andExpect(jsonPath("$.conferenceId").value("devconf-2026"))
 			.andExpect(jsonPath("$.data.userId").value(42))
@@ -57,7 +57,7 @@ class N8nDeliveryTest {
 	@Test
 	fun `the shared secret rides along on every request`() {
 		server.expect(requestTo("$BASE_URL/qonferencer_base/SLOT_CREATED"))
-			.andExpect(header("QN-Token", "s3cret"))
+			.andExpect(header(N8nOutboundListener.TOKEN_HEADER, "s3cret"))
 			.andRespond(withSuccess())
 
 		listener(enabled = true, token = "s3cret").sendMessageToN8n(

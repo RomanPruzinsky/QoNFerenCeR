@@ -61,7 +61,7 @@ class UserAnchorService(
 	private val random = SecureRandom()
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
 	
-	private companion object {
+	internal companion object {
 		/** Length of `mealSecret` in bytes */
 		const val SECRET_LENGTH = 32
 	}

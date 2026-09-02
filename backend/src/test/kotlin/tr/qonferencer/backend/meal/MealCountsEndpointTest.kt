@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.TestcontainersConfiguration
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.MealCountDto
@@ -83,7 +84,7 @@ class MealCountsEndpointTest {
 
 	private fun newUser(): Long {
 		val sub = UUID.randomUUID()
-		users.insertIfAbsent(sub, ByteArray(32), "Hungry Attendee")
+		users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), "Hungry Attendee")
 		return users.findByKcSub(sub)!!.id
 	}
 

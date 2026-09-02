@@ -38,7 +38,7 @@ class SearchByNameTest {
 	fun seedAttendees() {
 		listOf("Roman Pružinský", "Jana Kováčová", "Peter Novák", "Marek Kovacs").forEach {
 			val sub = UUID.randomUUID()
-			users.insertIfAbsent(sub, ByteArray(32), it)
+			users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), it)
 			Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot", Role.VISITOR, false, false, false))
 		}
 	}

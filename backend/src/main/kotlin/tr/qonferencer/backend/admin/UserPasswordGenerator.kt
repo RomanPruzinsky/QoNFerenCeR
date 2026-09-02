@@ -4,7 +4,7 @@ import java.security.SecureRandom
 
 object UserPasswordGenerator {
 	/** Crockford Base 32 alphabet */
-	private const val ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+	internal const val ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
 	/** [length] random chars */
 	fun generate(

@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.TestcontainersConfiguration
+import tr.qonferencer.backend.user.UserAnchorService
 import tr.qonferencer.backend.user.UserRepository
 import tr.qonferencer.shared.ApiPaths
 import tr.qonferencer.shared.dtos.MealScanRequestDto
@@ -47,12 +48,12 @@ class MealScanEndpointTest {
 	
 	@BeforeEach
 	fun createScanner() {
-		users.insertIfAbsent(scannerSub, ByteArray(32), "Volunteer Scanner")
+		users.insertIfAbsent(scannerSub, ByteArray(UserAnchorService.SECRET_LENGTH), "Volunteer Scanner")
 	}
 	
 	@Test
 	fun `volunteer scan approves, the same key repeats it, a fresh key is already consumed`() {
-		val secret = ByteArray(32) { 7 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 7 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -78,7 +79,7 @@ class MealScanEndpointTest {
 	
 	@Test
 	fun `visitor cannot scan`() {
-		val secret = ByteArray(32) { 3 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 3 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -90,7 +91,7 @@ class MealScanEndpointTest {
 
 	@Test
 	fun `volunteer without the grant is refused`() {
-		val secret = ByteArray(32) { 4 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 4 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -101,7 +102,7 @@ class MealScanEndpointTest {
 
 	@Test
 	fun `admin without the grant is refused too`() {
-		val secret = ByteArray(32) { 6 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 6 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -112,7 +113,7 @@ class MealScanEndpointTest {
 
 	@Test
 	fun `admin with the grant scans too`() {
-		val secret = ByteArray(32) { 9 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 9 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -136,7 +137,7 @@ class MealScanEndpointTest {
 	
 	@Test
 	fun `a printed badge number feeds a flat phone`() {
-		val userId = newUser(ByteArray(32) { 2 })
+		val userId = newUser(ByteArray(UserAnchorService.SECRET_LENGTH) { 2 })
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		
 		scan(MealScanRequestDto(userId.toString(), windowId, UUID.randomUUID(), ScannerType.BARCODE), Role.VOLUNTEER)
@@ -149,7 +150,7 @@ class MealScanEndpointTest {
 	/** BARCODE only reads a bare id — a rotating token doesn't parse as one, so this is an unknown user */
 	@Test
 	fun `a rotating token sent as a barcode scan is not accepted`() {
-		val secret = ByteArray(32) { 8 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 8 }
 		val userId = newUser(secret)
 		val windowId = newWindowWithPortion(userId, "meal.regular")
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
@@ -163,9 +164,9 @@ class MealScanEndpointTest {
 	/** Also guards the badge fallback: a forged token must not reach the bare-id branch */
 	@Test
 	fun `token signed by a foreign secret is not accepted`() {
-		val userId = newUser(ByteArray(32) { 7 })
+		val userId = newUser(ByteArray(UserAnchorService.SECRET_LENGTH) { 7 })
 		val windowId = newWindowWithPortion(userId, "meal.vegan")
-		val token = ScanToken.build(userId, ByteArray(32) { 9 }, Instant.now().epochSecond)
+		val token = ScanToken.build(userId, ByteArray(UserAnchorService.SECRET_LENGTH) { 9 }, Instant.now().epochSecond)
 		
 		scan(MealScanRequestDto(token, windowId, UUID.randomUUID(), ScannerType.QR), Role.VOLUNTEER).andExpect {
 			status { isOk() }
@@ -175,7 +176,7 @@ class MealScanEndpointTest {
 	
 	@Test
 	fun `scan without a reservation is not a registered portion`() {
-		val secret = ByteArray(32) { 5 }
+		val secret = ByteArray(UserAnchorService.SECRET_LENGTH) { 5 }
 		val userId = newUser(secret)
 		val windowId = windows.save(newWindow()).id
 		val token = ScanToken.build(userId, secret, Instant.now().epochSecond)
