@@ -135,6 +135,7 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.translations.codeTaken',          'en', 'code already taken'),
 	('admin.translations.keyTaken',           'en', 'key already taken'),
 	('admin.translations.needDefaultLanguage', 'en', 'cannot delete default language'),
+	('admin.translations.isDefault',           'en', 'default language'),
 	-- sk
 	('destination.custom.home',   'sk', 'Domov'),
 	('destination.custom.agenda', 'sk', 'Program'),
@@ -247,7 +248,8 @@ INSERT INTO translation (key, lang_code, text) VALUES
 	('admin.translations.missing',            'sk', 'chýbajúci preklad'),
 	('admin.translations.codeTaken',          'sk', 'kód je už obsadený'),
 	('admin.translations.keyTaken',           'sk', 'kľúč je už obsadený'),
-	('admin.translations.needDefaultLanguage', 'sk', 'predvolený jazyk nemožno zmazať')
+	('admin.translations.needDefaultLanguage', 'sk', 'predvolený jazyk nemožno zmazať'),
+	('admin.translations.isDefault',           'sk', 'predvolený jazyk')
 ON CONFLICT (key, lang_code) DO UPDATE SET text = EXCLUDED.text;
 
 -- Meal windows (reservations are imported per-attendee, not seeded here).

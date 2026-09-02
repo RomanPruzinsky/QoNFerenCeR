@@ -23,7 +23,7 @@ class CallerService(
 	fun canFoodCheck(): Boolean = jwtOrNull()?.getClaim<Boolean>("canFoodCheck") ?: false
 
 	/** Keycloak's `slot_NNN` login name, from the standard `preferred_username` claim */
-	fun username(): String = jwt().getClaim("preferred_username")
+	fun username(): String = jwt().getClaimAsString("preferred_username") ?: throw notFound("username claim missing")
 
 // /////////////////// PUBLIC /////////////////////
 // ////////////////////////////////////////////////

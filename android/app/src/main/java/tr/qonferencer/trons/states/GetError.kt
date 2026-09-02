@@ -12,7 +12,7 @@ var errorMessage: String = DefaultSay.ERROR
  *
  * Class name of [Exception] or [errorMessage] if no Exception provided
  *
- * @param specificClass Trigerred exception to extract class name from
+ * @param specificClass Triggered exception to extract class name from
  * @return Class name of [specificClass] or [errorMessage]
  */
 fun getError(specificClass: Exception? = null): String = specificClass?.javaClass?.toString()?.run {

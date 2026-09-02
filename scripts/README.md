@@ -3,7 +3,7 @@
 Developer tooling for the QoNFerenCeR repo.
 
 | File                    | What it does                                                 |
-|-------------------------|---------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------|
 | `git-hooks/pre-commit`  | Pre-commit hook: runs `ktlintFormat` on staged Kotlin files. |
 
 ## The pre-commit hook

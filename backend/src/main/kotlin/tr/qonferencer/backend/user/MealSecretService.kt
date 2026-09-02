@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.RestClientResponseException
-import tr.qonferencer.backend.common.ApiException
 import tr.qonferencer.backend.common.forbidden
 import java.util.Base64
 
@@ -19,14 +18,14 @@ class MealSecretService(
 	@param:Value($$"${qonferencer.keycloak.public-client-id}") private val publicClientId: String,
 ) {
 	private val restClient = restClientBuilder.build()
-	
+
 	fun reveal(password: String): String {
 		val user = caller.requireUser()
 		verifyPassword(caller.username(), password)
 		return Base64.getEncoder().encodeToString(user.mealSecret)
 	}
 
-	/** @throws ApiException 403 if Keycloak rejects [username]/[password] */
+	/** @throws tr.qonferencer.backend.common.ApiException 403 if Keycloak rejects [username]/[password], rethrows other errors */
 	private fun verifyPassword(
 		username: String,
 		password: String,
@@ -37,7 +36,7 @@ class MealSecretService(
 			add("username", username)
 			add("password", password)
 		}
-		
+
 		try {
 			restClient.post()
 				.uri("$serverUrl/realms/$realm/protocol/openid-connect/token")
@@ -45,7 +44,7 @@ class MealSecretService(
 				.body(form)
 				.retrieve()
 				.toBodilessEntity()
-		} catch (_: RestClientResponseException) {
+		} catch (_: HttpClientErrorException) {
 			throw forbidden("wrong password")
 		}
 	}
