@@ -26,6 +26,7 @@ services:
          KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
          KEYCLOAK_ADMIN: ${KC_CONSOLEADMIN_USERNAME}
          KEYCLOAK_ADMIN_PASSWORD: ${KC_CONSOLEADMIN_PASSWORD}
+         KC_HOSTNAME: ${KEYCLOAK_HOSTNAME}
       command: start-dev --import-realm
       volumes:
          - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
@@ -45,7 +46,7 @@ services:
          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/qonferencer
          SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
          SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-         KC_ISSUER: http://localhost:8080/realms/qonferencer
+         KC_ISSUER: ${KEYCLOAK_HOSTNAME}/realms/qonferencer
          KC_JWK_SET_URI: http://keycloak:8080/realms/qonferencer/protocol/openid-connect/certs
          KC_ADMIN_URL: http://keycloak:8080
          KC_BEADMIN_CLIENT_SECRET: ${KC_BEADMIN_CLIENT_SECRET}

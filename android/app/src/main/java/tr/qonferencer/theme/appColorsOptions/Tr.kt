@@ -1,0 +1,22 @@
+package tr.qonferencer.theme.appColorsOptions
+
+import androidx.compose.ui.graphics.Color
+import tr.qonferencer.theme.AppColors
+import tr.qonferencer.theme.standardActionColors
+import tr.qonferencer.theme.standardRoleColors
+import tr.qonferencer.theme.standardScanResultColors
+
+val trAppColors = AppColors(
+	appBackground = Color(0xFF0B27E4),
+	container = Color(0xFF550055),
+	element = Color(0xFF410141),
+	clickable = Color(0xFF9609C9),
+	selected = Color(0xFF230023),
+
+	text = Color.White,
+	navigation = Color.Black,
+
+	level = standardRoleColors,
+	scanResult = standardScanResultColors,
+	action = standardActionColors,
+)

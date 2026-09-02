@@ -14,26 +14,28 @@ class CallerService(
 	private val users: UserRepository,
 ) {
 	fun userOrNull(): User? = jwtOrNull()?.let { users.findByKcSub(UUID.fromString(it.subject)) }
-	fun requireUserId(): Long = (
-		users.findByKcSub(UUID.fromString(jwt().subject))
-			?: throw notFound("User doesn't exist")
-		).id
-	
+	fun requireUser(): User = userOrNull() ?: throw notFound("User doesn't exist")
+	fun requireUserId(): Long = requireUser().id
+
 	fun role(): Role = jwtOrNull()?.let { Role.highestAvailable(it.processKeycloakRoles()) } ?: Role.ANONYM
 	fun isSpeaker(): Boolean = jwtOrNull()?.processIsSpeaker() ?: false
-	fun canCheckByName(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckByName") ?: false
+	fun canCheckUsers(): Boolean = jwtOrNull()?.getClaim<Boolean>("canCheckUsers") ?: false
+	fun canFoodCheck(): Boolean = jwtOrNull()?.getClaim<Boolean>("canFoodCheck") ?: false
+
+	/** Keycloak's `slot_NNN` login name, from the standard `preferred_username` claim */
+	fun username(): String = jwt().getClaimAsString("preferred_username") ?: throw notFound("username claim missing")
 
 // /////////////////// PUBLIC /////////////////////
 // ////////////////////////////////////////////////
 // ////////////////// HELPERS /////////////////////
-	
+
 	private fun jwt(): Jwt = jwtOrNull() ?: throw notFound("no authenticated principal")
-	
+
 	private fun jwtOrNull(): Jwt? = (SecurityContextHolder.getContext().authentication as? JwtAuthenticationToken)?.token
-	
+
 	@Suppress("UNCHECKED_CAST")
 	private fun Jwt.processKeycloakRoles(): List<String> =
 		(getClaimAsMap("realm_access")?.get("roles") as? List<String>).orEmpty()
-	
+
 	private fun Jwt.processIsSpeaker(): Boolean = getClaim<Boolean>("isSpeaker") ?: false
 }

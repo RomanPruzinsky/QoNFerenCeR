@@ -26,10 +26,10 @@ data class MealSlotId(
 @Entity
 @Table(name = "meal_reservation")
 class MealReservation(
-	
+
 	@EmbeddedId
 	var id: MealSlotId,
-	
+
 	@Column(name = "variant_key", nullable = false)
 	var variantKey: String,
 )
@@ -44,16 +44,16 @@ class MealReservation(
 @Entity
 @Table(name = "meal_consumption")
 class MealConsumption(
-	
+
 	@EmbeddedId
 	var id: MealSlotId,
-	
+
 	@Column(name = "scanned_by")
 	var scannedBy: Long?,
-	
+
 	@Column(name = "scanned_at", nullable = false)
 	var scannedAt: Instant,
-	
+
 	@Column(name = "idempotency_key", nullable = false)
 	var idempotencyKey: UUID,
 )

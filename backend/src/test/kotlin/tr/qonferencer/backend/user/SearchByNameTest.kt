@@ -24,25 +24,25 @@ import java.util.UUID
 @AutoConfigureMockMvc
 @Transactional
 class SearchByNameTest {
-	
+
 	@Autowired
 	private lateinit var mockMvc: MockMvc
-	
+
 	@Autowired
 	private lateinit var users: UserRepository
-	
+
 	@MockitoBean
 	private lateinit var keycloak: KeycloakAdminService
-	
+
 	@BeforeEach
 	fun seedAttendees() {
 		listOf("Roman Pružinský", "Jana Kováčová", "Peter Novák", "Marek Kovacs").forEach {
 			val sub = UUID.randomUUID()
-			users.insertIfAbsent(sub, ByteArray(32), it)
-			Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot", Role.VISITOR, false, false))
+			users.insertIfAbsent(sub, ByteArray(UserAnchorService.SECRET_LENGTH), it)
+			Mockito.`when`(keycloak.info(sub)).thenReturn(KeycloakUserInfo("slot", Role.VISITOR, false, false, false))
 		}
 	}
-	
+
 	@Test
 	fun `diacritics are folded away`() {
 		search("pruz", Role.ORGANISER).andExpect {
@@ -51,7 +51,7 @@ class SearchByNameTest {
 			jsonPath("$.content[0].fullName") { value("Roman Pružinský") }
 		}
 	}
-	
+
 	@Test
 	fun `a transposed pair of letters still finds the person`() {
 		search("pruzinksy", Role.ORGANISER).andExpect {
@@ -59,7 +59,7 @@ class SearchByNameTest {
 			jsonPath("$.content[0].fullName") { value("Roman Pružinský") }
 		}
 	}
-	
+
 	@Test
 	fun `full name typed out narrows to one`() {
 		search("roman pruzinsky", Role.ORGANISER).andExpect {
@@ -67,7 +67,7 @@ class SearchByNameTest {
 			jsonPath("$.content.length()") { value(1) }
 		}
 	}
-	
+
 	@Test
 	fun `a shared surname returns every candidate for the organizer to tell apart`() {
 		search("kova", Role.ORGANISER).andExpect {
@@ -75,7 +75,7 @@ class SearchByNameTest {
 			jsonPath("$.content.length()") { value(2) }
 		}
 	}
-	
+
 	@Test
 	fun `unknown name is an empty list, not an error`() {
 		search("zzzzz", Role.ORGANISER).andExpect {
@@ -83,7 +83,7 @@ class SearchByNameTest {
 			jsonPath("$.content.length()") { value(0) }
 		}
 	}
-	
+
 	@Test
 	fun `each row carries role and isSpeaker, not just the name`() {
 		search("pruz", Role.ORGANISER).andExpect {
@@ -92,43 +92,47 @@ class SearchByNameTest {
 			jsonPath("$.content[0].isSpeaker") { value(false) }
 		}
 	}
-	
+
 	@Test
 	fun `volunteer is refused even with the grant`() {
-		search("pruz", Role.VOLUNTEER, canCheckByName = true).andExpect {
+		search("pruz", Role.VOLUNTEER, canCheckUsers = true).andExpect {
 			status { isForbidden() }
 		}
 	}
-	
+
 	@Test
 	fun `organiser without the grant is refused`() {
-		search("pruz", Role.ORGANISER, canCheckByName = false).andExpect {
+		search("pruz", Role.ORGANISER, canCheckUsers = false).andExpect {
 			status { isForbidden() }
 		}
 	}
-	
+
 	@Test
 	fun `organiser with a too-short query is refused, before it becomes an unfiltered browse`() {
 		search("p", Role.ORGANISER).andExpect {
 			status { isBadRequest() }
 		}
 	}
-	
+
 	@Test
 	fun `admin browses everyone with an empty query, no grant needed`() {
-		search("", Role.ADMIN, canCheckByName = false).andExpect {
+		search("", Role.ADMIN, canCheckUsers = false).andExpect {
 			status { isOk() }
 			jsonPath("$.content.length()") { value(4) }
 		}
 	}
-	
-	private fun search(query: String, role: Role, canCheckByName: Boolean = true) = mockMvc.get(ApiPaths.SEARCH_BY_NAME) {
+
+	private fun search(
+		query: String,
+		role: Role,
+		canCheckUsers: Boolean = true,
+	) = mockMvc.get(ApiPaths.User.BY_NAME) {
 		param("searchFor", query)
 		with(
 			jwt().jwt {
 				it.subject(UUID.randomUUID().toString())
 					.claim("realm_access", mapOf("roles" to listOf(role.name)))
-					.claim("canCheckByName", canCheckByName)
+					.claim("canCheckUsers", canCheckUsers)
 			},
 		)
 	}

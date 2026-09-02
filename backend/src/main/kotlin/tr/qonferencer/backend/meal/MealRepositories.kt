@@ -9,10 +9,30 @@ import java.util.UUID
 interface MealWindowRepository : JpaRepository<MealWindow, Long>
 
 interface MealReservationRepository : JpaRepository<MealReservation, MealSlotId> {
-	
+
 	fun findByIdUserId(userId: Long): List<MealReservation>
-	
+
 	fun deleteByIdUserId(userId: Long)
+
+	/** Reservations of [windowId] grouped by variant, counting those not yet in [MealConsumption] */
+	@Query(
+		value = """
+			SELECT r.variant_key AS variantKey,
+			       COUNT(*) FILTER (WHERE c.user_id IS NULL) AS remaining
+			FROM meal_reservation r
+			LEFT JOIN meal_consumption c ON c.user_id = r.user_id AND c.window_id = r.window_id
+			WHERE r.window_id = :windowId
+			GROUP BY r.variant_key
+		""",
+		nativeQuery = true,
+	)
+	fun remainingByWindow(@Param("windowId") windowId: Long): List<RemainingCount>
+}
+
+/** Projection for [MealReservationRepository.remainingByWindow] */
+interface RemainingCount {
+	fun getVariantKey(): String
+	fun getRemaining(): Long
 }
 
 /** Outcome of [MealConsumptionRepository.consume] */
@@ -28,7 +48,7 @@ enum class ConsumeOutcome {
 }
 
 interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId> {
-	
+
 	fun deleteByIdUserId(userId: Long)
 
 	/** Clears [userId] from `scannedBy` */
@@ -40,7 +60,11 @@ interface MealConsumptionRepository : JpaRepository<MealConsumption, MealSlotId>
 	fun detachScanner(@Param("userId") userId: Long): Int
 
 	/** Records consumption */
-	fun consume(slot: MealSlotId, scannedBy: Long?, idempotencyKey: UUID): ConsumeOutcome {
+	fun consume(
+		slot: MealSlotId,
+		scannedBy: Long?,
+		idempotencyKey: UUID,
+	): ConsumeOutcome {
 		if (insertIfAbsent(slot.userId, slot.windowId, scannedBy, idempotencyKey) == 1) return ConsumeOutcome.NEW
 		val idempotencyKeysMatches = findById(slot).orElse(null)?.idempotencyKey == idempotencyKey
 		return if (idempotencyKeysMatches) ConsumeOutcome.RETRY else ConsumeOutcome.CONFLICT

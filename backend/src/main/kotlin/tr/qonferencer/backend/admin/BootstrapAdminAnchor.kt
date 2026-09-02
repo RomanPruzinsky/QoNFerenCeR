@@ -28,7 +28,7 @@ class BootstrapAdminAnchor(
 			log.warn("couldn't anchor bootstrap admin '$bootstrapUsername': ${e.message}")
 		}
 	}
-	
+
 	private companion object {
 		val log: Logger = LoggerFactory.getLogger(BootstrapAdminAnchor::class.java)
 	}

@@ -14,14 +14,14 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "language")
 class Language(
-	
+
 	@Id
 	@Column(name = "code")
 	var code: String,
-	
+
 	@Column(name = "name", nullable = false)
 	var name: String,
-	
+
 	@Column(name = "is_default", nullable = false)
 	var isDefault: Boolean,
 )

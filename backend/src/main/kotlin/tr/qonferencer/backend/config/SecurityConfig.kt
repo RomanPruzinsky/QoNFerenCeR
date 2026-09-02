@@ -26,16 +26,19 @@ class SecurityConfig(
 	@param:Value($$"${qonferencer.keycloak.jwk-set-uri}") private val jwkSetUri: String,
 	@param:Value($$"${qonferencer.keycloak.issuer}") private val issuer: String,
 ) {
-	
+
 	@Bean
-	fun securityFilterChain(http: HttpSecurity, caller: CallerService): SecurityFilterChain {
+	fun securityFilterChain(
+		http: HttpSecurity,
+		caller: CallerService,
+	): SecurityFilterChain {
 		http
 			.csrf { it.disable() } // QoNFerenCeR don't use cookies
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) } // Server remembers nothing
 			.authorizeHttpRequests { reg ->
 				reg
 					.requestMatchers(
-						ApiPaths.SPLASH,
+						ApiPaths.Splash.ALL,
 						"${ApiPaths.CustomScreens.ROOT}/**",
 						"/actuator/health/**",
 					).permitAll()

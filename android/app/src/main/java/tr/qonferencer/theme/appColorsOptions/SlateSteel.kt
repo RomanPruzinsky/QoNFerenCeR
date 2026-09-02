@@ -1,0 +1,22 @@
+package tr.qonferencer.theme.appColorsOptions
+
+import androidx.compose.ui.graphics.Color
+import tr.qonferencer.theme.AppColors
+import tr.qonferencer.theme.standardActionColors
+import tr.qonferencer.theme.standardRoleColors
+import tr.qonferencer.theme.standardScanResultColors
+
+val slateSteelAppColors = AppColors(
+	appBackground = Color(0xFF1E293B),
+	container = Color(0xFF334155),
+	element = Color(0xFF475569),
+	clickable = Color(0xFF94A3B8),
+	selected = Color(0xFF0F172A),
+
+	text = Color.White,
+	navigation = Color.Black,
+
+	level = standardRoleColors,
+	scanResult = standardScanResultColors,
+	action = standardActionColors,
+)

@@ -25,4 +25,9 @@ data class N8nProperties(
 	val eventId: String,
 	val authToken: String,
 	val timeoutMs: Long,
-)
+) {
+	companion object {
+		const val ENABLED_PROPERTY = "qonferencer.n8n.enabled"
+		const val ENABLED_VALUE = "true"
+	}
+}

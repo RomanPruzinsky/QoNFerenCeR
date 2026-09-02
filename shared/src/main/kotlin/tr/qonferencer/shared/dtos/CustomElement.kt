@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import tr.qonferencer.shared.enums.CustomTextSize
 
-// TODO: dynamic list — no primitive repeats a template per data row, so fed screens stay static
-
 /** Custom element, drawn by renderer in received order */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
@@ -19,15 +17,15 @@ sealed class CustomElement {
 		val source: TextSource,
 		val size: CustomTextSize = CustomTextSize.MEDIUM,
 	) : CustomElement()
-	
+
 	data class Image(
 		val url: String,
 	) : CustomElement()
-	
+
 	data class Row(
 		val children: List<CustomElement>,
 	) : CustomElement()
-	
+
 	data class Column(
 		val children: List<CustomElement>,
 	) : CustomElement()

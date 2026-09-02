@@ -32,7 +32,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
-	implementation("org.keycloak:keycloak-admin-client:26.0.11")
+	implementation("org.keycloak:keycloak-admin-client:26.0.12")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
@@ -65,6 +65,7 @@ tasks.withType<Test> {
 	// SPRING_DATASOURCE_* is exempt: Testcontainers' @ServiceConnection overrides it outright.
 	environment(
 		mapOf(
+			"SPRING_PROFILES_ACTIVE" to "test",
 			"EVENT_ID" to "test",
 			"KC_ISSUER" to "http://localhost:8080/realms/qonferencer",
 			"KC_JWK_SET_URI" to "http://localhost:8080/realms/qonferencer/protocol/openid-connect/certs",

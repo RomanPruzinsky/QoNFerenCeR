@@ -24,7 +24,6 @@ import tr.qonferencer.shared.dtos.SlotProvisionedDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 import tr.qonferencer.shared.dtos.UserMealEntryDto
 import java.security.SecureRandom
-import java.util.Base64
 
 /** Result of [SlotService.deleteUserSlot] */
 enum class DeleteOutcome {
@@ -53,42 +52,46 @@ class SlotService(
 	@Transactional
 	fun createUserSlot(req: ModifyableUserDataDto): SlotProvisionedDto {
 		validateMealWindows(req.meals)
-		
+
 		val username = "slot_%03d".format(nextSlotNumber())
 		val sub = kc.createUser(
 			username = username,
 			role = req.role,
 			isSpeaker = req.isSpeaker,
-			canCheckByName = req.canCheckByName,
+			canCheckUsers = req.canCheckUsers,
+			canFoodCheck = req.canFoodCheck,
 		)
-		
+
 		val password = UserPasswordGenerator.generate(random)
 		kc.setPassword(sub, password)
-		
+
 		val user = anchors.ensure(sub, req.fullName, req.customData)
 		saveReservations(user.id, req.meals)
-		
+
 		events.publishEvent(OutboundEvent.SlotCreated(userId = user.id, username = username, userData = req))
 		return SlotProvisionedDto(
 			user = userDetail(user, req),
-			credentials = loginCredentials(user, username, password),
+			credentials = loginCredentials(username, password),
 		)
 	}
 
 	/** Replaces everything mutable about [userId]; replaces reservations, keeps consumptions */
 	@Transactional
-	fun updateUserSlot(userId: Long, req: ModifyableUserDataDto): UserDetailDto {
+	fun updateUserSlot(
+		userId: Long,
+		req: ModifyableUserDataDto,
+	): UserDetailDto {
 		validateMealWindows(req.meals)
-		
+
 		val user = findUser(userId)
-		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckByName)
-		
+		kc.updateUser(user.kcSub, req.role, req.isSpeaker, req.canCheckUsers, req.canFoodCheck)
+
 		user.fullName = req.fullName
 		anchors.storeCustomData(user, req.customData)
-		
+
 		reservations.deleteByIdUserId(userId)
 		saveReservations(userId, req.meals)
-		
+
 		events.publishEvent(OutboundEvent.SlotUpdated(userId = userId, userData = req))
 		return userDetail(user, req)
 	}
@@ -99,14 +102,14 @@ class SlotService(
 		val user = findUser(userId)
 		val newVersion = anchors.rotateSecret(user)
 		kc.logout(user.kcSub)
-		events.publishEvent(OutboundEvent.SlotRevoked(userId = user.id, qrSecretV = newVersion))
+		events.publishEvent(OutboundEvent.SlotRevoked(userId = user.id, mealSecretV = newVersion))
 	}
 
 	/** Deletes user from app DB and Keycloak; */
 	fun deleteUserSlot(userId: Long): DeleteOutcome {
 		val sub = findUser(userId).kcSub
 		userDelete.delete(userId)
-		
+
 		val outcome = try {
 			kc.deleteUser(sub)
 			DeleteOutcome.FULL
@@ -114,7 +117,7 @@ class SlotService(
 			log.warn("app data for $userId is gone, Keycloak user survives: ${e.message}")
 			DeleteOutcome.KEYCLOAK_SURVIVED
 		}
-		
+
 		events.publishEvent(OutboundEvent.SlotDeleted(userId = userId))
 		return outcome
 	}
@@ -124,11 +127,11 @@ class SlotService(
 		val user = findUser(userId)
 		val password = UserPasswordGenerator.generate(random)
 		val username = kc.username(user.kcSub)
-		
+
 		kc.setPassword(user.kcSub, password)
-		
+
 		events.publishEvent(OutboundEvent.SlotLoginIssued(userId = user.id, username = username))
-		return loginCredentials(user, username, password)
+		return loginCredentials(username, password)
 	}
 
 	/** @return Next free slot number */
@@ -151,26 +154,35 @@ class SlotService(
 	}
 
 	/** Saves [meals] for [userId] */
-	private fun saveReservations(userId: Long, meals: List<UserMealEntryDto>) {
+	private fun saveReservations(
+		userId: Long,
+		meals: List<UserMealEntryDto>,
+	) {
 		reservations.saveAll(meals.map { MealReservation(MealSlotId(userId, it.windowId), it.variantKey) })
 	}
-	
-	private fun loginCredentials(user: User, username: String, password: String) = LoginCredentialsDto(
+
+	private fun loginCredentials(
+		username: String,
+		password: String,
+	) = LoginCredentialsDto(
 		username = username,
 		password = password,
-		qrSecret = Base64.getEncoder().encodeToString(user.qrSecret),
 	)
-	
-	private fun userDetail(user: User, mod: ModifyableUserDataDto) = UserDetailDto(
+
+	private fun userDetail(
+		user: User,
+		mod: ModifyableUserDataDto,
+	) = UserDetailDto(
 		userId = user.id,
 		fullName = user.fullName,
 		role = mod.role,
 		isSpeaker = mod.isSpeaker,
-		canCheckByName = mod.canCheckByName,
+		canCheckUsers = mod.canCheckUsers,
+		canFoodCheck = mod.canFoodCheck,
 		meals = mod.meals,
 		customData = mod.customData,
 	)
-	
+
 	private companion object {
 		val log: Logger = LoggerFactory.getLogger(SlotService::class.java)
 	}

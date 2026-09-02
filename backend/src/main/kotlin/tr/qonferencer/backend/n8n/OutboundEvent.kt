@@ -44,7 +44,7 @@ sealed class OutboundEvent(
 	/** Scan secret rotated and sessions killed */
 	data class SlotRevoked(
 		val userId: Long,
-		val qrSecretV: Short,
+		val mealSecretV: Short,
 	) : OutboundEvent("SLOT_REVOKED")
 
 	/** User erased */

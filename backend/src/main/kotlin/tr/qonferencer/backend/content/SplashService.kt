@@ -4,12 +4,14 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import tr.qonferencer.backend.meal.MealReservationRepository
+import tr.qonferencer.backend.meal.MealWindow
 import tr.qonferencer.backend.meal.MealWindowRepository
 import tr.qonferencer.backend.meal.toDto
 import tr.qonferencer.backend.meal.toUserMealEntry
 import tr.qonferencer.backend.n8n.OutboundEvent
 import tr.qonferencer.backend.user.CallerService
 import tr.qonferencer.backend.user.UserAnchorService
+import tr.qonferencer.shared.dtos.AllTranslationsDto
 import tr.qonferencer.shared.dtos.SplashDto
 import tr.qonferencer.shared.dtos.UserDetailDto
 
@@ -34,19 +36,36 @@ class SplashService(
 				fullName = user.fullName,
 				role = meRole,
 				isSpeaker = caller.isSpeaker(),
-				canCheckByName = caller.canCheckByName(),
+				canCheckUsers = caller.canCheckUsers(),
+				canFoodCheck = caller.canFoodCheck(),
 				customData = anchors.customData(user),
 				meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 			)
 		}
-		
+
 		events.publishEvent(OutboundEvent.AppLaunched(user = me))
-		
+
+		val allLanguages = languages.findAll(Sort.by(Language::code.name)).map { it.toDto() }
+		check(allLanguages.any { it.isDefault }) { "no default language configured" }
+
+		val langCodes = allLanguages.map { it.code }.toSet()
+		val allTranslations = translations.findAll(
+			Sort.by(
+				"${Translation::id.name}.${TranslationId::key.name}",
+				"${Translation::id.name}.${TranslationId::langCode.name}",
+			),
+		)
+
+		// `count(key)` must match `count(language)`
+		val gaps = allTranslations.groupingBy { it.id.key }.eachCount().filterValues { it != langCodes.size }.keys
+		check(gaps.isEmpty()) { "translations missing lang(s) for keys: $gaps" }
+
 		return SplashDto(
-			languages = languages.findAll(Sort.by("code")).map { it.toDto() },
-			translations = translations.findAll(Sort.by("id.key", "id.langCode")).map { it.toDto() },
-			customScreens = screens.findAll(Sort.by("id")).filter { meRole.atLeast(it.minRole) }.map { it.toDto() },
-			mealWindows = windows.findAll(Sort.by("startsAt")).map { it.toDto() },
+			translations = AllTranslationsDto(languages = allLanguages, translations = allTranslations.map { it.toDto() }),
+			customScreens = screens.findAll(Sort.by(CustomScreen::id.name))
+				.filter { meRole.atLeast(it.minRole) }
+				.map { it.toDto() },
+			mealWindows = windows.findAll(Sort.by(MealWindow::startsAt.name)).map { it.toDto() },
 			me = me,
 		)
 	}

@@ -35,7 +35,7 @@ fun badRequest(detail: String) = ApiException(Problem.VALIDATION, detail)
 /** Maps [ApiException] to problem */
 @RestControllerAdvice
 class GlobalExceptionHandler {
-	
+
 	@ExceptionHandler(ApiException::class)
 	fun onApi(ex: ApiException): ProblemDetail = ProblemDetail
 		.forStatusAndDetail(ex.problem.status, ex.message)
@@ -49,7 +49,7 @@ class GlobalExceptionHandler {
 			.forStatusAndDetail(Problem.INTERNAL.status, "internal error")
 			.apply { type = URI.create(Problem.INTERNAL.type) }
 	}
-	
+
 	private companion object {
 		val log: Logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 	}

@@ -26,19 +26,20 @@ class MealScanService(
 ) {
 	@Transactional
 	fun scan(request: MealScanRequestDto): MealScanResultDto {
-		if (!caller.role().atLeast(Role.VOLUNTEER)) throw forbidden("role below VOLUNTEER")
-		
+		val allowed = caller.role().atLeast(Role.VOLUNTEER) && caller.canFoodCheck()
+		if (!allowed) throw forbidden("needs VOLUNTEER with canFoodCheck")
+
 		val windowId = request.mealWindowId
 		val scannedBy = caller.requireUserId()
 		val scannerType = request.scannerType
-		
+
 		val userId = verify(request.token, scannerType)
 			?: return denied(null, windowId, scannedBy, scannerType, MealScanResult.NO_USER_FOUND)
-		
+
 		val mealSlotId = MealSlotId(userId, windowId)
 		val reservation = reservations.findById(mealSlotId).orElse(null)
 			?: return denied(userId, windowId, scannedBy, scannerType, MealScanResult.NOT_REGISTERED_PORTION)
-		
+
 		when (consumptions.consume(mealSlotId, scannedBy, request.idempotencyKey)) {
 			ConsumeOutcome.CONFLICT -> return denied(
 				userId = userId,
@@ -47,7 +48,7 @@ class MealScanService(
 				scannerType = scannerType,
 				result = MealScanResult.ALREADY_CONSUMED,
 			)
-			
+
 			ConsumeOutcome.NEW -> events.publishEvent(
 				OutboundEvent.MealApproved(
 					userId = userId,
@@ -56,28 +57,32 @@ class MealScanService(
 					scannerType = scannerType,
 				),
 			)
-			
+
 			ConsumeOutcome.RETRY -> Unit
 		}
-		
+
 		return MealScanResultDto(MealScanResult.APPROVED, reservation.variantKey)
 	}
 
 	/** @return Verified `app_user.id`, or null if user not found */
-	private fun verify(token: String, scannerType: ScannerType, now: Instant = Instant.now()): Long? = when (scannerType) {
+	private fun verify(
+		token: String,
+		scannerType: ScannerType,
+		now: Instant = Instant.now(),
+	): Long? = when (scannerType) {
 		ScannerType.QR, ScannerType.NFC -> {
 			val parsed = ScanToken.parse(token) ?: return null
-			val secret = users.findById(parsed.userId).orElse(null)?.qrSecret ?: return null
+			val secret = users.findById(parsed.userId).orElse(null)?.mealSecret ?: return null
 			if (!ScanToken.matches(parsed, secret, now.epochSecond)) return null
 			parsed.userId
 		}
-			
+
 		ScannerType.BARCODE, ScannerType.MANUAL -> {
 			val userId = token.trim().toLongOrNull() ?: return null
 			if (users.existsById(userId)) userId else null
 		}
 	}
-	
+
 	private fun denied(
 		userId: Long?,
 		windowId: Long,
@@ -94,7 +99,7 @@ class MealScanService(
 				scannerType = scannerType,
 			),
 		)
-		
+
 		return MealScanResultDto(result, null)
 	}
 }

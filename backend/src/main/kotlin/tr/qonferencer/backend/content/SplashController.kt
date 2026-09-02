@@ -9,6 +9,6 @@ import tr.qonferencer.shared.dtos.SplashDto
 class SplashController(
 	private val splashService: SplashService,
 ) {
-	@GetMapping(ApiPaths.SPLASH)
+	@GetMapping(ApiPaths.Splash.ALL)
 	fun splash(): SplashDto = splashService.build()
 }

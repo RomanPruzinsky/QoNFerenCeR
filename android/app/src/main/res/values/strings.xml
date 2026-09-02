@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="qonferencer_nfc_card">QoNFerenCeR NFC card</string>
+	<string name="qonferencer_aid_group">User identification</string>
+
+	<string name="qonferencer_aid" translatable="false">F0516F4E466572656E436552</string>
+</resources>

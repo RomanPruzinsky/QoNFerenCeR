@@ -27,3 +27,13 @@ data class MealScanResultDto(
 	val result: MealScanResult,
 	val variantKey: String?,
 )
+
+/**
+ * Portions of one variant left to hand out for window
+ * @property variantKey Translation key of meal variant
+ * @property remaining Reservations of [variantKey] not yet consumed
+ */
+data class MealCountDto(
+	val variantKey: String,
+	val remaining: Int,
+)

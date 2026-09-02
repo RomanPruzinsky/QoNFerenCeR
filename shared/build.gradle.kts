@@ -34,7 +34,7 @@ val generateApiVersion = tasks.register("generateApiVersion") {
 				"""
 				package tr.qonferencer.shared
 
-				internal const val API_VERSION = "$apiVersion"
+				const val API_VERSION = "$apiVersion"
 				""".trimIndent() + "\n",
 			)
 		}

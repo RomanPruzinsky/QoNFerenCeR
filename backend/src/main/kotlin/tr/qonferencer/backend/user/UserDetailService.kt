@@ -21,9 +21,9 @@ class UserDetailService(
 	@Transactional(readOnly = true)
 	fun detail(userId: Long): UserDetailDto {
 		val role = caller.role()
-		val allowed = role == Role.ADMIN || (role.atLeast(Role.ORGANISER) && caller.canCheckByName())
-		if (!allowed) throw forbidden("needs ORGANISER with canCheckByName, or ADMIN")
-		
+		val allowed = role == Role.ADMIN || (role.atLeast(Role.ORGANISER) && caller.canCheckUsers())
+		if (!allowed) throw forbidden("needs ORGANISER with canCheckUsers, or ADMIN")
+
 		val user = users.findById(userId).orElseThrow { notFound("user $userId doesn't exist") }
 		val info = kc.info(user.kcSub)
 		return UserDetailDto(
@@ -31,7 +31,8 @@ class UserDetailService(
 			fullName = user.fullName,
 			role = info.role,
 			isSpeaker = info.isSpeaker,
-			canCheckByName = info.canCheckByName,
+			canCheckUsers = info.canCheckUsers,
+			canFoodCheck = info.canFoodCheck,
 			customData = anchors.customData(user),
 			meals = reservations.findByIdUserId(user.id).map { it.toUserMealEntry() },
 		)

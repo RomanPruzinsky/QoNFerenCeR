@@ -15,7 +15,11 @@ class UserAnchorService(
 ) {
 	/** Makes sure entry for this user exists */
 	@Transactional
-	fun ensure(kcSub: UUID, fullName: String, customData: CustomDataType = emptyMap()): User {
+	fun ensure(
+		kcSub: UUID,
+		fullName: String,
+		customData: CustomDataType = emptyMap(),
+	): User {
 		users.insertIfAbsent(kcSub, newSecret(), fullName, objectMapper.writeValueAsString(customData))
 		return users.findByKcSub(kcSub) ?: error("anchor upsert failed for $kcSub")
 	}
@@ -31,7 +35,10 @@ class UserAnchorService(
 			.getOrDefault(emptyMap())
 
 	/** Replaces whole [User.customData] */
-	fun storeCustomData(user: User, customData: CustomDataType) {
+	fun storeCustomData(
+		user: User,
+		customData: CustomDataType,
+	) {
 		user.customData = objectMapper.writeValueAsString(customData)
 		users.save(user)
 	}
@@ -42,20 +49,20 @@ class UserAnchorService(
 
 	/**
 	 * Gives [user] fresh scan secret, so every token built from old one stops verifying
-	 * @return new [User.qrSecretV]
+	 * @return new [User.mealSecretV]
 	 */
 	fun rotateSecret(user: User): Short {
-		user.qrSecret = newSecret()
-		user.qrSecretV++
+		user.mealSecret = newSecret()
+		user.mealSecretV++
 		users.save(user)
-		return user.qrSecretV
+		return user.mealSecretV
 	}
-	
+
 	private val random = SecureRandom()
 	private fun newSecret(): ByteArray = ByteArray(SECRET_LENGTH).also { random.nextBytes(it) }
-	
-	private companion object {
-		/** Length of `qrSecret` in bytes */
+
+	internal companion object {
+		/** Length of `mealSecret` in bytes */
 		const val SECRET_LENGTH = 32
 	}
 }

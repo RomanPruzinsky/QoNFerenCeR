@@ -27,5 +27,8 @@ enum class Role {
 		fun highestAvailable(roles: Collection<String>): Role = roles
 			.map { fromOrAnonym(it) }
 			.maxByOrNull { it.ordinal } ?: ANONYM
+
+		/** @return [Role] at [index] in [entries] */
+		fun fromIndex(index: Int): Role = entries[index]
 	}
 }
