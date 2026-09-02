@@ -1,6 +1,7 @@
 package tr.qonferencer.backend.user
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
@@ -44,8 +45,11 @@ class MealSecretService(
 				.body(form)
 				.retrieve()
 				.toBodilessEntity()
-		} catch (_: HttpClientErrorException) {
-			throw forbidden("wrong password")
+		} catch (ex: HttpClientErrorException) {
+			if (ex.statusCode == HttpStatus.BAD_REQUEST && ex.responseBodyAsString.contains("\"error\":\"invalid_grant\"")) {
+				throw forbidden("wrong password")
+			}
+			throw ex
 		}
 	}
 }
