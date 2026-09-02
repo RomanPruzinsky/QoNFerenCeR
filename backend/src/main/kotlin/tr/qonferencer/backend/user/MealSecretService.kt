@@ -1,8 +1,10 @@
 package tr.qonferencer.backend.user
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.HttpClientErrorException
@@ -46,7 +48,9 @@ class MealSecretService(
 				.retrieve()
 				.toBodilessEntity()
 		} catch (ex: HttpClientErrorException) {
-			if (ex.statusCode == HttpStatus.BAD_REQUEST && ex.responseBodyAsString.contains("\"error\":\"invalid_grant\"")) {
+			val errorCode =
+				ex.getResponseBodyAs(object : ParameterizedTypeReference<Map<String, String>>() {})?.get("error")
+			if (ex.statusCode == HttpStatus.BAD_REQUEST && errorCode == OAuth2ErrorCodes.INVALID_GRANT) {
 				throw forbidden("wrong password")
 			}
 			throw ex

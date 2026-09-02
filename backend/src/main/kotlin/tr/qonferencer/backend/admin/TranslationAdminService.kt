@@ -1,6 +1,7 @@
 package tr.qonferencer.backend.admin
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tr.qonferencer.backend.content.Language
 import tr.qonferencer.backend.content.LanguageRepository
 import tr.qonferencer.backend.content.Translation
@@ -23,6 +24,7 @@ class TranslationAdminService(
 	)
 
 	/** Replaces whole language/translation state with [req]; defaults first language if none marked default */
+	@Transactional
 	fun set(req: AllTranslationsDto): AllTranslationsDto {
 		val reqLanguages =
 			if (req.languages.count { it.isDefault } == 1) req.languages
