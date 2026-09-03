@@ -3,3 +3,6 @@
 
 # Local AI context (not part of the repo)
 /CLAUDE.md
+
+# Release build outputs
+/releases/

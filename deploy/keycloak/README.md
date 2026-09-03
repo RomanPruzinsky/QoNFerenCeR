@@ -3,7 +3,7 @@
 `realm-export.json` is imported on startup via `start-dev --import-realm` (mounted read-only).
 It is **strict JSON** — Keycloak's import rejects `//` / `#` comments, so config notes live here.
 
-## TODO (prod)
+## TODO_CHANGEME (prod)
 
 - **`sslRequired`**: currently `"none"` (localhost has no TLS). Switch to **`"external"`** for
   prod. Don't use `"all"` (breaks the internal backend → keycloak HTTP hop). Behind a
