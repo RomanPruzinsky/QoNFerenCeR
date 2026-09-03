@@ -47,7 +47,7 @@ release-android:
 be-pause:
 	$(COMPOSE) stop backend
 
-be-start: check
+be-start:
 	$(COMPOSE) up -d --build backend
 
 be-logs:
