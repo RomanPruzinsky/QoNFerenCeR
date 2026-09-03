@@ -1,4 +1,4 @@
-.PHONY: check inf-pause inf-start inf-reset inf-logs be-pause be-start be-logs
+.PHONY: first-setup check inf-pause inf-start inf-reset inf-logs release-android
 
 ENV_FILE=config/QoNFerenCeR.env
 COMPOSE=docker compose -f deploy/docker-compose.yml --env-file $(ENV_FILE)
