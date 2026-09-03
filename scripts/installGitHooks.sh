@@ -7,8 +7,8 @@ set -e
 
 trap 'banner_error; err "Failed at line $LINENO: $BASH_COMMAND"; echo' ERR
 
-git config core.hooksPath scripts/git-hooks
+git config core.hooksPath scripts/gitHooks
 
 banner_success
-ok "core.hooksPath -> scripts/git-hooks"
+ok "core.hooksPath -> scripts/gitHooks"
 echo

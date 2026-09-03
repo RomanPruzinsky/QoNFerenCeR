@@ -43,12 +43,12 @@ qonferencer:
       issuer: ${KC_ISSUER}
       jwk-set-uri: ${KC_JWK_SET_URI}
       server-url: ${KC_ADMIN_URL}
-      realm: qonferencer # must match "realm" in `realm-export`
+      realm: qonferencer
       public-client-id: qonferencer-android
       admin:
-         client-id: qonferencer-backend-admin # must match "clientId" of service-account client in `realm-export`
+         client-id: qonferencer-backend-admin
          client-secret: ${KC_BEADMIN_CLIENT_SECRET}
-         bootstrap-username: First Admin # must match "username" of the admin user in `realm-export`
+         bootstrap-username: First Admin
    n8n:
       enabled: ${N8N_ENABLED}
       base-url: ${N8N_BASE_URL}

@@ -1,17 +1,29 @@
-.PHONY: inf-pause inf-start inf-reset inf-logs be-pause be-start be-logs
+.PHONY: check inf-pause inf-start inf-reset inf-logs be-pause be-start be-logs
 
-ENV_FILE := config/QoNFerenCeR.env
-COMPOSE  := docker compose -f deploy/docker-compose.yml --env-file $(ENV_FILE)
+ENV_FILE=config/QoNFerenCeR.env
+COMPOSE=docker compose -f deploy/docker-compose.yml --env-file $(ENV_FILE)
 
+##################################################
+################## FIRST SETUP ###################
 
-##################### ______ #####################
+first-setup:
+	@./scripts/installGitHooks.sh
+
+################## FIRST SETUP ###################
+##################################################
+##################### CHECK ######################
+
+check:
+	@./scripts/check.sh
+
+##################### CHECK ######################
 ##################################################
 ##################### DEPLOY #####################
 
 inf-pause:
 	$(COMPOSE) stop
 
-inf-start:
+inf-start: check
 	$(COMPOSE) up -d --build
 
 inf-reset:
@@ -22,13 +34,20 @@ inf-logs:
 
 ##################### DEPLOY #####################
 ##################################################
+#################### RELEASE #####################
+
+release-android:
+	@./scripts/releaseAndroid.sh
+
+#################### RELEASE #####################
+##################################################
 ##################### BACKEND ####################
 # TODO: delete for prod, only for development
 
 be-pause:
 	$(COMPOSE) stop backend
 
-be-start:
+be-start: check
 	$(COMPOSE) up -d --build backend
 
 be-logs:

@@ -68,6 +68,18 @@ fi
 
 intro "Checking required entries in $ENV_FILE"
 
+check_required_key() {
+	local key="$1"
+	local fix_hint="$2"
+	local value
+	value="$(env_value "$key")"
+	if [ -n "$value" ]; then
+		pass "$key is set"
+	else
+		fail "$key is missing or empty" "$fix_hint"
+	fi
+}
+
 if [ -f "$ENV_FILE" ]; then
 	REQUIRED_KEYS=(
 		API_VERSION
@@ -81,9 +93,6 @@ if [ -f "$ENV_FILE" ]; then
 		KC_CONSOLEADMIN_PASSWORD
 		KC_BEADMIN_CLIENT_SECRET
 		N8N_ENABLED
-		N8N_PATH_PREFIX
-		N8N_TIMEOUT_MS
-		BE_N8N_COMMS__AUTH_TOKEN
 		N8N_ENCRYPTION_KEY
 		RELEASE_KEYSTORE_PATH
 		RELEASE_KEYSTORE_PASSWORD
@@ -92,13 +101,20 @@ if [ -f "$ENV_FILE" ]; then
 	)
 
 	for key in "${REQUIRED_KEYS[@]}"; do
-		value="$(env_value "$key")"
-		if [ -n "$value" ]; then
-			pass "$key is set"
-		else
-			fail "$key is missing or empty" "Add '$key=<value>' to $ENV_FILE"
-		fi
+		check_required_key "$key" "Add '$key=<value>' to $ENV_FILE"
 	done
+
+	if [ "$(env_value N8N_ENABLED)" = "true" ]; then
+		N8N_KEYS=(
+			N8N_PATH_PREFIX
+			N8N_TIMEOUT_MS
+			BE_N8N_COMMS__AUTH_TOKEN
+		)
+
+		for key in "${N8N_KEYS[@]}"; do
+			check_required_key "$key" "Add '$key=<value>' to $ENV_FILE, or set N8N_ENABLED=false"
+		done
+	fi
 else
 	echo "${PRINT_INDENT}(skipped — $ENV_FILE missing, see above)"
 fi
@@ -159,7 +175,7 @@ if [ -f "$ENV_FILE" ]; then
 		if [ -f "$keystore_path" ]; then
 			pass "$keystore_path exists"
 		else
-			fail "$keystore_path missing" "Generate keystore"
+			fail "config/key missing" "Generate keystore"
 		fi
 	else
 		echo "${PRINT_INDENT}(skipped — RELEASE_KEYSTORE_PATH missing, see above)"
@@ -180,7 +196,7 @@ matches="$(grep -rn --exclude-dir=.git \
 
 if [ -n "$matches" ]; then
 	fail "Pending TODO_CHANGEME markers found:
-${matches}" "Replace placeholders before a real deploy"
+${matches}" "Replace placeholders before real deploy"
 else
 	pass "No pending TODO_CHANGEME markers found"
 fi
