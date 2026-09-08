@@ -1,0 +1,728 @@
+openapi: 3.1.0
+info:
+   title: QoNFerenCeR API
+   description: Conference app API for backend / mobile app
+   version: "1"
+servers:
+   - url: /api/v1
+
+tags:
+   - name: Splash
+   - name: CustomScreens
+   - name: User
+   - name: Meal
+   - name: Admin
+
+security:
+   - bearerAuth: []
+
+paths:
+   /splash/all:
+      get:
+         tags: [Splash]
+         summary: App start data
+         description: All required init data: translations, custom screens display info, meal windows, caller's own profile if found
+         security: []
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/SplashDto"
+
+   /custom-screens/{id}:
+      get:
+         tags: [CustomScreens]
+         summary: Custom screen body
+         security: []
+         parameters:
+            - $ref: "#/components/parameters/ScreenId"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: "#/components/schemas/CustomElement"
+
+   /user/{userId}:
+      get:
+         tags: [User]
+         summary: User detail by ID
+         parameters:
+            - $ref: "#/components/parameters/UserId"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/UserDetailDto"
+
+   /user/by-name:
+      get:
+         tags: [User]
+         summary: Search users by name
+         parameters:
+            - name: searchFor
+              in: query
+              required: true
+              schema:
+                 type: string
+            - name: page
+              in: query
+              schema:
+                 type: integer
+                 default: 0
+            - name: size
+              in: query
+              schema:
+                 type: integer
+                 default: 20
+            - name: sort
+              in: query
+              schema:
+                 type: string
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/PageDtoUserDisplayDto"
+
+   /user/meal-secret:
+      post:
+         tags: [User]
+         summary: Caller's meal secret
+         description: Returns caller's meal secret
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/MealSecretRequestDto"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/MealSecretDto"
+
+   /meal/scan:
+      post:
+         tags: [Meal]
+         summary: Scan meal token
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/MealScanRequestDto"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/MealScanResultDto"
+
+   /meal/counts/{windowId}:
+      get:
+         tags: [Meal]
+         summary: Remaining portions per variant for meal window
+         parameters:
+            - name: windowId
+              in: path
+              required: true
+              schema:
+                 type: integer
+                 format: int64
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: "#/components/schemas/MealCountDto"
+
+   /admin/add-user:
+      post:
+         tags: [Admin]
+         summary: Create user slot
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/ModifyableUserDataDto"
+         responses:
+            "201":
+               description: Created
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/SlotProvisionedDto"
+
+   /admin/update-user/{userId}:
+      put:
+         tags: [Admin]
+         summary: Update user slot
+         parameters:
+            - $ref: "#/components/parameters/UserId"
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/ModifyableUserDataDto"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/UserDetailDto"
+
+   /admin/delete/{userId}:
+      delete:
+         tags: [Admin]
+         summary: Delete user (app data + Keycloak account)
+         parameters:
+            - $ref: "#/components/parameters/UserId"
+         responses:
+            "200":
+               description: App data and Keycloak user both gone
+            "207":
+               description: App data gone, Keycloak user survived (internal error)
+
+   /admin/login/{userId}:
+      post:
+         tags: [Admin]
+         summary: Get login credentials for user slot
+         parameters:
+            - $ref: "#/components/parameters/UserId"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/LoginCredentialsDto"
+
+   /admin/revoke/{userId}:
+      post:
+         tags: [Admin]
+         summary: Revoke user's device
+         parameters:
+            - $ref: "#/components/parameters/UserId"
+         responses:
+            "204":
+               description: No Content
+
+   /admin/custom-screens:
+      get:
+         tags: [Admin]
+         summary: List all custom screens data
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: "#/components/schemas/CustomScreenAdminDto"
+
+   /admin/custom-screens/{id}:
+      put:
+         tags: [Admin]
+         summary: Upsert custom screen
+         parameters:
+            - $ref: "#/components/parameters/ScreenId"
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/CustomScreenAdminDto"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/CustomScreenAdminDto"
+      delete:
+         tags: [Admin]
+         summary: Delete custom screen
+         parameters:
+            - $ref: "#/components/parameters/ScreenId"
+         responses:
+            "204":
+               description: No Content
+
+   /admin/translations:
+      get:
+         tags: [Admin]
+         summary: Get all translations
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/AllTranslationsDto"
+      put:
+         tags: [Admin]
+         summary: Replace all translations
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/AllTranslationsDto"
+         responses:
+            "200":
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/AllTranslationsDto"
+
+components:
+   securitySchemes:
+      bearerAuth:
+         type: http
+         scheme: bearer
+         bearerFormat: JWT
+         description: Keycloak-issued JWT, required except Splash and CustomScreens; Admin/* requires ADMIN role
+
+   parameters:
+      UserId:
+         name: userId
+         in: path
+         required: true
+         schema:
+            type: integer
+            format: int64
+      ScreenId:
+         name: id
+         in: path
+         required: true
+         schema:
+            type: string
+
+   schemas:
+      Role:
+         type: string
+         enum: [ANONYM, VISITOR, VOLUNTEER, LEADER, ORGANISER, ADMIN]
+
+      ScannerType:
+         type: string
+         enum: [QR, NFC, BARCODE, MANUAL]
+
+      MealScanResult:
+         type: string
+         enum:
+            [APPROVED, ALREADY_CONSUMED, NO_USER_FOUND, NOT_REGISTERED_PORTION]
+
+      CustomTextSize:
+         type: string
+         enum: [SMALL, MEDIUM, LARGE]
+
+      TextSource:
+         description: Source of text element content
+         oneOf:
+            - $ref: "#/components/schemas/TextSourceRef"
+            - $ref: "#/components/schemas/TextSourceLink"
+         discriminator:
+            propertyName: kind
+            mapping:
+               REF: "#/components/schemas/TextSourceRef"
+               LINK: "#/components/schemas/TextSourceLink"
+
+      TextSourceRef:
+         type: object
+         required: [kind, key]
+         properties:
+            kind:
+               type: string
+               enum: [REF]
+            key:
+               type: string
+               description: Translation key
+
+      TextSourceLink:
+         type: object
+         required: [kind, url]
+         properties:
+            kind:
+               type: string
+               enum: [LINK]
+            url:
+               type: string
+               description: Where to fetch text from
+
+      CustomElement:
+         description: Custom element, drawn by renderer in received order
+         oneOf:
+            - $ref: "#/components/schemas/CustomElementText"
+            - $ref: "#/components/schemas/CustomElementImage"
+            - $ref: "#/components/schemas/CustomElementRow"
+            - $ref: "#/components/schemas/CustomElementColumn"
+         discriminator:
+            propertyName: type
+            mapping:
+               TEXT: "#/components/schemas/CustomElementText"
+               IMAGE: "#/components/schemas/CustomElementImage"
+               ROW: "#/components/schemas/CustomElementRow"
+               COLUMN: "#/components/schemas/CustomElementColumn"
+
+      CustomElementText:
+         type: object
+         required: [type, source]
+         properties:
+            type:
+               type: string
+               enum: [TEXT]
+            source:
+               $ref: "#/components/schemas/TextSource"
+            size:
+               $ref: "#/components/schemas/CustomTextSize"
+               default: MEDIUM
+
+      CustomElementImage:
+         type: object
+         required: [type, url]
+         properties:
+            type:
+               type: string
+               enum: [IMAGE]
+            url:
+               type: string
+
+      CustomElementRow:
+         type: object
+         required: [type, children]
+         properties:
+            type:
+               type: string
+               enum: [ROW]
+            children:
+               type: array
+               items:
+                  $ref: "#/components/schemas/CustomElement"
+
+      CustomElementColumn:
+         type: object
+         required: [type, children]
+         properties:
+            type:
+               type: string
+               enum: [COLUMN]
+            children:
+               type: array
+               items:
+                  $ref: "#/components/schemas/CustomElement"
+
+      CustomScreenDto:
+         description: Custom screen introduction
+         type: object
+         required: [id, titleKey, icon, minRole, isStartingScreen]
+         properties:
+            id:
+               type: string
+               description: Screen id, used to fetch its content
+            titleKey:
+               type: string
+               description: Key to match for title translations
+            icon:
+               type: string
+               description: Key into client's icon options
+            minRole:
+               $ref: "#/components/schemas/Role"
+            isStartingScreen:
+               type: boolean
+               description: Whether shown at app launch, maximally one screen has this true
+
+      CustomScreenAdminDto:
+         description: Custom screen, full admin view
+         allOf:
+            - $ref: "#/components/schemas/CustomScreenDto"
+            - type: object
+              required: [body]
+              properties:
+                 body:
+                    type: array
+                    items:
+                       $ref: "#/components/schemas/CustomElement"
+
+      LanguageDto:
+         description: Available language
+         type: object
+         required: [code, name]
+         properties:
+            code:
+               type: string
+               description: Language code ("en","sk",...)
+            name:
+               type: string
+               description: Readable name ("English","Slovenčina",...)
+            isDefault:
+               type: boolean
+               default: false
+               description: Whether is picked on first launch + fallback
+
+      TranslationDto:
+         description: Translation entry for key per langCode
+         type: object
+         required: [key, langCode, text]
+         properties:
+            key:
+               type: string
+               description: Key to match translation
+            langCode:
+               type: string
+               description: Language code in which is text ("en","sk",...)
+            text:
+               type: string
+               description: Text to display for key+langCode
+
+      AllTranslationsDto:
+         description: Whole translation state - splash reads it, admin edits it
+         type: object
+         required: [languages, translations]
+         properties:
+            languages:
+               type: array
+               items:
+                  $ref: "#/components/schemas/LanguageDto"
+            translations:
+               type: array
+               items:
+                  $ref: "#/components/schemas/TranslationDto"
+
+      MealWindowDto:
+         description: Meal serving window
+         type: object
+         required: [id, nameKey, startsAt, endsAt]
+         properties:
+            id:
+               type: integer
+               format: int64
+            nameKey:
+               type: string
+               description: Translation key of window name (breakfast, ...)
+            startsAt:
+               type: string
+               format: date-time
+            endsAt:
+               type: string
+               format: date-time
+
+      UserMealEntryDto:
+         description: One meal user is registered for
+         type: object
+         required: [windowId, variantKey]
+         properties:
+            windowId:
+               type: integer
+               format: int64
+               description: Which MealWindowDto this entry belongs to
+            variantKey:
+               type: string
+               description: Translation key of meal variant
+
+      MealScanRequestDto:
+         description: Meal scan request data
+         type: object
+         required: [token, mealWindowId, idempotencyKey, scannerType]
+         properties:
+            token:
+               type: string
+               description: User's HMAC token
+            mealWindowId:
+               type: integer
+               format: int64
+               description: Which window is scan for
+            idempotencyKey:
+               type: string
+               format: uuid
+               description: Deduplication for scanned meal when wifi is bad (refresh on bad network with same key)
+            scannerType:
+               $ref: "#/components/schemas/ScannerType"
+
+      MealScanResultDto:
+         description: Result of meal scan
+         type: object
+         required: [result]
+         properties:
+            result:
+               $ref: "#/components/schemas/MealScanResult"
+            variantKey:
+               type: string
+               nullable: true
+               description: Translation key of portion variant
+
+      MealCountDto:
+         description: Portions of one variant left to hand out for window
+         type: object
+         required: [variantKey, remaining]
+         properties:
+            variantKey:
+               type: string
+               description: Translation key of meal variant
+            remaining:
+               type: integer
+               description: Reservations of variantKey not yet consumed
+
+      CustomDataType:
+         type: object
+         additionalProperties: {}
+         description: Free-form per-user custom data
+
+      UserDetailDto:
+         description: Full profile of one user
+         type: object
+         required:
+            [userId, fullName, role, isSpeaker, canCheckUsers, canFoodCheck]
+         properties:
+            userId:
+               type: integer
+               format: int64
+            fullName:
+               type: string
+            role:
+               $ref: "#/components/schemas/Role"
+            isSpeaker:
+               type: boolean
+            canCheckUsers:
+               type: boolean
+            canFoodCheck:
+               type: boolean
+            meals:
+               type: array
+               items:
+                  $ref: "#/components/schemas/UserMealEntryDto"
+            customData:
+               $ref: "#/components/schemas/CustomDataType"
+
+      UserDisplayDto:
+         description: Simple data of user searched by name
+         type: object
+         required: [userId, fullName, role, isSpeaker]
+         properties:
+            userId:
+               type: integer
+               format: int64
+            fullName:
+               type: string
+            role:
+               $ref: "#/components/schemas/Role"
+            isSpeaker:
+               type: boolean
+
+      ModifyableUserDataDto:
+         description: Similar to UserDetailDto, but without id, as this is for modifying
+         type: object
+         required: [fullName]
+         properties:
+            fullName:
+               type: string
+            role:
+               $ref: "#/components/schemas/Role"
+               default: VISITOR
+            isSpeaker:
+               type: boolean
+               default: false
+            canCheckUsers:
+               type: boolean
+               default: false
+            canFoodCheck:
+               type: boolean
+               default: false
+            meals:
+               type: array
+               items:
+                  $ref: "#/components/schemas/UserMealEntryDto"
+            customData:
+               $ref: "#/components/schemas/CustomDataType"
+
+      LoginCredentialsDto:
+         description: Data required for login
+         type: object
+         required: [username, password]
+         properties:
+            username:
+               type: string
+            password:
+               type: string
+
+      SlotProvisionedDto:
+         description: User's data with credentials
+         type: object
+         required: [user, credentials]
+         properties:
+            user:
+               $ref: "#/components/schemas/UserDetailDto"
+            credentials:
+               $ref: "#/components/schemas/LoginCredentialsDto"
+
+      MealSecretRequestDto:
+         description: Caller's own password for showing MealSecretDto
+         type: object
+         required: [password]
+         properties:
+            password:
+               type: string
+
+      MealSecretDto:
+         type: object
+         required: [mealSecret]
+         properties:
+            mealSecret:
+               type: string
+
+      SplashDto:
+         description: Data loaded at app's start
+         type: object
+         properties:
+            translations:
+               $ref: "#/components/schemas/AllTranslationsDto"
+            customScreens:
+               type: array
+               items:
+                  $ref: "#/components/schemas/CustomScreenDto"
+            mealWindows:
+               type: array
+               items:
+                  $ref: "#/components/schemas/MealWindowDto"
+            me:
+               $ref: "#/components/schemas/UserDetailDto"
+               nullable: true
+
+      PageDtoUserDisplayDto:
+         description: Custom pagination of UserDisplayDto
+         type: object
+         required: [content, totalElements, totalPages, number, size]
+         properties:
+            content:
+               type: array
+               items:
+                  $ref: "#/components/schemas/UserDisplayDto"
+            totalElements:
+               type: integer
+               format: int64
+            totalPages:
+               type: integer
+            number:
+               type: integer
+            size:
+               type: integer

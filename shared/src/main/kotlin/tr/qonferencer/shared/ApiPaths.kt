@@ -6,7 +6,7 @@ object ApiPaths {
 
 	object Splash {
 		private const val ROOT = "$BASE/splash"
-		const val ALL = "$ROOT/ALL"
+		const val ALL = "$ROOT/all"
 	}
 
 	object User {

@@ -50,6 +50,12 @@ be-pause:
 be-start:
 	$(COMPOSE) up -d --build backend
 
+be-reset:
+	$(COMPOSE) stop backend
+	$(COMPOSE) exec postgres sh -c 'psql -U "$$POSTGRES_USER" -d postgres -c "DROP DATABASE IF EXISTS qonferencer;"'
+	$(COMPOSE) exec postgres sh -c 'psql -U "$$POSTGRES_USER" -d postgres -c "CREATE DATABASE qonferencer;"'
+	$(MAKE) be-start
+
 be-logs:
 	$(COMPOSE) logs -f backend
 
