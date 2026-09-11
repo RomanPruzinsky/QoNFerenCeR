@@ -203,6 +203,24 @@ fi
 
 ############# TODO_CHANGEME MARKERS ##############
 ##################################################
+################### COMPILING ####################
+
+intro "Checking compilability"
+
+if (cd android && ./gradlew :app:assembleRelease >/dev/null 2>/dev/null); then
+	pass "Android release build compiles"
+else
+	fail "Android release build failed" "Run 'cd android && ./gradlew :app:assembleRelease' to see errors"
+fi
+
+if (cd backend && ./gradlew compileKotlin >/dev/null 2>/dev/null); then
+	pass "Backend compiles"
+else
+	fail "Backend compilation failed" "Run 'cd backend && ./gradlew compileKotlin' to see errors"
+fi
+
+################### COMPILING ####################
+##################################################
 #################### SUMMARY #####################
 
 HAS_FAIL=false
