@@ -35,7 +35,7 @@ These roles are (in `shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt`
 
 ### Outbound events (n8n)
 
-Every notable **action** is tracked with it's content and send (using _fire-and-forget_) to _custom_ **n8n** endpoints, which can be tracked easily
+Every notable **action** is tracked with its content and sent (using _fire&forget_) to _custom_ **n8n** endpoints
 
 ### Keycloak
 
@@ -63,62 +63,62 @@ For minimal setup you only need to:
 ### First Admin
 
 Keycloak's realm comes with prepared first user who has all privileges.
-His credentials are:
+Its credentials are:
 
 - username: `First Admin`
-- password: `changeme`
+- password: `TODO_CHANGEME`
 
-You (programmer / organizer) can manage other users through his credentials (untill you create your own ADMIN account)
+You (programmer / organizer) can manage other users through its credentials (untill you create your own ADMIN account)
 
-Change this password (by using REISSUE endpoint) or delete him (by using DELETE endpoint) - both doable via mobile app by another real ADMIN
-
-### Mobile app
-
-- customscreens
-- translations
-- meal scanning
-
-Has few pre-defined functionalities and screens, but you can create right _in app in middle of event_ own screen using predefined elements. You have also various options for emoji-per-screen and can select which audience screen will be shown to.
-
-You can also add _own langugage_ and to each languagge _own translations_, which will be applied to all elements
-
-Right from mobile app you can also modify any user's data
+Change this password (by using LOGIN endpoint) or delete it (by using DELETE endpoint) - both doable via mobile app by another real ADMIN
 
 ### Migrations
 
+Backend uses **Flyway** defined in `V1__init.sql`, which after first run cannot be edited, so `V<version>__<description>.sql` is required for every new version
+
+Newest migrations are applied after backend restarts
+
+## Mobile app
+
+Has few pre-defined functionalities and screens, but you can create right _in app in middle of event_ own screen using _predefined elements_. You also have various options for screen's icon and can select which audience screen will be shown to
+
+You can also add _own language_ and assign to each language _own translations_, which will be applied to all elements
+
+Right from mobile app you can also modify any user's data
+
 ## Repository layout
 
-| Path            | What                                |
+| Folder          | Description                         |
 | --------------- | ----------------------------------- |
 | `android/`      | Android app                         |
 | `backend/`      | Spring Boot backend                 |
 | `shared/`       | Common code for backend and android |
+| `config/`       | All per-event custom files          |
 | `deploy/`       | Docker                              |
 | `n8nTemplates/` | N8n workflow templates              |
 | `scripts/`      | Dev tooling / helpers               |
-| `config/`       | All per-event custom files          |
+
+---
 
 ## Getting started
 
-After cloning, enable git hooks **once**:
+After cloning, enable git hooks:
 
 ```bash
-git config core.hooksPath scripts/gitHooks
+make first-setup
 ```
 
-Points to `scripts/gitHooks/` folder, enabling a **pre-commit** hook that auto-formats
-**Kotlin** files
+Rotate critical secrets: search for all occurences of `TODO_CHANGEME` and change them
 
-## Setup checklist
+Upload `config/logo.png`
 
-Manual steps before running / deploying:
+Modify `config/QoNFerenCeR.env` (for explanation check `config/README.md`)
 
-- Git hooks (once) - see [Getting started](#getting-started).
-- **Secrets (`config/QoNFerenCeR.env`)** — tracked with dev values; if you edit real deploy values
-  locally, run `git update-index --skip-worktree config/QoNFerenCeR.env` first to prevent accidental commits.
-- **`config/`** — single place for all per-event custom files (icon, …). organizer puts
-  everything here; build/deploy reads only from `config/`.
+Check useful READMEs in:
 
-TODO: Spomenúť nech si importuju data sami cez formular, aj uzitocne readmecka
+- `config/`
+- `scripts/`
+- `deploy/`
+- `n8nTemplates/`
 
 ![QoNFerenCeR logo](QoNFerenCeR_logo.png)

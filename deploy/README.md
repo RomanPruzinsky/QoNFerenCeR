@@ -1,6 +1,6 @@
 # DEPLOY
 
-Docker Compose stack for QoNFerenCeR: PostgreSQL + Keycloak + backend + n8n.
+Docker Compose stack for QoNFerenCeR: **PostgreSQL** + **Keycloak** + **backend** + **n8n**.
 
 ## Databases
 

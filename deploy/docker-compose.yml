@@ -18,6 +18,7 @@ services:
 
    keycloak:
       # sslRequired="external"  # TODO_CHANGEME: "none" for localhost only; switch for prod, also in QoNFerenCeR-realm (~line 4)
+      # not "all" (breaks internal backend -> keycloak hop); behind TLS-terminating proxy also set KC_PROXY_HEADERS=xforwarded + real KC_HOSTNAME
       image: quay.io/keycloak/keycloak:26.0
       environment:
          KC_DB: postgres
