@@ -91,7 +91,6 @@ android {
 		buildConfigField("String", "BACKEND_BASE_URL", "\"${envValue("BACKEND_BASE_URL")}\"")
 		buildConfigField("String", "KEYCLOAK_BASE_URL", "\"${envValue("KEYCLOAK_BASE_URL")}\"")
 
-		// realm/client id match deploy/keycloak/realm-export.json, not per-environment.
 		buildConfigField("String", "KEYCLOAK_REALM", "\"qonferencer\"")
 		buildConfigField("String", "KEYCLOAK_CLIENT_ID", "\"qonferencer-android\"")
 

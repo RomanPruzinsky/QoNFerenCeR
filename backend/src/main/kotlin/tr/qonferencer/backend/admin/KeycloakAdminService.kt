@@ -116,7 +116,7 @@ class KeycloakAdminService(
 	}
 
 	/**
-	 * @return first admin created from `realm-export` 
+	 * @return first admin created from `QoNFerenCeR-realm` 
 	 * @throws IllegalStateException When admin is not found
 	 */
 	fun searchFirstAdmin(username: String): Pair<UUID, String> {

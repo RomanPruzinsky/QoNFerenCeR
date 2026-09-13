@@ -1,32 +1,76 @@
 # QoNFerenCeR 🎪
 
-Self-hosted **highly customizable** conference product for small (<1000 people) conferences
+Self-hosted **highly customizable** conference product for _small_ (<1000 people) _starting_ conferences
 
-Contains **android app**, **backend** and **scripts** to setup everything easily
+Contains **android app**, **backend** and **scripts** to setup everything easily + **templates** and **demos** for inspiration
+
+> Main technologies used: **Kotlin**, **Jetpack Compose**, **SpringBoot**, **PostgreSQL**, **Keycloak**, **Retrofit**, **n8n**, **Docker**
 
 ## 🌟 Highly customizable 🛠️
 
 **n8n integration**: Create _own endpoints_ and use them in mobile app
 
-**Outbound events**: _Backend_ tracks every notable change and sends them to specific URLs
+**Outbound events**: _Backend_ tracks notable changes and sends them to specific URLs
 
 **Custom data**: User's table has column called `custom_data`, where you can put any data that is not predefined yet
 
 **Mobile app**: During conference, you may not have time to connect your PC and change anything, so lot of customizability options are available simply from app.
 
+**Scanning types**: Pick which option you want to authenticate users: _BAR CODE_, _QR CODE_, _NFC_ (with also manual writing of UserID as fallback)
+
 ## Key parts
 
 ### Roles
 
-### Outbound events
+Supporting 6 privilege roles, which are in **linear** order meaning that highest role has its own permissions + _all_ permissions that lower ones have
+
+These roles are (in `shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt`):
+
+- `ANONYM`
+- `VISITOR`
+- `VOLUNTEER`
+- `LEADER`
+- `ORGANISER`
+- `ADMIN`
+
+### Outbound events (n8n)
+
+Every notable **action** is tracked with it's content and send (using _fire-and-forget_) to _custom_ **n8n** endpoints, which can be tracked easily
 
 ### Keycloak
 
-### SCAN - qr/nfc/bar
+This service takes care of _user credentials_ and _logging in_, which comes with _validating JWT tokens_ as well as support for _revoking_ or _reissuing_ new credentials
+
+### Meal checking
+
+There are predefined tables for **reserved meals**, along with available **portions** and **windows**. Managing user's portions can be done via app too (as `ADMIN`). How users are validated whether they have reserved portion for specific window is described in following section:
+
+### SCAN options
+
+QoNFerenCeR supports multiple validating options:
+
+- **QR**: Scan QR codes, which can be displayed from user's mobile phone. They are being rotated every 30 seconds
+- **BAR**: static alternative for QR codes: contains `UserID` data and can be printed on nametags before conference, so users wouldn't have to have their phones always with them (specifically small kids)
+- **NFC**: Also rotated as QR codes, but can be emitted from phone, in case scanner phone don't have camera (or has it broken)
 
 ### Simple config
 
+For minimal setup you only need to:
+
+- change `config/QoNFerenCeR.env` variables (which are described in its README)
+- upload your conference's `logo.png` (again into `config/`)
+
 ### First Admin
+
+Keycloak's realm comes with prepared first user who has all privileges.
+His credentials are:
+
+- username: `First Admin`
+- password: `changeme`
+
+You (programmer / organizer) can manage other users through his credentials (untill you create your own ADMIN account)
+
+Change this password (by using REISSUE endpoint) or delete him (by using DELETE endpoint) - both doable via mobile app by another real ADMIN
 
 ### Mobile app
 
@@ -40,6 +84,8 @@ You can also add _own langugage_ and to each languagge _own translations_, which
 
 Right from mobile app you can also modify any user's data
 
+### Migrations
+
 ## Repository layout
 
 | Path            | What                                |
@@ -48,19 +94,19 @@ Right from mobile app you can also modify any user's data
 | `backend/`      | Spring Boot backend                 |
 | `shared/`       | Common code for backend and android |
 | `deploy/`       | Docker                              |
-| `n8nTemplates/` | n8n workflow templates              |
-| `scripts/`      | Dev tooling                         |
+| `n8nTemplates/` | N8n workflow templates              |
+| `scripts/`      | Dev tooling / helpers               |
 | `config/`       | All per-event custom files          |
 
 ## Getting started
 
-After cloning, enable the git hooks **once**:
+After cloning, enable git hooks **once**:
 
 ```bash
 git config core.hooksPath scripts/gitHooks
 ```
 
-Points to the `scripts/gitHooks/` folder, enabling a **pre-commit** hook that auto-formats
+Points to `scripts/gitHooks/` folder, enabling a **pre-commit** hook that auto-formats
 **Kotlin** files
 
 ## Setup checklist
@@ -70,9 +116,9 @@ Manual steps before running / deploying:
 - Git hooks (once) - see [Getting started](#getting-started).
 - **Secrets (`config/QoNFerenCeR.env`)** — tracked with dev values; if you edit real deploy values
   locally, run `git update-index --skip-worktree config/QoNFerenCeR.env` first to prevent accidental commits.
-- **`config/`** — single place for all per-event custom files (icon, …). The organizer puts
-  everything here; the build/deploy reads only from `config/`.
+- **`config/`** — single place for all per-event custom files (icon, …). organizer puts
+  everything here; build/deploy reads only from `config/`.
 
-TODO: Spomenúť nech si importuju data sami cez formular
+TODO: Spomenúť nech si importuju data sami cez formular, aj uzitocne readmecka
 
 ![QoNFerenCeR logo](QoNFerenCeR_logo.png)

@@ -61,7 +61,7 @@ Keycloak admin console login password
 
 Client secret backend uses to call Keycloak admin API
 
-> must match "secret" of "qonferencer-backend-admin" client in `realm-export`
+> must match "secret" of "qonferencer-backend-admin" client in `QoNFerenCeR-realm`
 
 ---
 

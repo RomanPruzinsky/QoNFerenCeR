@@ -42,7 +42,7 @@ yml_value() {
 intro "Checking required files"
 
 LOGO_FILE="config/logo.png"
-REALM_FILE="deploy/keycloak/realm-export.json"
+REALM_FILE="deploy/keycloak/QoNFerenCeR-realm.json"
 
 if [ -f "$ENV_FILE" ]; then
 	pass "$ENV_FILE exists"
@@ -59,7 +59,7 @@ fi
 if [ -f "$REALM_FILE" ]; then
 	pass "$REALM_FILE exists"
 else
-	fail "$REALM_FILE missing" "Can reuse realm-export.json from official QoNFerenCeR repo"
+	fail "$REALM_FILE missing" "Can reuse QoNFerenCeR-realm.json from official QoNFerenCeR repo"
 fi
 
 ################# REQUIRED FILES #################
@@ -130,25 +130,25 @@ if [ -f "$ENV_FILE" ] && [ -f "$REALM_FILE" ] && [ -f "$APP_YML" ]; then
 	yml_client_id="$(yml_value client-id)"
 	realm_secret="$(jq -r --arg cid "$yml_client_id" '.clients[] | select(.clientId==$cid).secret' "$REALM_FILE")"
 	if [ -n "$env_secret" ] && [ "$env_secret" = "$realm_secret" ]; then
-		pass "KC_BEADMIN_CLIENT_SECRET in QoNFerenCeR.env matches '$yml_client_id' client secret in realm-export.json"
+		pass "KC_BEADMIN_CLIENT_SECRET in QoNFerenCeR.env matches '$yml_client_id' client secret in QoNFerenCeR-realm.json"
 	else
-		fail "KC_BEADMIN_CLIENT_SECRET in QoNFerenCeR.env ('$env_secret') != realm-export.json client secret ('$realm_secret')" "Make both equal"
+		fail "KC_BEADMIN_CLIENT_SECRET in QoNFerenCeR.env ('$env_secret') != QoNFerenCeR-realm.json client secret ('$realm_secret')" "Make both equal"
 	fi
 
 	yml_realm="$(yml_value realm)"
 	realm_name="$(jq -r '.realm' "$REALM_FILE")"
 	if [ "$realm_name" = "$yml_realm" ]; then
-		pass "realm-export.json realm is same as application.yml"
+		pass "QoNFerenCeR-realm.json realm is same as application.yml"
 	else
-		fail "realm in realm-export.json ('$realm_name') != realm in application.yml ('$yml_realm')" "Make both equal"
+		fail "realm in QoNFerenCeR-realm.json ('$realm_name') != realm in application.yml ('$yml_realm')" "Make both equal"
 	fi
 
 	yml_username="$(yml_value bootstrap-username)"
 	admin_user="$(jq -r --arg u "$yml_username" '.users[] | select(.username==$u).username' "$REALM_FILE")"
 	if [ "$admin_user" = "$yml_username" ]; then
-		pass "realm-export.json bootstrap user is same as application.yml"
+		pass "QoNFerenCeR-realm.json bootstrap user is same as application.yml"
 	else
-		fail "bootstrap user in realm-export.json ('$admin_user') != bootstrap-username in application.yml ('$yml_username')" "Make both equal"
+		fail "bootstrap user in QoNFerenCeR-realm.json ('$admin_user') != bootstrap-username in application.yml ('$yml_username')" "Make both equal"
 	fi
 else
 	echo "${PRINT_INDENT}(skipped — $ENV_FILE, $REALM_FILE or $APP_YML missing)"

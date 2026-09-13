@@ -1,6 +1,6 @@
 # Keycloak realm import
 
-`realm-export.json` is imported on startup via `start-dev --import-realm` (mounted read-only).
+`QoNFerenCeR-realm.json` is imported on startup via `start-dev --import-realm` (mounted read-only).
 It is **strict JSON** — Keycloak's import rejects `//` / `#` comments, so config notes live here.
 
 ## TODO_CHANGEME (prod)
