@@ -120,7 +120,7 @@
 			"credentials": [
 				{
 					"type": "password",
-					"value": "changeme",
+					"value": "TODO_CHANGEME",
 					"temporary": false
 				}
 			],

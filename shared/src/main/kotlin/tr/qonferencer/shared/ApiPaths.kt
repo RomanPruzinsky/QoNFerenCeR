@@ -6,7 +6,7 @@ object ApiPaths {
 
 	object Splash {
 		private const val ROOT = "$BASE/splash"
-		const val ALL = "$ROOT/ALL"
+		const val ALL = "$ROOT/all"
 	}
 
 	object User {
@@ -47,5 +47,13 @@ object ApiPaths {
 
 		const val MEAL_SCAN = "$ROOT/scan"
 		const val MEAL_COUNTS = "$ROOT/counts/{windowId}"
+	}
+
+	object Internal {
+		object N8n {
+			const val ROOT = "$BASE/internal/n8n"
+
+			const val PREREGISTER_USER = "$ROOT/users/preregister"
+		}
 	}
 }

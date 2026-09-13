@@ -40,6 +40,7 @@ class SecurityConfig(
 					.requestMatchers(
 						ApiPaths.Splash.ALL,
 						"${ApiPaths.CustomScreens.ROOT}/**",
+						"${ApiPaths.Internal.N8n.ROOT}/**",
 						"/actuator/health/**",
 					).permitAll()
 					.requestMatchers("${ApiPaths.Admin.ROOT}/**").access { _, _ ->
