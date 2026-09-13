@@ -14,6 +14,7 @@ enum class Problem(
 	val status: HttpStatus,
 	val type: String,
 ) {
+	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "$BASE/unauthorized"),
 	FORBIDDEN(HttpStatus.FORBIDDEN, "$BASE/forbidden"),
 	NOT_FOUND(HttpStatus.NOT_FOUND, "$BASE/not-found"),
 	CONFLICT(HttpStatus.CONFLICT, "$BASE/conflict"),
@@ -27,6 +28,7 @@ class ApiException(
 	override val message: String,
 ) : RuntimeException(message)
 
+fun unauthorized(detail: String) = ApiException(Problem.UNAUTHORIZED, detail)
 fun forbidden(detail: String) = ApiException(Problem.FORBIDDEN, detail)
 fun notFound(detail: String) = ApiException(Problem.NOT_FOUND, detail)
 fun conflict(detail: String) = ApiException(Problem.CONFLICT, detail)

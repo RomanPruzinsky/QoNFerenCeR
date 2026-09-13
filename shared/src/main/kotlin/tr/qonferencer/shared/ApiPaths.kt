@@ -48,4 +48,12 @@ object ApiPaths {
 		const val MEAL_SCAN = "$ROOT/scan"
 		const val MEAL_COUNTS = "$ROOT/counts/{windowId}"
 	}
+
+	object Internal {
+		object N8n {
+			const val ROOT = "$BASE/internal/n8n"
+
+			const val PREREGISTER_USER = "$ROOT/users/preregister"
+		}
+	}
 }

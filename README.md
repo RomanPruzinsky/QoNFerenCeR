@@ -121,4 +121,15 @@ Check useful READMEs in:
 - `deploy/`
 - `n8nTemplates/`
 
+### Importing data
+
+Suggested way is `POST`-ing to `${BACKEND_BASE_URL}api/v$API_VERSION/internal/n8n/users/preregister`, which you can
+call directly from for example some form or your own script
+
+Important when using it this way:
+
+- `config/QoNFerenCeR.env::N8N_ENABLED` needs to be `true`
+- Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
+- Body must match `ModifyableUserDataDto`
+
 ![QoNFerenCeR logo](QoNFerenCeR_logo.png)
