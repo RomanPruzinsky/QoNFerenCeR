@@ -15,6 +15,7 @@
 		android:name="android.hardware.nfc.hce"
 		android:required="false" />
 
+	<!-- TODO: delete usesCleartextTraffic before releasing -->
 	<application
 		android:name=".QoNFerenCeRApp"
 		android:allowBackup="true"
@@ -24,7 +25,8 @@
 		android:label="QoNFerenCeR"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-		android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+		android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+		android:usesCleartextTraffic="true">
 		<activity
 			android:name=".MainActivity"
 			android:exported="true">
