@@ -1,6 +1,8 @@
 -- Repeatable dev seed: languages + demo content so the app has something to render.
 -- Idempotent (re-runs whenever this file's checksum changes).
 
+-- TODO: filter only to really required
+
 INSERT INTO language (code, name, is_default) VALUES
 	('en', 'English', true),
 	('sk', 'Slovenčina', false)
