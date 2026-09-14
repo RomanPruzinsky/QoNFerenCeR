@@ -4,6 +4,8 @@ Useful tools for QoNFerenCeR setup
 
 All required scripts can be ran from root's `Makefile`
 
+> This is developed on Debian Linux -> not all scripts may work on other platforms
+
 ---
 
 ## installGitHooks.sh

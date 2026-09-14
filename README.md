@@ -24,7 +24,7 @@ Contains **android app**, **backend** and **scripts** to setup everything easily
 
 Supporting 6 privilege roles, which are in **linear** order meaning that highest role has its own permissions + _all_ permissions that lower ones have
 
-These roles are (in `shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt`):
+These roles are (in [`Role.kt`](shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt)):
 
 - `ANONYM`
 - `VISITOR`
@@ -57,8 +57,8 @@ QoNFerenCeR supports multiple validating options:
 
 For minimal setup you only need to:
 
-- change `config/QoNFerenCeR.env` variables (which are described in its README)
-- upload your conference's `logo.png` (again into `config/`)
+- change [`config/QoNFerenCeR.env`](config/QoNFerenCeR.env) variables (which are described in its README)
+- upload your conference's `logo.png` (again into [`config/`](config/))
 
 ### First Admin
 
@@ -74,7 +74,7 @@ Change this password (by using LOGIN endpoint) or delete it (by using DELETE end
 
 ### Migrations
 
-Backend uses **Flyway** defined in `V1__init.sql`, which after first run cannot be edited, so `V<version>__<description>.sql` is required for every new version
+Backend uses **Flyway** defined in [`V1__init.sql`](backend/src/main/resources/db/migration/V1__init.sql), which after first run cannot be edited, so `V<version>__<description>.sql` is required for every new version
 
 Newest migrations are applied after backend restarts
 
@@ -88,15 +88,15 @@ Right from mobile app you can also modify any user's data
 
 ## Repository layout
 
-| Folder          | Description                         |
-| --------------- | ----------------------------------- |
-| `android/`      | Android app                         |
-| `backend/`      | Spring Boot backend                 |
-| `shared/`       | Common code for backend and android |
-| `config/`       | All per-event custom files          |
-| `deploy/`       | Docker                              |
-| `n8nTemplates/` | N8n workflow templates              |
-| `scripts/`      | Dev tooling / helpers               |
+| Folder                            | Description                         |
+| --------------------------------- | ----------------------------------- |
+| [`android/`](android/)            | Android app                         |
+| [`backend/`](backend/)            | Spring Boot backend                 |
+| [`shared/`](shared/)              | Common code for backend and android |
+| [`config/`](config/)              | All per-event custom files          |
+| [`deploy/`](deploy/)              | Docker                              |
+| [`n8nTemplates/`](n8nTemplates/)  | N8n workflow templates              |
+| [`scripts/`](scripts/)            | Dev tooling / helpers               |
 
 ---
 
@@ -110,16 +110,16 @@ make first-setup
 
 Rotate critical secrets: search for all occurences of `TODO_CHANGEME` and change them
 
-Upload `config/logo.png`
+Upload [`config/logo.png`](config/logo.png)
 
-Modify `config/QoNFerenCeR.env` (for explanation check `config/README.md`)
+Modify [`config/QoNFerenCeR.env`](config/QoNFerenCeR.env) (for explanation check [`config/README.md`](config/README.md))
 
 Check useful READMEs in:
 
-- `config/`
-- `scripts/`
-- `deploy/`
-- `n8nTemplates/`
+- [`config/`](config/README.md)
+- [`scripts/`](scripts/README.md)
+- [`deploy/`](deploy/README.md)
+- [`n8nTemplates/`](n8nTemplates/README.md)
 
 ### Importing data
 
@@ -132,4 +132,9 @@ Important when using it this way:
 - Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
 - Body must match `ModifyableUserDataDto`
 
-![QoNFerenCeR logo](QoNFerenCeR_logo.png)
+## API
+
+API is documented in [`openapi.yaml`](openapi.yaml)
+
+<img src="QoNFerenCeR_logo.png" alt="QoNFerenCeR logo" width="33%" align="right" />
+<img src="QoNFerenCeR_logoMain.png" alt="QoNFerenCeR main logo" width="33%" align="right" />
