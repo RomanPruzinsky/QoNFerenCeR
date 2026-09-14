@@ -37,6 +37,21 @@ These roles are (in [`Role.kt`](shared/src/main/kotlin/tr/qonferencer/shared/enu
 
 Every notable **action** is tracked with its content and sent (using _fire&forget_) to _custom_ **n8n** endpoints
 
+Calls route towards `${N8N_BASE_URL}/${N8N_PATH_PREFIX}/${event.type}`
+
+For example, if [`QoNFerenCeR.env`](config/QoNFerenCeR.env) is set to these variables:
+
+```env
+...
+N8N_BASE_URL=https://qonferencer.best
+N8N_PATH_PREFIX=n8n_conn
+...
+```
+
+and event type is `APP_LAUNCHED`, event can be caught at `https://qonferencer.best/n8n_conn/APP_LAUNCHED`
+
+> All event types are in [`OutboundEvent.kt`](backend/src/main/kotlin/tr/qonferencer/backend/n8n/OutboundEvent.kt)
+
 ### Keycloak
 
 This service takes care of _user credentials_ and _logging in_, which comes with _validating JWT tokens_ as well as support for _revoking_ or _reissuing_ new credentials
@@ -88,15 +103,15 @@ Right from mobile app you can also modify any user's data
 
 ## Repository layout
 
-| Folder                            | Description                         |
-| --------------------------------- | ----------------------------------- |
-| [`android/`](android/)            | Android app                         |
-| [`backend/`](backend/)            | Spring Boot backend                 |
-| [`shared/`](shared/)              | Common code for backend and android |
-| [`config/`](config/)              | All per-event custom files          |
-| [`deploy/`](deploy/)              | Docker                              |
-| [`n8nTemplates/`](n8nTemplates/)  | N8n workflow templates              |
-| [`scripts/`](scripts/)            | Dev tooling / helpers               |
+| Folder                           | Description                         |
+| -------------------------------- | ----------------------------------- |
+| [`android/`](android/)           | Android app                         |
+| [`backend/`](backend/)           | Spring Boot backend                 |
+| [`shared/`](shared/)             | Common code for backend and android |
+| [`config/`](config/)             | All per-event custom files          |
+| [`deploy/`](deploy/)             | Docker                              |
+| [`n8nTemplates/`](n8nTemplates/) | N8n workflow templates              |
+| [`scripts/`](scripts/)           | Dev tooling / helpers               |
 
 ---
 
