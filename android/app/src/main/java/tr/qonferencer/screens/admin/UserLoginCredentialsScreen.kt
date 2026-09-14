@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
@@ -59,6 +61,9 @@ fun UserLoginCredentialsScreen(
 	val copiedText = dynamicTranslation("misc.copied")
 	val qrData = remember(credentials) { credentials.formatAsLoginQrJson() }
 	emitNfc { qrData }
+	
+	val onDoneUpdated = rememberUpdatedState(onDone)
+	DisposableEffect(Unit) { onDispose { onDoneUpdated.value() } }
 	
 	ShowQrDialog(opened = showQr, qrData = qrData, intro = fullName)
 	
