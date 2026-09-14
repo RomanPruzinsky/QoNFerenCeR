@@ -43,7 +43,7 @@ qonferencer:
       issuer: ${KC_ISSUER}
       jwk-set-uri: ${KC_JWK_SET_URI}
       server-url: ${KC_ADMIN_URL}
-      realm: qonferencer
+      realm: QoNFerenCeR
       public-client-id: qonferencer-android
       admin:
          client-id: qonferencer-backend-admin
