@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import tr.qonferencer.shared.enums.Role
 import tr.qonferencer.theme.color
+import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
 import tr.qonferencer.trons.miscs.UNKNOWN_TEXT
@@ -32,7 +33,7 @@ fun ScreensMenuItem(
 				style = typo.headlineMedium,
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,
-				color = customColor ?: typo.headlineMedium.color,
+				color = if (isSelected) colors.text else customColor ?: typo.headlineMedium.color,
 			)
 		},
 		selected = isSelected,
@@ -41,7 +42,7 @@ fun ScreensMenuItem(
 			Icon(
 				imageVector = target.icon,
 				contentDescription = "${target.icon}",
-				tint = customColor ?: LocalContentColor.current,
+				tint = if (isSelected) colors.text else customColor ?: LocalContentColor.current,
 			)
 		},
 		shape = CircleShape.copy(CornerSize(defaultClipSize)),
