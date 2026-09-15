@@ -10,7 +10,7 @@
 			"parameters": {
 				"width": 320,
 				"height": 460,
-				"content": "## Before running\n\n1. Connect Google Oauth2 account\n2. Set webhook path prefix to match backend's `$N8N_PATH_PREFIX`\n3. Create Header Auth credential:\n   - header name: `QN-Token`\n   - value: `$BE_N8N_COMMS__AUTH_TOKEN`\n4. Set Google Sheet's column names like this: `timestamp`, `conferenceId`, `userId`, `fullName`, `role`, `error`\n5. Replace `YOUR_SPREADSHEET_ID` in both Google Sheets nodes and both HTTP Request node URLs with real values\n\nRow color:\n- green = user was logged in\n- white = not logged\n- red = n8n error"
+				"content": "## Before running\n\n1. Connect Google Oauth2 account\n2. Set webhook path prefix to match backend's `$N8N_PATH_PREFIX`\n3. Create Header Auth credential:\n   - header name: `QN-Token`\n   - value: `$BE_N8N_COMMS__AUTH_TOKEN`\n4. Set Google Sheet's column names like this: `timestamp`, `conferenceId`, `userId`, `fullName`, `role`, `error`\n5. Replace `YOUR_SPREADSHEET_ID` in both Google Sheets nodes and both HTTP Request node URLs with real values"
 			}
 		},
 		{
@@ -47,8 +47,7 @@
 						{ "id": "a3", "name": "userId", "type": "string", "value": "={{ $json.body.data.user?.userId ?? '' }}" },
 						{ "id": "a4", "name": "fullName", "type": "string", "value": "={{ $json.body.data.user?.fullName ?? '' }}" },
 						{ "id": "a5", "name": "role", "type": "string", "value": "={{ $json.body.data.user?.role ?? '' }}" },
-						{ "id": "a6", "name": "error", "type": "string", "value": "" },
-						{ "id": "a7", "name": "rowColor", "type": "string", "value": "={{ $json.body.data.user ? 'green' : 'white' }}" }
+						{ "id": "a6", "name": "error", "type": "string", "value": "" }
 					]
 				},
 				"options": {}
@@ -87,29 +86,6 @@
 			}
 		},
 		{
-			"id": "colorSuccess",
-			"name": "Color Row (login state)",
-			"type": "n8n-nodes-base.httpRequest",
-			"typeVersion": 4.2,
-			"position": [400, 300],
-			"parameters": {
-				"method": "POST",
-				"url": "https://sheets.googleapis.com/v4/spreadsheets/YOUR_SPREADSHEET_ID:batchUpdate",
-				"authentication": "predefinedCredentialType",
-				"nodeCredentialType": "googleSheetsOAuth2Api",
-				"sendBody": true,
-				"specifyBody": "json",
-				"jsonBody": "={{ { \"requests\": [ { \"repeatCell\": { \"range\": { \"sheetId\": 0, \"startRowIndex\": $json.row_number - 1, \"endRowIndex\": $json.row_number, \"startColumnIndex\": 0, \"endColumnIndex\": 6 }, \"cell\": { \"userEnteredFormat\": { \"backgroundColor\": $('Compute Row').item.json.rowColor === 'green' ? {\"red\":0.72,\"green\":0.88,\"blue\":0.72} : {\"red\":1,\"green\":1,\"blue\":1} } }, \"fields\": \"userEnteredFormat.backgroundColor\" } } ] } }}",
-				"options": {}
-			},
-			"credentials": {
-				"googleSheetsOAuth2Api": {
-					"id": "google-sheets-oauth2",
-					"name": "Google Sheets account"
-				}
-			}
-		},
-		{
 			"id": "setError",
 			"name": "Compute Error Row",
 			"type": "n8n-nodes-base.set",
@@ -123,8 +99,7 @@
 						{ "id": "e3", "name": "userId", "type": "string", "value": "={{ $('Compute Row').item.json.userId }}" },
 						{ "id": "e4", "name": "fullName", "type": "string", "value": "={{ $('Compute Row').item.json.fullName }}" },
 						{ "id": "e5", "name": "role", "type": "string", "value": "={{ $('Compute Row').item.json.role }}" },
-						{ "id": "e6", "name": "error", "type": "string", "value": "={{ $json.error?.message ?? $json.message ?? 'unknown error' }}" },
-						{ "id": "e7", "name": "rowColor", "type": "string", "value": "red" }
+						{ "id": "e6", "name": "error", "type": "string", "value": "={{ $json.error?.message ?? $json.message ?? 'unknown error' }}" }
 					]
 				},
 				"options": {}
@@ -160,29 +135,6 @@
 					"name": "Google Sheets account"
 				}
 			}
-		},
-		{
-			"id": "colorError",
-			"name": "Color Row (error)",
-			"type": "n8n-nodes-base.httpRequest",
-			"typeVersion": 4.2,
-			"position": [880, 560],
-			"parameters": {
-				"method": "POST",
-				"url": "https://sheets.googleapis.com/v4/spreadsheets/YOUR_SPREADSHEET_ID:batchUpdate",
-				"authentication": "predefinedCredentialType",
-				"nodeCredentialType": "googleSheetsOAuth2Api",
-				"sendBody": true,
-				"specifyBody": "json",
-				"jsonBody": "={{ { \"requests\": [ { \"repeatCell\": { \"range\": { \"sheetId\": 0, \"startRowIndex\": $json.row_number - 1, \"endRowIndex\": $json.row_number, \"startColumnIndex\": 0, \"endColumnIndex\": 6 }, \"cell\": { \"userEnteredFormat\": { \"backgroundColor\": {\"red\":0.96,\"green\":0.7,\"blue\":0.7} } }, \"fields\": \"userEnteredFormat.backgroundColor\" } } ] } }}",
-				"options": {}
-			},
-			"credentials": {
-				"googleSheetsOAuth2Api": {
-					"id": "google-sheets-oauth2",
-					"name": "Google Sheets account"
-				}
-			}
 		}
 	],
 	"connections": {
@@ -194,15 +146,12 @@
 		},
 		"Append Row": {
 			"main": [
-				[{ "node": "Color Row (login state)", "type": "main", "index": 0 }],
+				[],
 				[{ "node": "Compute Error Row", "type": "main", "index": 0 }]
 			]
 		},
 		"Compute Error Row": {
 			"main": [[{ "node": "Append Error Row", "type": "main", "index": 0 }]]
-		},
-		"Append Error Row": {
-			"main": [[{ "node": "Color Row (error)", "type": "main", "index": 0 }]]
 		}
 	},
 	"active": false,
