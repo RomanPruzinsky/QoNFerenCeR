@@ -10,7 +10,7 @@
 			"parameters": {
 				"width": 320,
 				"height": 460,
-				"content": "## Before running\n\n1. Connect Google Oauth2 account\n2. Set webhook path prefix to match backend's `$N8N_PATH_PREFIX`\n3. Create Header Auth credential:\n   - header name: `QN-Token`\n   - value: `$BE_N8N_COMMS__AUTH_TOKEN`\n4. Set Google Sheet's column names like this: `timestamp`, `conferenceId`, `userId`, `fullName`, `role`, `error`\n5. Replace `YOUR_SPREADSHEET_ID` in both Google Sheets nodes and both HTTP Request node URLs with real values\n\nRow color:\n- green = user was logged in\n- white = not logged\n- red = n8n error"
+				"content": "## Before running\n\n1. Connect Google Oauth2 account\n2. Set webhook path prefix to match backend's `$N8N_PATH_PREFIX`\n3. Create Header Auth credential:\n   - header name: `QN-Token`\n   - value: `$BE_N8N_COMMS__AUTH_TOKEN`\n4. Set Google Sheet's column names like this: `timestamp`, `conferenceId`, `userId`, `fullName`, `role`, `error`\n5. Replace `YOUR_SPREADSHEET_ID` in both Google Sheets nodes and both HTTP Request node URLs with real values"
 			}
 		},
 		{
