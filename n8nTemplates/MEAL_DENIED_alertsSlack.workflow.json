@@ -1,0 +1,89 @@
+{
+	"name": "MEAL_DENIED_alertsSlack",
+	"nodes": [
+		{
+			"id": "note1",
+			"name": "Setup",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [-360, -60],
+			"parameters": {
+				"width": 320,
+				"height": 250,
+				"content": "## Before running\n\n1. Set webhook path prefix to match backend's `N8N_PATH_PREFIX`\n2. Create Header Auth credential:\n   - header name: `QN-Token`\n   - value: `$BE_N8N_COMMS__AUTH_TOKEN`\n3. Attach Slack credential and set target channel"
+			}
+		},
+		{
+			"id": "webhook1",
+			"name": "MEAL_DENIED Webhook",
+			"type": "n8n-nodes-base.webhook",
+			"typeVersion": 2,
+			"position": [-360, 340],
+			"parameters": {
+				"httpMethod": "POST",
+				"path": "qonferencer_n8n_base/MEAL_DENIED",
+				"authentication": "headerAuth",
+				"responseMode": "onReceived",
+				"options": {}
+			},
+			"credentials": {
+				"httpHeaderAuth": {
+					"id": "qn-token-header-auth",
+					"name": "QN-Token Header Auth"
+				}
+			}
+		},
+		{
+			"id": "buildMessage",
+			"name": "Build Slack Message",
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [-100, 340],
+			"parameters": {
+				"assignments": {
+					"assignments": [
+						{
+							"id": "m1",
+							"name": "text",
+							"type": "string",
+							"value": "={{ 'Meal scan denied - ' + $json.body.data.reason + '\\nAttendee: ' + ($json.body.data.userId ?? 'unknown badge') + '\\nWindow: ' + $json.body.data.windowId + '\\nScanned by: ' + $json.body.data.scannedBy + ' (' + $json.body.data.scannerType + ')\\nAt: ' + $json.body.timestamp }}"
+						}
+					]
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "slackPost",
+			"name": "Post to Slack",
+			"type": "n8n-nodes-base.slack",
+			"typeVersion": 2.2,
+			"position": [140, 340],
+			"parameters": {
+				"resource": "message",
+				"operation": "post",
+				"select": "channel",
+				"channelId": { "__rl": true, "mode": "name", "value": "YOUR_SLACK_CHANNEL" },
+				"text": "={{ $json.text }}",
+				"otherOptions": {}
+			},
+			"credentials": {
+				"slackApi": {
+					"id": "slack-bot-token",
+					"name": "Slack account"
+				}
+			}
+		}
+	],
+	"connections": {
+		"MEAL_DENIED Webhook": {
+			"main": [[{ "node": "Build Slack Message", "type": "main", "index": 0 }]]
+		},
+		"Build Slack Message": {
+			"main": [[{ "node": "Post to Slack", "type": "main", "index": 0 }]]
+		}
+	},
+	"active": false,
+	"settings": { "executionOrder": "v1" },
+	"pinData": {}
+}

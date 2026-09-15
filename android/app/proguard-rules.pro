@@ -12,3 +12,13 @@
 -keep class tr.qonferencer.shared.dtos.** { *; }
 -keep class tr.qonferencer.shared.enums.** { *; }
 -keep class tr.qonferencer.translations.TranslationState { *; }
+
+# ML Kit
+-keep class com.google.mlkit.** { *; }
+-keep interface com.google.mlkit.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_barcode.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_barcode_bundled.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_common.** { *; }
+-keep class * implements com.google.firebase.components.ComponentRegistrar { *; }
+-dontwarn com.google.android.gms.internal.mlkit_vision_barcode.**
+-dontwarn com.google.android.gms.internal.mlkit_vision_barcode_bundled.**
