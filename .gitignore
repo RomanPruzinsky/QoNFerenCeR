@@ -6,3 +6,6 @@
 
 # Release build outputs
 /releases/
+
+# Android release signing keystore
+/config/*.jks
