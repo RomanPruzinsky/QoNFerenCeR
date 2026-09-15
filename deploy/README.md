@@ -12,4 +12,4 @@ Single PostgreSQL instance hosts three **separate** databases
 | `keycloak`    | Identity: realms, users, roles, sessions                                                 | `postgres/initdb/01-create-databases.sh`        |
 | `n8n`         | Workflow state: workflows, encrypted credentials, execution history                      | `postgres/initdb/01-create-databases.sh`        |
 
-> ⚠️ Init script runs **only on empty data volume**. After changing it you must clear the volume for it to re-run: `make inf-reset`
+> ⚠️ [Init script](postgres/initdb/01-create-databases.sh) runs **only on empty data volume**. After changing it, clear volume then restart for it to re-run: `make inf-restart-new`

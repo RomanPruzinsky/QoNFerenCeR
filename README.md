@@ -147,6 +147,16 @@ Important when using it this way:
 - Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
 - Body must match `ModifyableUserDataDto`
 
+## Makefile
+
+- `make inf-pause`: Shut down containers, but keep data
+- `make inf-start`: Start containers from where they ended
+- `make inf-reset`: Shut down containers and remove data
+- `make inf-logs`: Show logs of containers
+- `make inf-restart-new`: Restarts containers as they would be run for first time
+
+Other  useful commands are explained in [`scripts/README.md`](scripts/README.md)
+
 ## API
 
 API is documented in [`openapi.yaml`](openapi.yaml)
