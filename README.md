@@ -151,5 +151,9 @@ Important when using it this way:
 
 API is documented in [`openapi.yaml`](openapi.yaml)
 
+## GDPR
+
+QoNFerenCeR is self-hosted - developer doesn't store or have access to any data. Whoever deploys instance is responsible for GDPR consent of attendees
+
 <img src="QoNFerenCeR_logo.png" alt="QoNFerenCeR logo" width="33%" align="right" />
 <img src="QoNFerenCeR_logoMain.png" alt="QoNFerenCeR main logo" width="33%" align="right" />
