@@ -8,7 +8,7 @@ Contains **android app**, **backend** and **scripts** to setup everything easily
 
 ## 🌟 Highly customizable 🛠️
 
-**n8n integration**: Create _own endpoints_ and use them in mobile app
+**n8n integration**: Create _own endpoints_ and use them in mobile app, simply using [**n8n**](https://n8n.io/)
 
 **Outbound events**: _Backend_ tracks notable changes and sends them to specific URLs
 
@@ -155,7 +155,7 @@ Important when using it this way:
 - `make inf-logs`: Show logs of containers
 - `make inf-restart-new`: Restarts containers as they would be run for first time
 
-Other  useful commands are explained in [`scripts/README.md`](scripts/README.md)
+Other useful commands are explained in [`scripts/README.md`](scripts/README.md)
 
 ## API
 
