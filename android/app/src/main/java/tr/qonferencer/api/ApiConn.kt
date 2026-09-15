@@ -3,7 +3,6 @@ package tr.qonferencer.api
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -78,7 +77,7 @@ val QoNFerenCerApi: QoNFerenCeRApiClient by lazy {
 
 /** @return Decoded login-QR/NFC payload, or `null` if [json] isn't a valid [LoginCredentialsDto] */
 fun parseLoginCredentials(json: String): LoginCredentialsDto? =
-	runCatching { objectMapper.readValue<LoginCredentialsDto>(json) }.getOrNull()
+	runCatching { objectMapper.readValue(json, LoginCredentialsDto::class.java) }.getOrNull()
 
 /** @return [this] encoded as login-QR/NFC payload, readable back by [parseLoginCredentials] */
 fun LoginCredentialsDto.formatAsLoginQrJson(): String = objectMapper.writeValueAsString(this)

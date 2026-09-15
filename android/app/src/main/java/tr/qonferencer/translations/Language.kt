@@ -3,7 +3,6 @@ package tr.qonferencer.translations
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,6 +67,6 @@ class Language(
 	}
 	
 	private fun loadCachedOptions(): TranslationState =
-		prefsStorager.getString(PrefKey.TRANSLATIONS)?.let { mapper.readValue<TranslationState>(it) }
+		prefsStorager.getString(PrefKey.TRANSLATIONS)?.let { mapper.readValue(it, TranslationState::class.java) }
 			?: TranslationState(emptyList(), emptyList())
 }

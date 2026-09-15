@@ -8,6 +8,7 @@
 -keep class kotlin.Metadata { *; }
 -dontwarn com.fasterxml.jackson.databind.**
 
-# Wire contract: renaming these fields silently breaks every request and response
+# DTOs and API things
 -keep class tr.qonferencer.shared.dtos.** { *; }
 -keep class tr.qonferencer.shared.enums.** { *; }
+-keep class tr.qonferencer.translations.TranslationState { *; }
