@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,8 @@ import tr.qonferencer.shared.dtos.AllTranslationsDto
 import tr.qonferencer.shared.dtos.TranslationDto
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
+import tr.qonferencer.translations.dynamicTranslation
+import tr.qonferencer.trons.defaultLayouts.DefaultOTF
 import tr.qonferencer.trons.defaultLayouts.DefaultWideDivider
 import tr.qonferencer.trons.defaultLayouts.ScrollableColumn
 import tr.qonferencer.trons.defaultLayouts.defaultSpacing
@@ -38,11 +41,13 @@ import tr.qonferencer.trons.miscs.EMPTY_STRING
 import tr.qonferencer.trons.remembers.rememberFalse
 import tr.qonferencer.trons.states.StateIndicator
 import tr.qonferencer.trons.states.dataState.DataStateLayout
+import tr.qonferencer.trons.theme.Edge
 import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultIconSizeLarge
 import tr.qonferencer.trons.theme.defaultLayoutPadding
 import tr.qonferencer.trons.theme.defaultTextPadding
 import tr.qonferencer.trons.theme.halfDefaultLayoutPadding
+import tr.qonferencer.trons.theme.specPadding
 
 @Composable
 fun TranslationsScreen() {
@@ -72,17 +77,27 @@ fun TranslationsScreen() {
 						horizontalArrangement = Arrangement.SpaceBetween,
 						verticalAlignment = Alignment.CenterVertically,
 					) {
-						Row(horizontalArrangement = Arrangement.spacedBy(halfDefaultLayoutPadding)) {
+						FlowRow(
+							maxItemsInEachRow = 2,
+							horizontalArrangement = Arrangement.spacedBy(
+								space = halfDefaultLayoutPadding,
+								alignment = Alignment.CenterHorizontally,
+							),
+							verticalArrangement = Arrangement.spacedBy(
+								space = halfDefaultLayoutPadding,
+								alignment = Alignment.CenterVertically,
+							),
+							modifier = Modifier
+								.specPadding(Edge.END to halfDefaultLayoutPadding),
+						) {
 							AddButton(
 								label = "🌐",
 								background = colors.clickable,
 								onClick = { showLanguages.value = true },
 							)
 							AddButton(label = "+ 🔑", onClick = { showKeyDialog = TranslationKeyDialogTarget.New })
-						}
 
-						if (isChanged) {
-							Row(horizontalArrangement = Arrangement.spacedBy(halfDefaultLayoutPadding)) {
+							if (isChanged) {
 								HeaderIconButton(
 									icon = Icons.Default.Close,
 									contentDescription = "discard translation changes",
@@ -100,6 +115,12 @@ fun TranslationsScreen() {
 								)
 							}
 						}
+
+						DefaultOTF(
+							valueText = translationsVM.keySearch,
+							labelText = dynamicTranslation("admin.translations.key"),
+							modifier = Modifier.weight(1f),
+						)
 					}
 
 					DefaultWideDivider()
@@ -111,7 +132,7 @@ fun TranslationsScreen() {
 						verticalArrangement = defaultSpacing,
 					) {
 						TranslationTreeView(
-							nodes = buildTranslationTree(translations.map { it.key }.distinct()),
+							nodes = buildTranslationTree(translationsVM.filterKeys(translations)),
 							languages = languages,
 							translations = translations,
 							expandeds = expandeds,

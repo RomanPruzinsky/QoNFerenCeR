@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -129,7 +130,8 @@ fun UserCheckDetailScreen(
 		onConfirm = editVM::reissueCredentials,
 	)
 	val onDismissUpdated = rememberUpdatedState(onDismiss)
-	
+	DisposableEffect(Unit) { onDispose { onDismissUpdated.value() } }
+
 	editVM.revokeState.OnSuccess { ShortToast(text = dynamicTranslation("admin.slot.revoke.success")) }
 	editVM.revokeState.OnError { e -> ShortToast(text = errorIndicatorMessage(e)) }
 	

@@ -91,7 +91,7 @@ android {
 		buildConfigField("String", "BACKEND_BASE_URL", "\"${envValue("BACKEND_BASE_URL")}\"")
 		buildConfigField("String", "KEYCLOAK_BASE_URL", "\"${envValue("KEYCLOAK_BASE_URL")}\"")
 
-		buildConfigField("String", "KEYCLOAK_REALM", "\"qonferencer\"")
+		buildConfigField("String", "KEYCLOAK_REALM", "\"QoNFerenCeR\"")
 		buildConfigField("String", "KEYCLOAK_CLIENT_ID", "\"qonferencer-android\"")
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

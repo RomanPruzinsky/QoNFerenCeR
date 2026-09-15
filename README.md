@@ -24,7 +24,7 @@ Contains **android app**, **backend** and **scripts** to setup everything easily
 
 Supporting 6 privilege roles, which are in **linear** order meaning that highest role has its own permissions + _all_ permissions that lower ones have
 
-These roles are (in `shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt`):
+These roles are (in [`Role.kt`](shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt)):
 
 - `ANONYM`
 - `VISITOR`
@@ -36,6 +36,21 @@ These roles are (in `shared/src/main/kotlin/tr/qonferencer/shared/enums/Role.kt`
 ### Outbound events (n8n)
 
 Every notable **action** is tracked with its content and sent (using _fire&forget_) to _custom_ **n8n** endpoints
+
+Calls route towards `${N8N_BASE_URL}/${N8N_PATH_PREFIX}/${event.type}`
+
+For example, if [`QoNFerenCeR.env`](config/QoNFerenCeR.env) is set to these variables:
+
+```env
+...
+N8N_BASE_URL=https://qonferencer.best
+N8N_PATH_PREFIX=n8n_conn
+...
+```
+
+and event type is `APP_LAUNCHED`, event can be caught at `https://qonferencer.best/n8n_conn/APP_LAUNCHED`
+
+> All event types are in [`OutboundEvent.kt`](backend/src/main/kotlin/tr/qonferencer/backend/n8n/OutboundEvent.kt)
 
 ### Keycloak
 
@@ -57,8 +72,8 @@ QoNFerenCeR supports multiple validating options:
 
 For minimal setup you only need to:
 
-- change `config/QoNFerenCeR.env` variables (which are described in its README)
-- upload your conference's `logo.png` (again into `config/`)
+- change [`config/QoNFerenCeR.env`](config/QoNFerenCeR.env) variables (which are described in its README)
+- upload your conference's `logo.png` (again into [`config/`](config/))
 
 ### First Admin
 
@@ -74,7 +89,7 @@ Change this password (by using LOGIN endpoint) or delete it (by using DELETE end
 
 ### Migrations
 
-Backend uses **Flyway** defined in `V1__init.sql`, which after first run cannot be edited, so `V<version>__<description>.sql` is required for every new version
+Backend uses **Flyway** defined in [`V1__init.sql`](backend/src/main/resources/db/migration/V1__init.sql), which after first run cannot be edited, so `V<version>__<description>.sql` is required for every new version
 
 Newest migrations are applied after backend restarts
 
@@ -88,15 +103,15 @@ Right from mobile app you can also modify any user's data
 
 ## Repository layout
 
-| Folder          | Description                         |
-| --------------- | ----------------------------------- |
-| `android/`      | Android app                         |
-| `backend/`      | Spring Boot backend                 |
-| `shared/`       | Common code for backend and android |
-| `config/`       | All per-event custom files          |
-| `deploy/`       | Docker                              |
-| `n8nTemplates/` | N8n workflow templates              |
-| `scripts/`      | Dev tooling / helpers               |
+| Folder                           | Description                         |
+| -------------------------------- | ----------------------------------- |
+| [`android/`](android/)           | Android app                         |
+| [`backend/`](backend/)           | Spring Boot backend                 |
+| [`shared/`](shared/)             | Common code for backend and android |
+| [`config/`](config/)             | All per-event custom files          |
+| [`deploy/`](deploy/)             | Docker                              |
+| [`n8nTemplates/`](n8nTemplates/) | N8n workflow templates              |
+| [`scripts/`](scripts/)           | Dev tooling / helpers               |
 
 ---
 
@@ -110,16 +125,16 @@ make first-setup
 
 Rotate critical secrets: search for all occurences of `TODO_CHANGEME` and change them
 
-Upload `config/logo.png`
+Upload [`config/logo.png`](config/logo.png)
 
-Modify `config/QoNFerenCeR.env` (for explanation check `config/README.md`)
+Modify [`config/QoNFerenCeR.env`](config/QoNFerenCeR.env) (for explanation check [`config/README.md`](config/README.md))
 
 Check useful READMEs in:
 
-- `config/`
-- `scripts/`
-- `deploy/`
-- `n8nTemplates/`
+- [`config/`](config/README.md)
+- [`scripts/`](scripts/README.md)
+- [`deploy/`](deploy/README.md)
+- [`n8nTemplates/`](n8nTemplates/README.md)
 
 ### Importing data
 
@@ -132,4 +147,13 @@ Important when using it this way:
 - Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
 - Body must match `ModifyableUserDataDto`
 
-![QoNFerenCeR logo](QoNFerenCeR_logo.png)
+## API
+
+API is documented in [`openapi.yaml`](openapi.yaml)
+
+## GDPR
+
+QoNFerenCeR is self-hosted - developer doesn't store or have access to any data. Whoever deploys instance is responsible for GDPR consent of attendees
+
+<img src="QoNFerenCeR_logo.png" alt="QoNFerenCeR logo" width="33%" align="right" />
+<img src="QoNFerenCeR_logoMain.png" alt="QoNFerenCeR main logo" width="33%" align="right" />
