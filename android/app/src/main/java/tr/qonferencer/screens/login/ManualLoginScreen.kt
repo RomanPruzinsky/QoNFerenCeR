@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import tr.qonferencer.theme.colors
@@ -32,6 +34,15 @@ fun ManualLoginScreen(onSubmit: (username: String, password: String) -> Unit) {
 
 	val usernameFocusRequester = remember { FocusRequester() }
 	val passwordFocusRequester = remember { FocusRequester() }
+
+	val keyboard = LocalSoftwareKeyboardController.current
+	val focusManager = LocalFocusManager.current
+
+	fun submit() {
+		onSubmit(username.value, password.value)
+		keyboard?.hide()
+		focusManager.clearFocus(force = true)
+	}
 
 	LaunchedEffect(Unit) { usernameFocusRequester.requestFocus() }
 
@@ -56,14 +67,14 @@ fun ManualLoginScreen(onSubmit: (username: String, password: String) -> Unit) {
 				.fillMaxWidth()
 				.focusRequester(passwordFocusRequester),
 			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-			keyboardActions = KeyboardActions(onDone = { onSubmit(username.value, password.value) }),
+			keyboardActions = KeyboardActions(onDone = { submit() }),
 		)
 		Text(
 			text = dynamicTranslation("login.manual.submit"),
 			style = typo.labelLarge,
 			modifier = Modifier
 				.defaultClip()
-				.clickable { onSubmit(username.value, password.value) }
+				.clickable { submit() }
 				.background(colors.clickable)
 				.defaultTextPadding(),
 		)
