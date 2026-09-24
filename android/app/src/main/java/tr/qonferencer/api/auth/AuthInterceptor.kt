@@ -32,12 +32,14 @@ class AuthInterceptor(
 		if (response.code != JWT_REJECTED || savedToken == null) return response
 		
 		response.close()
-		val refreshedToken = runBlocking { silentRefresh() } ?: return chain.proceed(request)
+		val refreshedToken = runBlocking { silentRefresh() } ?: return chain.proceed(request.withoutBearerToken())
 		return chain.proceed(request.withBearerToken(refreshedToken))
 	}
-	
+
 	private fun Request.withBearerToken(token: String?): Request =
 		if (token != null) newBuilder().header("Authorization", "Bearer $token").build() else this
+
+	private fun Request.withoutBearerToken(): Request = newBuilder().removeHeader("Authorization").build()
 	
 	private suspend fun silentRefresh(): String? {
 		val refresh = tokenStore.refreshToken() ?: return null
