@@ -6,9 +6,11 @@ Contains **android app**, **backend** and **scripts** to setup everything easily
 
 > Main technologies used: **Kotlin**, **Jetpack Compose**, **SpringBoot**, **PostgreSQL**, **Keycloak**, **Retrofit**, **n8n**, **Docker**
 
+<video src="docs/promoVideo.mp4" controls width="100%"></video>
+
 ## 🌟 Highly customizable 🛠️
 
-**n8n integration**: Create _own endpoints_ and use them in mobile app
+**n8n integration**: Create _own endpoints_ and use them in mobile app, simply using [**n8n**](https://n8n.io/)
 
 **Outbound events**: _Backend_ tracks notable changes and sends them to specific URLs
 
@@ -147,13 +149,23 @@ Important when using it this way:
 - Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
 - Body must match `ModifyableUserDataDto`
 
+## Makefile
+
+- `make inf-pause`: Shut down containers, but keep data
+- `make inf-start`: Start containers from where they ended
+- `make inf-reset`: Shut down containers and remove data
+- `make inf-logs`: Show logs of containers
+- `make inf-restart-new`: Restarts containers as they would be run for first time
+
+Other useful commands are explained in [`scripts/README.md`](scripts/README.md)
+
 ## API
 
-API is documented in [`openapi.yaml`](openapi.yaml)
+API is documented in [`openapi.yaml`](docs/openapi.yaml)
 
 ## GDPR
 
 QoNFerenCeR is self-hosted - developer doesn't store or have access to any data. Whoever deploys instance is responsible for GDPR consent of attendees
 
-<img src="QoNFerenCeR_logo.png" alt="QoNFerenCeR logo" width="33%" align="right" />
-<img src="QoNFerenCeR_logoMain.png" alt="QoNFerenCeR main logo" width="33%" align="right" />
+<img src="docs/QoNFerenCeR_logo.png" alt="QoNFerenCeR logo" width="33%" align="right" />
+<img src="docs/QoNFerenCeR_logoMain.png" alt="QoNFerenCeR main logo" width="33%" align="right" />

@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.mlkit.vision.barcode.common.Barcode
 import tr.qonferencer.screens.keyInputMethod.KeyInputMethod
 import tr.qonferencer.screens.keyInputMethod.KeyInputMethodPicker
 import tr.qonferencer.screens.login.NfcLoginScreen
@@ -23,14 +24,14 @@ import tr.qonferencer.trons.states.dataState.DataStateLayout
 @Composable
 fun UserCheckScreen() {
 	val userCheckVM = viewModel<UserCheckViewModel>()
-	
+
 	var selectedMethod by remember { mutableStateOf<KeyInputMethod?>(null) }
-	
+
 	BackHandler(enabled = selectedMethod != null) {
 		selectedMethod = null
 		userCheckVM.dismiss()
 	}
-	
+
 	Column(
 		modifier = Modifier.fillMaxSize(),
 		verticalArrangement = Arrangement.SpaceEvenly,
@@ -42,7 +43,14 @@ fun UserCheckScreen() {
 				when (selectedMethod) {
 					null -> KeyInputMethodPicker(introKey = "userCheck.by.intro", onSelect = { selectedMethod = it })
 					KeyInputMethod.MANUAL -> ManualUserCheckScreen(onPick = userCheckVM::loadFromManual)
-					KeyInputMethod.QR_BAR -> QrLoginScreen(onDecode = userCheckVM::loadFromScan)
+					KeyInputMethod.QR_BAR -> QrLoginScreen(
+						format = Barcode.FORMAT_ALL_FORMATS,
+						onDecode = { value, format ->
+							if (format == Barcode.FORMAT_QR_CODE) userCheckVM.loadFromScan(value)
+							else userCheckVM.loadFromBarcode(value)
+						},
+					)
+
 					KeyInputMethod.NFC -> NfcLoginScreen(onDecode = userCheckVM::loadFromScan)
 				}
 			},

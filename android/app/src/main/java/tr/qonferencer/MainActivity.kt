@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
 		setContent {
 			val splashViewModel: SplashViewModel =
 				viewModel(factory = splashViewModelFactory(QoNFerenCerApi.splash))
-			
+
 			QoNFerenCeRTheme {
 				if (splashViewModel.splashState.collectValue().isSuccess()) AppLayout()
 				else SplashScreen()

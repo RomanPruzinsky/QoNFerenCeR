@@ -24,6 +24,13 @@ class UserCheckViewModel : ViewModel() {
 		dataStatedAction(_detailState) { QoNFerenCerApi.user.byId(userId) }
 	}
 
+	fun loadFromBarcode(payload: String) {
+		dataStatedAction(_detailState) {
+			val userId = payload.trim().toLongOrNull() ?: throw IllegalArgumentException("Unreadable user barcode")
+			QoNFerenCerApi.user.byId(userId)
+		}
+	}
+
 	/** Discards resolved user */
 	fun dismiss() {
 		_detailState.waiting()

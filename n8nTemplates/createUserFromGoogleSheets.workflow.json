@@ -1,0 +1,212 @@
+{
+	"name": "createUserFromGoogleSheets",
+	"nodes": [
+		{
+			"id": "note1",
+			"name": "Setup",
+			"type": "n8n-nodes-base.stickyNote",
+			"typeVersion": 1,
+			"position": [-380, -100],
+			"parameters": {
+				"width": 340,
+				"height": 430,
+				"content": "## Before running\n\n1. Connect Google Sheets Oauth2 account\n2. Replace `YOUR_SPREADSHEET_ID` in all Google Sheets / Drive nodes\n3. Sheet headers needed: `fullName`, `role`, `generated_username`, `generated_password`, `status`, `qr_drive_link`\n4. Create Header Auth credential:\n   - header name: `QN-Token`\n   - value: `$BE_N8N_COMMS__AUTH_TOKEN`\n   - attach to 'Preregister User' node\n5. Create Drive folder named `qrs`, replace `YOUR_QRS_FOLDER_ID` with its id\n6. Column `role` must be one of Role enum values (VOLUNTEER, LEADER, ...) - default is VISITOR"
+			}
+		},
+		{
+			"id": "trigger1",
+			"name": "New Attendee Row",
+			"type": "n8n-nodes-base.googleSheetsTrigger",
+			"typeVersion": 1,
+			"position": [-380, 460],
+			"parameters": {
+				"event": "rowAdded",
+				"pollTimes": { "item": [{ "mode": "everyMinute" }] },
+				"documentId": { "__rl": true, "mode": "id", "value": "YOUR_SPREADSHEET_ID" },
+				"sheetName": { "__rl": true, "mode": "list", "value": "gid=0", "cachedResultName": "Sheet1" },
+				"options": {}
+			},
+			"credentials": {
+				"googleSheetsTriggerOAuth2Api": {
+					"id": "google-sheets-oauth2",
+					"name": "Google Sheets account"
+				}
+			}
+		},
+		{
+			"id": "preregister",
+			"name": "Preregister User",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [-100, 460],
+			"onError": "continueErrorOutput",
+			"parameters": {
+				"method": "POST",
+				"url": "http://backend:8080/api/v1/internal/n8n/users/preregister",
+				"authentication": "genericCredentialType",
+				"genericAuthType": "httpHeaderAuth",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ { \"fullName\": $json.fullName, \"role\": $json.role || 'VISITOR' } }}",
+				"options": {}
+			},
+			"credentials": {
+				"httpHeaderAuth": {
+					"id": "qn-token-header-auth",
+					"name": "QN-Token Header Auth"
+				}
+			}
+		},
+		{
+			"id": "writeCreds",
+			"name": "Write Credentials Back",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [160, 340],
+			"parameters": {
+				"resource": "sheet",
+				"operation": "update",
+				"documentId": { "__rl": true, "mode": "id", "value": "YOUR_SPREADSHEET_ID" },
+				"sheetName": { "__rl": true, "mode": "list", "value": "gid=0", "cachedResultName": "Sheet1" },
+				"columns": {
+					"mappingMode": "defineBelow",
+					"matchingColumns": ["row_number"],
+					"value": {
+						"row_number": "={{ $('New Attendee Row').item.json.row_number }}",
+						"generated_username": "={{ $json.credentials.username }}",
+						"generated_password": "={{ $json.credentials.password }}",
+						"status": "CREATED"
+					}
+				},
+				"options": {}
+			},
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets-oauth2",
+					"name": "Google Sheets account"
+				}
+			}
+		},
+		{
+			"id": "writeFailure",
+			"name": "Write Failure Status",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [160, 600],
+			"parameters": {
+				"resource": "sheet",
+				"operation": "update",
+				"documentId": { "__rl": true, "mode": "id", "value": "YOUR_SPREADSHEET_ID" },
+				"sheetName": { "__rl": true, "mode": "list", "value": "gid=0", "cachedResultName": "Sheet1" },
+				"columns": {
+					"mappingMode": "defineBelow",
+					"matchingColumns": ["row_number"],
+					"value": {
+						"row_number": "={{ $('New Attendee Row').item.json.row_number }}",
+						"status": "={{ 'FAILED: ' + ($json.error?.message ?? $json.message ?? 'unknown error') }}"
+					}
+				},
+				"options": {}
+			},
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets-oauth2",
+					"name": "Google Sheets account"
+				}
+			}
+		},
+		{
+			"id": "genQr",
+			"name": "Generate QR",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [420, 340],
+			"parameters": {
+				"method": "GET",
+				"url": "={{ 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent($json.generated_username + ':' + $json.generated_password) }}",
+				"options": {
+					"response": {
+						"response": {
+							"responseFormat": "file",
+							"outputPropertyName": "data"
+						}
+					}
+				}
+			}
+		},
+		{
+			"id": "uploadQr",
+			"name": "Upload QR to Drive",
+			"type": "n8n-nodes-base.googleDrive",
+			"typeVersion": 3,
+			"position": [660, 340],
+			"parameters": {
+				"resource": "file",
+				"operation": "upload",
+				"name": "={{ $('Write Credentials Back').item.json.generated_username }}.png",
+				"binaryDataUpstream": true,
+				"inputDataFieldName": "data",
+				"driveId": { "__rl": true, "mode": "list", "value": "My Drive" },
+				"folderId": { "__rl": true, "mode": "id", "value": "YOUR_QRS_FOLDER_ID", "cachedResultName": "qrs" },
+				"options": {}
+			},
+			"credentials": {
+				"googleDriveOAuth2Api": {
+					"id": "google-drive-oauth2",
+					"name": "Google Drive account"
+				}
+			}
+		},
+		{
+			"id": "writeQrLink",
+			"name": "Write QR Link",
+			"type": "n8n-nodes-base.googleSheets",
+			"typeVersion": 4.5,
+			"position": [900, 340],
+			"parameters": {
+				"resource": "sheet",
+				"operation": "update",
+				"documentId": { "__rl": true, "mode": "id", "value": "YOUR_SPREADSHEET_ID" },
+				"sheetName": { "__rl": true, "mode": "list", "value": "gid=0", "cachedResultName": "Sheet1" },
+				"columns": {
+					"mappingMode": "defineBelow",
+					"matchingColumns": ["row_number"],
+					"value": {
+						"row_number": "={{ $('New Attendee Row').item.json.row_number }}",
+						"qr_drive_link": "={{ $json.webViewLink }}"
+					}
+				},
+				"options": {}
+			},
+			"credentials": {
+				"googleSheetsOAuth2Api": {
+					"id": "google-sheets-oauth2",
+					"name": "Google Sheets account"
+				}
+			}
+		}
+	],
+	"connections": {
+		"New Attendee Row": {
+			"main": [[{ "node": "Preregister User", "type": "main", "index": 0 }]]
+		},
+		"Preregister User": {
+			"main": [
+				[{ "node": "Write Credentials Back", "type": "main", "index": 0 }],
+				[{ "node": "Write Failure Status", "type": "main", "index": 0 }]
+			]
+		},
+		"Write Credentials Back": {
+			"main": [[{ "node": "Generate QR", "type": "main", "index": 0 }]]
+		},
+		"Generate QR": {
+			"main": [[{ "node": "Upload QR to Drive", "type": "main", "index": 0 }]]
+		},
+		"Upload QR to Drive": {
+			"main": [[{ "node": "Write QR Link", "type": "main", "index": 0 }]]
+		}
+	},
+	"active": false,
+	"settings": { "executionOrder": "v1" },
+	"pinData": {}
+}

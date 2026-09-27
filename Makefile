@@ -1,4 +1,4 @@
-.PHONY: first-setup check inf-pause inf-start inf-reset inf-logs release-android
+.PHONY: first-setup check inf-pause inf-start inf-start-new inf-reset inf-logs inf-restart-new release-android
 
 ENV_FILE=config/QoNFerenCeR.env
 COMPOSE=docker compose -f deploy/docker-compose.yml --env-file $(ENV_FILE)
@@ -36,6 +36,10 @@ be-reset:
 be-logs:
 	$(COMPOSE) logs -f backend
 
+adbr:
+	adb reverse tcp:8081 tcp:8081
+	adb reverse tcp:8080 tcp:8080
+
 #################### BACKEND #####################
 ##################################################
 ##################### DEPLOY #####################
@@ -51,6 +55,9 @@ inf-reset:
 
 inf-logs:
 	$(COMPOSE) logs -f
+
+inf-restart-new: inf-reset inf-start
+# add also check
 
 ##################### DEPLOY #####################
 ##################################################

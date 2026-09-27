@@ -60,7 +60,7 @@ fun LoginScreen() {
 	) {
 		when (selected) {
 			null -> KeyInputMethodPicker(introKey = "login.by.intro", onSelect = { selected = it })
-			KeyInputMethod.QR_BAR -> QrLoginScreen(onDecode = loginViewModel::submitScanned)
+			KeyInputMethod.QR_BAR -> QrLoginScreen(onDecode = { value, _ -> loginViewModel.submitScanned(value) })
 			KeyInputMethod.NFC -> NfcLoginScreen(onDecode = loginViewModel::submitScanned)
 			KeyInputMethod.MANUAL -> ManualLoginScreen(onSubmit = loginViewModel::submit)
 		}

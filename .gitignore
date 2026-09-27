@@ -6,3 +6,9 @@
 
 # Release build outputs
 /releases/
+
+# Android release signing keystore
+/config/*.jks
+
+# AI audit notes (local only)
+/docs/ai-audit.md

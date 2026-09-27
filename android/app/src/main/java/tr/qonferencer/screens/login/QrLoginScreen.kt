@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.mlkit.vision.barcode.common.Barcode
 import tr.qonferencer.theme.colors
 import tr.qonferencer.theme.typo
 import tr.qonferencer.translations.dynamicTranslation
@@ -29,7 +30,10 @@ import tr.qonferencer.trons.theme.defaultClip
 import tr.qonferencer.trons.theme.defaultTextPadding
 
 @Composable
-fun QrLoginScreen(onDecode: (String) -> Unit) {
+fun QrLoginScreen(
+	format: Int = Barcode.FORMAT_QR_CODE,
+	onDecode: (value: String, format: Int) -> Unit,
+) {
 	val context = LocalContext.current
 
 	var hasCameraPermission by remember { mutableStateOf(currentlyGranted(context)) }
@@ -47,7 +51,7 @@ fun QrLoginScreen(onDecode: (String) -> Unit) {
 		onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
 	}
 
-	if (hasCameraPermission) QrScannerView(onDecode = { value, _ -> onDecode(value) })
+	if (hasCameraPermission) QrScannerView(format = format, onDecode = onDecode)
 	else {
 		Text(
 			text = dynamicTranslation("login.state.cameraDenied"),
