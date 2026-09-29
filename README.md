@@ -148,6 +148,7 @@ Important when using it this way:
 - `config/QoNFerenCeR.env::N8N_ENABLED` needs to be `true`
 - Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
 - Body must match `ModifyableUserDataDto`
+- Needs to be run for every user
 
 ## Makefile
 
