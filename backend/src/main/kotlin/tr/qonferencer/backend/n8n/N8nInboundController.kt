@@ -37,9 +37,7 @@ class N8nInboundController(
 	}
 	
 	@GetMapping(ApiPaths.Internal.N8n.TRANSLATIONS)
-	fun getTranslations(
-		@RequestHeader(N8nOutboundListener.TOKEN_HEADER) token: String,
-	): AllTranslationsDto {
+	fun getTranslations(@RequestHeader(N8nOutboundListener.TOKEN_HEADER) token: String): AllTranslationsDto {
 		requireValidToken(token)
 		return translationService.get()
 	}
