@@ -149,6 +149,12 @@ Important when using it this way:
 - Request header `QN-Token` needs to match `config/QoNFerenCeR.env::BE_N8N_COMMS__AUTH_TOKEN`
 - Body must match `ModifyableUserDataDto`
 
+Translations can be exported / imported same way (same `QN-Token` rules) at `${BACKEND_BASE_URL}api/v$API_VERSION/internal/n8n/translations`
+
+- `GET` returns `AllTranslationsDto`
+- `PUT` replaces all languages and translations with body `AllTranslationsDto`
+- Needs to be run for every user
+
 ## Makefile
 
 - `make inf-pause`: Shut down containers, but keep data

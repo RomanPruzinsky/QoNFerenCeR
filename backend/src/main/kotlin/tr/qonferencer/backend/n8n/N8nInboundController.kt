@@ -2,14 +2,18 @@ package tr.qonferencer.backend.n8n
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import tr.qonferencer.backend.admin.SlotService
+import tr.qonferencer.backend.admin.TranslationAdminService
 import tr.qonferencer.backend.common.unauthorized
 import tr.qonferencer.shared.ApiPaths
+import tr.qonferencer.shared.dtos.AllTranslationsDto
 import tr.qonferencer.shared.dtos.ModifyableUserDataDto
 import tr.qonferencer.shared.dtos.SlotProvisionedDto
 import java.security.MessageDigest
@@ -20,6 +24,7 @@ import java.security.MessageDigest
 class N8nInboundController(
 	private val properties: N8nProperties,
 	private val slotService: SlotService,
+	private val translationService: TranslationAdminService,
 ) {
 	@PostMapping(ApiPaths.Internal.N8n.PREREGISTER_USER)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -31,6 +36,21 @@ class N8nInboundController(
 		return slotService.createUserSlot(req)
 	}
 	
+	@GetMapping(ApiPaths.Internal.N8n.TRANSLATIONS)
+	fun getTranslations(@RequestHeader(N8nOutboundListener.TOKEN_HEADER) token: String): AllTranslationsDto {
+		requireValidToken(token)
+		return translationService.get()
+	}
+
+	@PutMapping(ApiPaths.Internal.N8n.TRANSLATIONS)
+	fun setTranslations(
+		@RequestHeader(N8nOutboundListener.TOKEN_HEADER) token: String,
+		@RequestBody req: AllTranslationsDto,
+	): AllTranslationsDto {
+		requireValidToken(token)
+		return translationService.set(req)
+	}
+
 	private fun requireValidToken(token: String) {
 		val current = token.toByteArray()
 		val expected = properties.authToken.toByteArray()
