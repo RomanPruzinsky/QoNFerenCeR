@@ -54,6 +54,7 @@ object ApiPaths {
 			const val ROOT = "$BASE/internal/n8n"
 
 			const val PREREGISTER_USER = "$ROOT/users/preregister"
+			const val TRANSLATIONS = "$ROOT/translations"
 		}
 	}
 }
