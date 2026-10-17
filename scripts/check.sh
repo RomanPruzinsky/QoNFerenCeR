@@ -186,7 +186,7 @@ fi
 
 ############## RELEASE SIGNING KEY ###############
 ##################################################
-############# TODO_CHANGEME MARKERS ##############
+############# TODo_CHANGEME MARKERS ##############
 
 intro "Checking pre-production TODO_CHANGEME markers"
 
@@ -201,7 +201,7 @@ else
 	pass "No pending TODO_CHANGEME markers found"
 fi
 
-############# TODO_CHANGEME MARKERS ##############
+############# TODo_CHANGEME MARKERS ##############
 ##################################################
 ################### COMPILING ####################
 
