@@ -11,8 +11,8 @@ enum class Role {
 	ANONYM,
 	VISITOR,
 	VOLUNTEER,
-	LEADER,
 	ORGANISER,
+	LEADER,
 	ADMIN,
 	;
 

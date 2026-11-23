@@ -31,8 +31,8 @@ These roles are (in [`Role.kt`](shared/src/main/kotlin/tr/qonferencer/shared/enu
 - `ANONYM`
 - `VISITOR`
 - `VOLUNTEER`
-- `LEADER`
 - `ORGANISER`
+- `LEADER`
 - `ADMIN`
 
 ### Outbound events (n8n)
