@@ -118,20 +118,11 @@
 		{
 			"id": "genQr",
 			"name": "Generate QR",
-			"type": "n8n-nodes-base.httpRequest",
-			"typeVersion": 4.2,
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
 			"position": [420, 340],
 			"parameters": {
-				"method": "GET",
-				"url": "={{ 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent($json.generated_username + ':' + $json.generated_password) }}",
-				"options": {
-					"response": {
-						"response": {
-							"responseFormat": "file",
-							"outputPropertyName": "data"
-						}
-					}
-				}
+				"jsCode": "const QRCode = require('qrcode');\n\nreturn Promise.all($input.all().map(async (item) => {\n\tconst payload = JSON.stringify({ username: item.json.generated_username, password: item.json.generated_password });\n\tconst png = await QRCode.toBuffer(payload, { width: 300, margin: 2 });\n\treturn {\n\t\tjson: item.json,\n\t\tbinary: { data: await this.helpers.prepareBinaryData(png, `${item.json.generated_username}.png`, 'image/png') },\n\t};\n}));"
 			}
 		},
 		{

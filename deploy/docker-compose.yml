@@ -71,7 +71,9 @@ services:
             condition: service_healthy
 
    n8n:
-      image: n8nio/n8n:1.70.4
+      build:
+         context: .
+         dockerfile: n8n.Dockerfile
       ports:
          - "5678:5678"
       environment:
@@ -91,6 +93,7 @@ services:
          N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
          N8N_DIAGNOSTICS_ENABLED: "false"
          N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+         NODE_FUNCTION_ALLOW_EXTERNAL: qrcode
       depends_on:
          postgres:
             condition: service_healthy
