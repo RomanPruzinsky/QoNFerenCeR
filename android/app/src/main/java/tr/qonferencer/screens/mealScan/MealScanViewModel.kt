@@ -31,7 +31,10 @@ class MealScanViewModel : ViewModel() {
 	val countsState = _countsState.asStateFlow()
 	
 	private var lastToken: String? = null
-	
+
+	/** Key for current scan, renewed only after server answers */
+	private var idempotencyKey = UUID.randomUUID()
+
 	init {
 		loadCounts()
 	}
@@ -57,7 +60,15 @@ class MealScanViewModel : ViewModel() {
 		lastToken = token
 		
 		dataStatedAction(_scanState) {
-			val result = QoNFerenCerApi.meal.scan(MealScanRequestDto(token, window.id, UUID.randomUUID(), scannerType))
+			val result = QoNFerenCerApi.meal.scan(
+				MealScanRequestDto(
+					token = token,
+					mealWindowId = window.id,
+					idempotencyKey = idempotencyKey,
+					scannerType = scannerType,
+				),
+			)
+			idempotencyKey = UUID.randomUUID()
 			loadCounts()
 			result
 		}
