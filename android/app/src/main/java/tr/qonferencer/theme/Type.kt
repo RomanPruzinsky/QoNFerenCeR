@@ -22,7 +22,6 @@ enum class AvailableFonts(
 	SYNE(FontFamily(Font(R.font.syne, FontWeight.Medium))),
 	PLAYFAIR(FontFamily(Font(R.font.playfair, FontWeight.Medium))),
 	SPACE_GROTESK(FontFamily(Font(R.font.space_grotesk, FontWeight.Bold))),
-	INFO_STORY(FontFamily(Font(R.font.info_story, FontWeight.Light))),
 	PANGOLIN(FontFamily(Font(R.font.pangolin, FontWeight.Medium))),
 	PATRICK_HAND(FontFamily(Font(R.font.patrick_hand, FontWeight.Medium))),
 	SNIGLET(FontFamily(Font(R.font.sniglet, FontWeight.Medium))),
