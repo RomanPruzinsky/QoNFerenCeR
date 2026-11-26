@@ -37,7 +37,9 @@ data class TranslationState(
 		key: String,
 		langCode: String?,
 	): String {
-		fun textIn(lang: String?) = translations.firstOrNull { it.key == key && it.langCode == lang }?.text
+		fun textIn(lang: String?) = translations
+			.firstOrNull { it.key == key && it.langCode == lang }
+			?.text?.takeIf { it.isNotBlank() }
 		return textIn(langCode) ?: textIn(defaultLangCode) ?: key
 	}
 }
